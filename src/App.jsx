@@ -6,9 +6,9 @@ import AdminLogin from "./pages/AdminLogin.jsx";
 import ClientDashboard from "./pages/ClientDashboard.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import PromptChecklist from "./pages/Prompt/PromptChecklist.jsx";
-import Area from "./pages/Prompt/Area.jsx";
-import SubdewChecklist from "./pages/SubdewChecklist.jsx";
-import FrugalUploader from "./pages/FrugalUploader.jsx";
+import Area from "./pages/Prompt/PromptArea.jsx";
+import SubdewChecklist from "./pages/Subdew/SubdewChecklist.jsx";
+import FrugalUploader from "./pages/Frugal/FrugalUploader.jsx";
 
 export default function App() {
   return (
