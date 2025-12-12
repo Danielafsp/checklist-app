@@ -1,9 +1,17 @@
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function ClientDashboard() {
-  return <h1>Client Dashboard - Here the client will fill the checklist</h1>;
-}
+  const navigate = useNavigate();
 
-<button onClick={() => Navigate("/prompt")}>PROMPT</button>
-<button onClick={() => Navigate("/subdew")}>SUBDEW</button>
-<button onClick={() => Navigate("/frugal")}>FRUGAL</button>
+  return (
+    <div style={{ padding: "2rem" }}>
+      <h1>Client Dashboard</h1>
+      <p>Select a section</p>
+      <div>
+        <button onClick={() => navigate("/Prompt")}>PROMPT</button>
+        <button onClick={() => navigate("/Subdew")}>SUBDEW</button>
+        <button onClick={() => navigate("/Frugal")}>FRUGAL</button>
+      </div>
+    </div>
+  );
+}
