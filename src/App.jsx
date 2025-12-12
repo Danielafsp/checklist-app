@@ -14,6 +14,9 @@ export default function App() {
       <Route path="/admin-login" element={<AdminLogin />} />
       <Route path="/client" element={<ClientDashboard />} />
       <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/prompt" element={<PromptChecklists />} />
+      <Route path="/subdew" element={<SubdewChecklist />} />
+      <Route path="/frugal" element={<FrugalUploader />} />
     </Routes>
   );
 }
