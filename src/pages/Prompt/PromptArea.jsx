@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 
-export default function Area() {
+export default function PromptArea() {
   const { areaId } = useParams();
 
   return (
