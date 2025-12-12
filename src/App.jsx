@@ -20,10 +20,10 @@ export default function App() {
       <Route path="/admin" element={<AdminDashboard />} />
 
       <Route path="/prompt" element={<PromptChecklist />} />
-      <Route path="/prompt/:areaId" element={<PromptArea />} />
+      <Route path="/prompt/area/:areaId" element={<PromptArea />} />
 
       <Route path="/subdew" element={<SubdewChecklist />} />
-      <Route path="/subdew/:areaId" element={<SubdewArea />} />
+      <Route path="/subdew/area/:areaId" element={<SubdewArea />} />
 
       <Route path="/frugal" element={<FrugalUploader />} />
     </Routes>
