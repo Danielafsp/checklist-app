@@ -12,20 +12,26 @@ import SubdewArea from "./pages/Subdew/SubdewArea.jsx";
 
 import FrugalUploader from "./pages/Frugal/FrugalUploader.jsx";
 
+import Footer from "./components/Footer";
+
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/client" element={<ClientDashboard />} />
-      <Route path="/admin" element={<AdminDashboard />} />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/client" element={<ClientDashboard />} />
+        <Route path="/admin" element={<AdminDashboard />} />
 
-      <Route path="/prompt" element={<PromptChecklist />} />
-      <Route path="/prompt/area/:areaId" element={<PromptArea />} />
+        <Route path="/prompt" element={<PromptChecklist />} />
+        <Route path="/prompt/area/:areaId" element={<PromptArea />} />
 
-      <Route path="/subdew" element={<SubdewChecklist />} />
-      <Route path="/subdew/area/:areaId" element={<SubdewArea />} />
+        <Route path="/subdew" element={<SubdewChecklist />} />
+        <Route path="/subdew/area/:areaId" element={<SubdewArea />} />
 
-      <Route path="/frugal" element={<FrugalUploader />} />
-    </Routes>
+        <Route path="/frugal" element={<FrugalUploader />} />
+      </Routes>
+
+      <Footer />
+    </BrowserRouter>
   );
 }

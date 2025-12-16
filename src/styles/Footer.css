@@ -1,0 +1,29 @@
+.footer {
+  width: 100%;
+  background-color: var(--bg-card);
+  color: var(--text-light);
+  padding: 0.75rem;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+.footer-link {
+  color: var(--text-light);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.footer-link:hover {
+  color: var(--accent);
+}
+
+.footer-separator {
+  opacity: 0.6;
+}
