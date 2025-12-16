@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home.jsx";
 import ClientDashboard from "./pages/ClientDashboard.jsx";
@@ -17,21 +17,23 @@ import Footer from "./components/Footer";
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/client" element={<ClientDashboard />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+      <div className="app-wrapper">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/client" element={<ClientDashboard />} />
+          <Route path="/admin" element={<AdminDashboard />} />
 
-        <Route path="/prompt" element={<PromptChecklist />} />
-        <Route path="/prompt/area/:areaId" element={<PromptArea />} />
+          <Route path="/prompt" element={<PromptChecklist />} />
+          <Route path="/prompt/area/:areaId" element={<PromptArea />} />
 
-        <Route path="/subdew" element={<SubdewChecklist />} />
-        <Route path="/subdew/area/:areaId" element={<SubdewArea />} />
+          <Route path="/subdew" element={<SubdewChecklist />} />
+          <Route path="/subdew/area/:areaId" element={<SubdewArea />} />
 
-        <Route path="/frugal" element={<FrugalUploader />} />
-      </Routes>
+          <Route path="/frugal" element={<FrugalUploader />} />
+        </Routes>
 
-      <Footer />
+        <Footer />
+      </div>
     </BrowserRouter>
   );
 }

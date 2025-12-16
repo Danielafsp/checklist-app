@@ -9,10 +9,12 @@
   align-items: center;
   text-align: center;
   padding-bottom: 5rem;
+  padding-left: var(--space-lg);
+  padding-right: var(--space-lg);
 }
 
 .home-logo {
-  width: 160px;
+  width: 300px;
   margin-bottom: var(--space-xl);
 }
 
@@ -23,7 +25,6 @@
 }
 
 .home-subtext {
-  max-width: 400px;
   margin-bottom: var(--space-xl);
   opacity: 0.9;
   line-height: 1.5;

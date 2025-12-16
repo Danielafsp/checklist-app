@@ -1,17 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import "../styles/Home.css";
-import logo from "/src/assets/fsweblogo.webp";
+import logo from "../assets/fsweblogo.webp";
 
 export default function Home() {
   const navigate = useNavigate();
 
   return (
     <div className="home-container">
-      <img
-        src={logo}
-        alt="Fortsands Logo"
-        style={{ width: "160px", marginBottom: "2rem" }}
-      />
+      <img src={logo} alt="Fortsands Logo" className="home-logo" />
 
       <h1 className="home-title">Condo Board Tools</h1>
       <p className="home-subtext">
@@ -20,11 +16,11 @@ export default function Home() {
       </p>
 
       <div className="home-buttons">
-        <button className="home-bts" onClick={() => navigate("/client")}>
+        <button className="home-btn" onClick={() => navigate("/client")}>
           Client Login
         </button>
 
-        <button className="home-bts" onClick={() => navigate("/admin")}>
+        <button className="home-btn" onClick={() => navigate("/admin")}>
           Admin Login
         </button>
       </div>
