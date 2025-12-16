@@ -1,0 +1,30 @@
+.navbar {
+  width: 100%;
+  background-color: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md);
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-logo {
+  height: 40px;
+}
+
+.nav-back {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: var(--transition);
+}
+
+.nav-back:hover {
+  opacity: 0.8;
+}

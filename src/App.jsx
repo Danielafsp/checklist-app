@@ -12,11 +12,13 @@ import SubdewArea from "./pages/Subdew/SubdewArea.jsx";
 
 import FrugalUploader from "./pages/Frugal/FrugalUploader.jsx";
 
+import Navbar from "./components/NavBar";
 import Footer from "./components/Footer";
 
 export default function App() {
   return (
     <BrowserRouter>
+      <Navbar />
       <div className="app-wrapper">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -31,9 +33,9 @@ export default function App() {
 
           <Route path="/frugal" element={<FrugalUploader />} />
         </Routes>
-
-        <Footer />
       </div>
+
+      <Footer />
     </BrowserRouter>
   );
 }
