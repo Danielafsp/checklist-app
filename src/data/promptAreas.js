@@ -1,0 +1,13 @@
+export const promptAreas = {
+  1: "RAINWATER MANAGEMENT SYSTEM",
+  2: "ROOF",
+  3: "EXTERIOR WALLS",
+  4: "FOUNDATION",
+  5: "WINDOWS & DOORS",
+  6: "BALCONIES & DECKS",
+  7: "FENCES",
+  8: "LANDSCAPING & DRAINAGE",
+  9: "SIDEWALKS & PARKING LOTS",
+  10: "PARKADES",
+  11: "COMMON AREAS",
+};
