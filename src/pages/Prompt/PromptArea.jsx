@@ -1,21 +1,29 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { promptQuestions } from "../../data/promptQuestions";
+import "../../styles/PromptArea.css";
 
 export default function PromptArea() {
   const { areaId } = useParams();
+  const navigate = useNavigate();
+
+  const id = parseInt(areaId, 10);
+  const TOTAL_AREAS = object.keys(promptQuestions).length;
 
   const questions = promptQuestions[areaId];
 
+  const goPrevious = () => navigate(`/prompt/area/${id - 1}`);
+  const goNext = () => navigate(`/prompt/area/${id + 1}`);
+
   return (
-    <div style={{ padding: "1rem" }}>
-      <h1>Area {areaId}</h1>
+    <div className="prompt-area-container">
+      <h1 className="prompt-area-title">Area {areaId}</h1>
 
       {!questions && <p>No questions found for this area.</p>}
 
-      <ul>
+      <ul className="prompt-area-list">
         {questions?.map((q) => (
-          <li key={q.id} style={{ marginBottom: "1rem" }}>
-            <p>
+          <li key={q.id} className="prompt-area-item">
+            <p className="question-text">
               <strong>{q.text}</strong>
             </p>
 
@@ -29,21 +37,28 @@ export default function PromptArea() {
               <option value="5">5 - Excellent</option>
             </select>
 
-            <br />
-            <br />
-
             <label>Notes:</label>
-            <br />
-            <textarea rows="3" style={{ width: "100%" }} />
-
-            <br />
-            <br />
+            <textarea rows="3" className="textarea-input" />
 
             <label>Photo:</label>
-            <input type="file" accpet="image/*" />
+            <input type="file" accpet="image/*" className="file-input" />
           </li>
         ))}
       </ul>
+
+      <div className="prompt-area-navigation">
+        {id > 1 && (
+          <button className="nav-btn" onClick={goPrevious}>
+            ← Previous
+          </button>
+        )}
+
+        {id > TOTAL_AREAS && (
+          <button className="nav-btn" onClick={goNext}>
+            Next →
+          </button>
+        )}
+      </div>
     </div>
   );
 }
