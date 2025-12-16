@@ -28,3 +28,23 @@
 .nav-back:hover {
   opacity: 0.8;
 }
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.nav-logout {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: var(--transition);
+  padding: var(--space-sm);
+}
+
+.nav-logout:hover {
+  opacity: 0.8;
+}

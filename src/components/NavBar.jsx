@@ -11,6 +11,13 @@ export default function Navbar() {
     location.pathname !== "/client" &&
     location.pathname !== "/admin";
 
+  const handleLogout = () => {
+    sessionStorage.clear();
+    localStorage.clear();
+
+    navigate("/");
+  };
+
   return (
     <header className="navbar">
       <div className="nav-left">
@@ -23,7 +30,11 @@ export default function Navbar() {
 
       <img src={logo} alt="logo" className="nav-logo" />
 
-      <div className="navbar-right"></div>
+      <div className="navbar-right">
+        <button className="nav-logout" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
     </header>
   );
 }
