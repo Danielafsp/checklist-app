@@ -13,16 +13,16 @@ import SubdewArea from "./pages/Subdew/SubdewArea.jsx";
 
 import FrugalUploader from "./pages/Frugal/FrugalUploader.jsx";
 
-import Navbar from "./components/NavBar";
-import Footer from "./components/Footer";
+import MainLayout from "./layouts/MainLayout.jsx";
+import Footer from "./components/Footer.jsx";
 
 export default function App() {
   return (
     <BrowserRouter>
-      <Navbar />
-      <div className="app-wrapper">
-        <Routes>
-          <Route path="/" element={<Home />} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+
+        <Route element={<MainLayout />}>
           <Route path="/client" element={<ClientDashboard />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/team" element={<Team />} />
@@ -34,9 +34,8 @@ export default function App() {
           <Route path="/subdew/area/:areaId" element={<SubdewArea />} />
 
           <Route path="/frugal" element={<FrugalUploader />} />
-        </Routes>
-      </div>
-
+        </Route>
+      </Routes>
       <Footer />
     </BrowserRouter>
   );
