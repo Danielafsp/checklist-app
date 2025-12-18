@@ -1,11 +1,13 @@
 .navbar {
   width: 100%;
+  height: auto;
   background-color: var(--bg-card);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-md);
+  padding: var(--space-sm);
   box-shadow: var(--shadow);
+  box-sizing: border-box;
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -19,7 +21,7 @@
   background: none;
   border: none;
   color: var(--accent);
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-md);
   cursor: pointer;
   font-family: var(--font-body);
   transition: var(--transition);
