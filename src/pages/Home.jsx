@@ -23,6 +23,10 @@ export default function Home() {
         <button className="home-btn" onClick={() => navigate("/admin")}>
           Admin Login
         </button>
+
+        <button className="home-btn" onClick={() => navigate("/team")}>
+          Contact your Fort Sands Team
+        </button>
       </div>
     </div>
   );

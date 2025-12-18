@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home.jsx";
 import ClientDashboard from "./pages/ClientDashboard.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
+import Team from "./pages/Team.jsx";
 
 import PromptChecklist from "./pages/Prompt/PromptChecklist.jsx";
 import PromptArea from "./pages/Prompt/PromptArea.jsx";
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/client" element={<ClientDashboard />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/team" element={<Team />} />
 
           <Route path="/prompt" element={<PromptChecklist />} />
           <Route path="/prompt/area/:areaId" element={<PromptArea />} />
