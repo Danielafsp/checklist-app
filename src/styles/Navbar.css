@@ -31,9 +31,14 @@
   opacity: 0.8;
 }
 
+.navbar-left {
+  min-width: 150px;
+}
+
 .navbar-right {
   display: flex;
   align-items: center;
+  min-width: 100px;
 }
 
 .nav-logout {

@@ -1,7 +1,6 @@
 import { teamData } from "../data/teamData";
-import Teamcard from "../components/TeamCard";
-import "../styles/Team.css";
 import TeamCard from "../components/TeamCard";
+import "../styles/Team.css";
 
 export default function Team() {
   return (

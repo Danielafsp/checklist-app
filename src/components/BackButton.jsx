@@ -9,6 +9,8 @@ export default function BackButton() {
       navigate("/prompt");
     } else if (location.pathname === "/prompt") {
       navigate("/client");
+    } else if (location.pathname === "/team") {
+      navigate("/");
     } else {
       navigate("/client");
     }
@@ -20,6 +22,9 @@ export default function BackButton() {
     }
     if (location.pathname === "/prompt") {
       return "← Back to Tools";
+    }
+    if (location.pathname === "/team") {
+      return "← Back to Home";
     }
     return null;
   };

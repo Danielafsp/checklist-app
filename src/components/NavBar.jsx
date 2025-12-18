@@ -7,6 +7,9 @@ export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const showLogout =
+    !location.pathname.startsWith("/team") && location.pathname !== "/";
+
   const handleLogout = () => {
     sessionStorage.clear();
     localStorage.clear();
@@ -15,14 +18,18 @@ export default function Navbar() {
 
   return (
     <header className="navbar">
-      <BackButton />
+      <div className="navbar-left">
+        <BackButton />
+      </div>
 
       <img src={logo} alt="logo" className="nav-logo" />
 
       <div className="navbar-right">
-        <button className="nav-logout" onClick={handleLogout}>
-          Logout
-        </button>
+        {showLogout && (
+          <button className="nav-logout" onClick={handleLogout}>
+            Logout
+          </button>
+        )}
       </div>
     </header>
   );

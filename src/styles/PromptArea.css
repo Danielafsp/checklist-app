@@ -8,7 +8,8 @@
 
 .prompt-area-title {
   font-family: var(--font-heading);
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-xxl);
+  text-align: center;
   color: var(--accent);
   margin-bottom: var(--space-lg);
 }
@@ -35,6 +36,8 @@
 
 .question-text {
   margin-bottom: var(--space-md);
+  font-size: var(--font-size-xl);
+  color: var(--accent-light);
 }
 
 .select-input,
