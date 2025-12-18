@@ -15,8 +15,22 @@ export default function PromptArea() {
   const questions = promptQuestions[id];
   const title = promptAreas[id];
 
-  const goPrevious = () => navigate(`/prompt/area/${id - 1}`);
-  const goNext = () => navigate(`/prompt/area/${id + 1}`);
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  const goPrevious = () => {
+    scrollToTop();
+    navigate(`/prompt/area/${id - 1}`);
+  };
+
+  const goNext = () => {
+    scrollToTop();
+    navigate(`/prompt/area/${id + 1}`);
+  };
 
   return (
     <div className="prompt-area-container">
