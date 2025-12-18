@@ -21,7 +21,7 @@ export default function Home() {
         </button>
 
         <button className="home-btn" onClick={() => navigate("/admin")}>
-          Admin Login
+          Fort Sands Login
         </button>
 
         <button className="home-btn" onClick={() => navigate("/team")}>

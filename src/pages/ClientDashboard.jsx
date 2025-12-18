@@ -4,6 +4,7 @@ import "../styles/ClientDashboard.css";
 import PromptImg from "../assets/Prompt.webp";
 import SubdewImg from "../assets/Subdew.webp";
 import FrugalImg from "../assets/Frugal.webp";
+import NanoImg from "../assets/fs-nano.png";
 
 export default function ClientDashboard() {
   const navigate = useNavigate();
@@ -23,6 +24,11 @@ export default function ClientDashboard() {
       label: "Reserve Fund Analysis",
       img: FrugalImg,
       route: "/frugal",
+    },
+    {
+      label: "Roof Revitalizations",
+      img: NanoImg,
+      route: "/nano",
     },
   ];
 
