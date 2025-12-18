@@ -19,7 +19,7 @@ export default function BackButton() {
       return "← Back to Prompt";
     }
     if (location.pathname === "/prompt") {
-      return "← Back to Dashboard";
+      return "← Back to Tools";
     }
     return null;
   };

@@ -15,12 +15,24 @@ export const promptQuestions = {
     { id: 4, text: "Quality of roof edges -- look for lifting or rot" },
   ],
   3: [
-    { id: 1, text: "Wall damage or deterioration; any holes or dents?" },
+    {
+      id: 1,
+      text: "Wall damage or deterioration; any holes or dents; and siding or facia blow-offs from winter?",
+    },
     { id: 2, text: "Any cracks and gaps in the walls?" },
     { id: 3, text: "Signs of water damage such as stains, mold, or rot?" },
     { id: 4, text: "Any signs of discolouring or streaking?" },
     { id: 5, text: "Does siding connect to roof properly?" },
     { id: 6, text: "Does siding connect to foundation properly?" },
+    {
+      id: 7,
+      text: "Sealants around windows and doors appear cracked or opening up",
+    },
+    { id: 8, text: "New cracks in stucco or brick mortar joints" },
+    {
+      id: 9,
+      text: "Flashings back sloped, seeking stains below joints in flashings",
+    },
   ],
   4: [
     { id: 1, text: "Signs of damage like cracking or bulges" },
@@ -42,6 +54,8 @@ export const promptQuestions = {
     { id: 3, text: "Condition of waterproofing; such as flashing & sealant" },
     { id: 4, text: "Is water draining correctly?" },
     { id: 5, text: "Condition of connection to the siding / building" },
+    { id: 6, text: "Visible curling of edges or seams on membrane decks" },
+    { id: 7, text: "Loose railings or missing anchors " },
   ],
   7: [
     { id: 1, text: "Fence posts securely anchored; not leaning or broke?" },
@@ -59,7 +73,7 @@ export const promptQuestions = {
   9: [
     { id: 1, text: "Surface condition; cracks, potholes, uneven surfaces" },
     { id: 2, text: "Tripping hazards or unexpected edges" },
-    { id: 3, text: "Any cracks or areas where water might pool & freeze" },
+    { id: 3, text: "Any cracks or areas where water might pool" },
     { id: 4, text: "Condition of drainage systems from pathways" },
   ],
   10: [
