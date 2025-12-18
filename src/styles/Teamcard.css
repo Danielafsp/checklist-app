@@ -1,0 +1,40 @@
+.team-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border-top: 4px solid var(--accent-light);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: var(--transition);
+}
+
+.team-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+}
+
+.team-name {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--text-dark);
+}
+
+.team-title {
+  color: var(--text-dark);
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.team-info p {
+  margin: 0.3rem 0;
+  font-size: 0.95rem;
+  color: var(--text-dark);
+}
+
+.team-info a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.team-info a:hover {
+  text-decoration: underline;
+}

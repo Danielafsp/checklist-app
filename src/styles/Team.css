@@ -1,0 +1,22 @@
+.team-page {
+  padding: 2rem;
+  background-color: var(--bg-card);
+  min-height: 100vh;
+}
+
+.team-page h1 {
+  color: var(--accent);
+  text-align: center;
+}
+
+.team-subtitle {
+  margin-bottom: 2rem;
+  color: var(--text-light);
+  text-align: center;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
