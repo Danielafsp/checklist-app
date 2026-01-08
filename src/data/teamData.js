@@ -1,7 +1,7 @@
 export const teamData = [
   {
     id: 1,
-    name: "Zack Jacobs",
+    name: "Zach Jacobs",
     title: "Chief Operations Officer",
     email: "zjacobs@fortsands.com",
     phone: "403-333-6051",
