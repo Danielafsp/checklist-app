@@ -9,6 +9,10 @@ export default function BackButton() {
       navigate("/prompt");
     } else if (location.pathname === "/prompt") {
       navigate("/client");
+    } else if (location.pathname.startsWith("/subdew/area")) {
+      navigate("/subdew");
+    } else if (location.pathname === "/subdew") {
+      navigate("/client");
     } else if (location.pathname === "/team") {
       navigate("/");
     } else {
@@ -21,6 +25,12 @@ export default function BackButton() {
       return "← Back to Prompt";
     }
     if (location.pathname === "/prompt") {
+      return "← Back to Tools";
+    }
+    if (location.pathname.startsWith("/subdew/area")) {
+      return "← Back to Subdew";
+    }
+    if (location.pathname === "/subdew") {
       return "← Back to Tools";
     }
     if (location.pathname === "/team") {

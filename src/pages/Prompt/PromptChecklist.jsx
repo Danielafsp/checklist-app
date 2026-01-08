@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import "../../styles/Prompt.css";
+import "../../styles/Checklist.css";
 
 const areas = [
   { id: 1, name: "RAINWATER MANAGEMENT SYSTEM" },
@@ -17,22 +17,18 @@ const areas = [
 
 export default function PromptChecklist() {
   return (
-    <div className="prompt-container">
-      <h1 className="prompt-title">PROMPT</h1>
-      <p className="prompt-subtitle">
+    <div className="container">
+      <h1 className="title">PROMPT</h1>
+      <p className="subtitle">
         Everyone on a condo board should feel empowered to help protect their
         community and the equity in their building.
       </p>
 
-      <div className="prompt-list">
+      <div className="list">
         {areas.map((area) => (
-          <Link
-            key={area.id}
-            to={`/prompt/area/${area.id}`}
-            className="prompt-card"
-          >
-            <span className="prompt-card-name">{area.name}</span>
-            <span className="prompt-card-arrow">→</span>
+          <Link key={area.id} to={`/prompt/area/${area.id}`} className="card">
+            <span className="card-name">{area.name}</span>
+            <span className="card-arrow">→</span>
           </Link>
         ))}
       </div>

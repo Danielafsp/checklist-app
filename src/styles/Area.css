@@ -1,4 +1,4 @@
-.prompt-area-container {
+.area-container {
   min-height: 100vh;
   background-color: var(--bg-dark);
   color: var(--text-light);
@@ -6,7 +6,7 @@
   padding-bottom: 6rem;
 }
 
-.prompt-area-title {
+.area-title {
   font-family: var(--font-heading);
   font-size: var(--font-size-xxl);
   text-align: center;
@@ -14,12 +14,12 @@
   margin-bottom: var(--space-lg);
 }
 
-.prompt-area-no-questions {
+.area-no-questions {
   opacity: 0.8;
   margin-bottom: var(--space-xl);
 }
 
-.prompt-area-list {
+.area-list {
   list-style: none;
   padding: 0;
   display: flex;
@@ -27,7 +27,7 @@
   gap: var(--space-xl);
 }
 
-.prompt-area-item {
+.area-item {
   background-color: var(--bg-card);
   padding: var(--space-md);
   border-radius: var(--radius);
@@ -56,7 +56,7 @@
   resize: vertical;
 }
 
-.prompt-area-navigation {
+.area-navigation {
   display: flex;
   justify-content: center;
   gap: 1rem;

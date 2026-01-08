@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { promptQuestions } from "../../data/promptQuestions";
 import { promptAreas } from "../../data/promptAreas";
-import "../../styles/PromptArea.css";
+import "../../styles/Area.css";
 
 export default function PromptArea() {
   const { areaId } = useParams();
@@ -33,14 +33,14 @@ export default function PromptArea() {
   };
 
   return (
-    <div className="prompt-area-container">
-      <h1 className="prompt-area-title">{title}</h1>
+    <div className="area-container">
+      <h1 className="area-title">{title}</h1>
 
       {!questions && <p>No questions found for this area.</p>}
 
-      <ul className="prompt-area-list">
+      <ul className="area-list">
         {questions?.map((q) => (
-          <li key={q.id} className="prompt-area-item">
+          <li key={q.id} className="area-item">
             <p className="question-text">
               <strong>{q.text}</strong>
             </p>
@@ -67,7 +67,7 @@ export default function PromptArea() {
         ))}
       </ul>
 
-      <div className="prompt-area-navigation">
+      <div className="area-navigation">
         {id > Math.min(...areaKeys) && (
           <button className="nav-btn" onClick={goPrevious}>
             ← Previous

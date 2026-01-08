@@ -1,4 +1,4 @@
-.prompt-container {
+.container {
   min-height: 100vh;
   padding: var(--space-xl);
   padding-bottom: 6rem;
@@ -6,7 +6,7 @@
   color: var(--text-light);
 }
 
-.prompt-title {
+.title {
   font-family: var(--font-heading);
   font-size: var(--font-size-xl);
   color: var(--accent);
@@ -14,7 +14,7 @@
   margin-bottom: var(--space-sm);
 }
 
-.prompt-subtitle {
+.subtitle {
   text-align: center;
   opacity: 0.9;
   margin-bottom: var(--space-xl);
@@ -24,14 +24,14 @@
   margin-right: auto;
 }
 
-.prompt-list {
+.list {
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
   align-items: center;
 }
 
-.prompt-card {
+.card {
   background-color: var(--bg-card);
   width: 100%;
   max-width: 420px;
@@ -47,17 +47,17 @@
   cursor: pointer;
 }
 
-.prompt-card:hover {
+.card:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
-.prompt-card-name {
+.card-name {
   font-size: var(--font-size-lg);
   font-family: var(--font-body);
 }
 
-.prompt-card-arrow {
+.card-arrow {
   font-size: var(--font-size-xl);
   color: var(--accent);
   font-weight: bold;
