@@ -6,13 +6,36 @@ export default function Frugal() {
   const [notes, setNotes] = useState("");
   const [visitDate, setVisitDate] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleFileChange = (e) => {
-    setFiles([...e.target.files]);
+    const selectedFiles = Array.from(e.target.files).map((file) => ({
+      file,
+      uploaded: false,
+      uploading: false,
+    }));
+
+    setFiles((prev) => [...prev, ...selectedFiles]);
+    e.target.value = "";
+  };
+
+  const handleFileUpload = (index) => {
+    setFiles((prev) =>
+      prev.map((f, i) => (i === index ? { ...f, uploading: true } : f))
+    );
+
+    setTimeout(() => {
+      setFiles((prev) =>
+        prev.map((f, i) =>
+          i === index ? { ...f, uploading: false, uploaded: true } : f
+        )
+      );
+    }, 1000);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
 
     console.log({
       files,
@@ -20,8 +43,14 @@ export default function Frugal() {
       visitDate,
     });
 
-    setSubmitted(true);
+    setTimeout(() => {
+      setLoading(false);
+      setSubmitted(true);
+    }, 1000);
   };
+
+  const isSubmitDisabled =
+    !visitDate || files.some((f) => !f.uploaded) || loading;
 
   return (
     <div className="client-request">
@@ -29,9 +58,31 @@ export default function Frugal() {
 
       {!submitted ? (
         <form onSubmit={handleSubmit} className="request-form">
+          {/* Upload */}
           <label>
             Upload files:
             <input type="file" multiple onChange={handleFileChange} />
+            {files.length > 0 && (
+              <ul className="file-list">
+                {files.map((f, index) => (
+                  <li key={index} className="file-item">
+                    <span>{f.file.name}</span>
+
+                    {f.uploaded ? (
+                      <span className="file-success">Uploaded</span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => handleFileUpload(index)}
+                        disabled={f.uploading}
+                      >
+                        {f.uploading ? "Uploading..." : "Upload"}
+                      </button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
           </label>
 
           <label>
@@ -53,10 +104,12 @@ export default function Frugal() {
             />
           </label>
 
-          <button type="submit">Submit request</button>
+          <button type="submit" disabled={isSubmitDisabled}>
+            {loading ? "Submitting..." : "Submit request"}
+          </button>
         </form>
       ) : (
-        <div className="confirmation-message">
+        <div className="confirmation-message fade-in">
           <p>
             A member of the team will contact you in
             <strong> 3 to 5 business days.</strong>

@@ -53,6 +53,50 @@
   min-height: 100px;
 }
 
+.file-list {
+  margin-top: var(--space-sm);
+  padding-left: 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-light);
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.file-list li {
+  opacity: 0.85;
+}
+
+.file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg-dark);
+  padding: var(--space-sm);
+  border-radius: var(--radius);
+  font-size: var(--font-size-sm);
+}
+
+.file-item button {
+  background-color: var(--accent);
+  border: none;
+  color: var(--text-light);
+  padding: 0.4rem 0.7rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+}
+
+.file-item button:hover {
+  background-color: var(--accent-light);
+}
+
+.file-item button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .request-form button {
   align-self: flex-end;
   background-color: var(--accent);
@@ -67,6 +111,31 @@
 
 .request-form button:hover {
   background-color: var(--accent-light);
+}
+
+.request-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.file-sucess {
+  color: var(--accent);
+  font-size: var(--font-size-sm);
 }
 
 .confirmation-message {
