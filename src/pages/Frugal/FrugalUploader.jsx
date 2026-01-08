@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../../styles/Frugal.css";
 
 export default function Frugal() {
   const [files, setFiles] = useState([]);
