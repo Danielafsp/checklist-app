@@ -53,6 +53,20 @@ export default function PromptArea() {
 
   const [saved, setSaved] = useState({});
 
+  const handleRemovePhoto = (questionId, indexToRemove) => {
+    setPhotos((prev) => ({
+      ...prev,
+      [questionId]: prev[questionId].filter(
+        (_, index) => index !== indexToRemove
+      ),
+    }));
+
+    setSaved((prev) => ({
+      ...prev,
+      [questionId]: false,
+    }));
+  };
+
   return (
     <div className="area-container">
       <h1 className="area-title">{title}</h1>
@@ -70,9 +84,10 @@ export default function PromptArea() {
             <select
               className="select-input"
               value={ratings[q.id] || ""}
-              onChange={(e) =>
-                setRatings((prev) => ({ ...prev, [q.id]: e.target.value }))
-              }
+              onChange={(e) => {
+                setRatings((prev) => ({ ...prev, [q.id]: e.target.value }));
+                setSaved((prev) => ({ ...prev, [q.id]: false }));
+              }}
             >
               <option value="">Select</option>
               <option value="1">1 - Poor</option>
@@ -90,9 +105,10 @@ export default function PromptArea() {
               rows="3"
               className="textarea-input"
               value={notes[q.id] || ""}
-              onChange={(e) =>
-                setNotes((prev) => ({ ...prev, [q.id]: e.target.value }))
-              }
+              onChange={(e) => {
+                setNotes((prev) => ({ ...prev, [q.id]: e.target.value }));
+                setSaved((prev) => ({ ...prev, [q.id]: false }));
+              }}
             />
 
             <br />
@@ -104,21 +120,31 @@ export default function PromptArea() {
               accept="image/*"
               multiple
               className="file-input"
-              onChange={(e) =>
+              onChange={(e) => {
                 setPhotos((prev) => ({
                   ...prev,
                   [q.id]: [
                     ...(prev[q.id] || []),
                     ...Array.from(e.target.files),
                   ],
-                }))
-              }
+                }));
+                setSaved((prev) => ({ ...prev, [q.id]: false }));
+              }}
             />
 
             {photos[q.id]?.length > 0 && (
               <ul className="file-list">
                 {photos[q.id].map((photo, index) => (
-                  <li key={index}>📷 {photo.name}</li>
+                  <li key={index} className="file-item">
+                    📷 {photo.name}
+                    <button
+                      type="button"
+                      className="remove-photo-btn"
+                      onClick={() => handleRemovePhoto(q.id, index)}
+                    >
+                      ❌
+                    </button>
+                  </li>
                 ))}
               </ul>
             )}

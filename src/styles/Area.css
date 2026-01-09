@@ -56,6 +56,30 @@
   resize: vertical;
 }
 
+.saved-label {
+  margin-left: 12px;
+  color: green;
+  font-weight: 600;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.remove-photo-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #c00;
+  font-size: 14px;
+}
+
+.remove-photo-btn:hover {
+  color: #900;
+}
+
 .area-navigation {
   display: flex;
   justify-content: center;
