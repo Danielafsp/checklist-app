@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "../styles/Nano.css";
+import "../../styles/Nano.css";
 
 export default function Nano() {
   const [formData, setFormData] = useState({

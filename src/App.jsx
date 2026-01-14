@@ -13,6 +13,8 @@ import SubdewArea from "./pages/Subdew/SubdewArea.jsx";
 
 import FrugalUploader from "./pages/Frugal/FrugalUploader.jsx";
 
+import Nano from "./pages/Nano/Nano.jsx";
+
 import MainLayout from "./layouts/MainLayout.jsx";
 import Footer from "./components/Footer.jsx";
 
