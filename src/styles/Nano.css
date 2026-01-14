@@ -1,0 +1,108 @@
+.nano-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-md);
+}
+
+.nano-container .title {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-xxl);
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  margin-bottom: var(--space-md);
+}
+
+.nano-container .subtitle {
+  font-size: var(--font-size-base);
+  line-height: 1.7;
+  color: var(--text-muted);
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto var(--space-xl);
+}
+
+.nano-heading {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: var(--space-lg);
+}
+
+.nano-form {
+  background-color: var(--bg-card);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow);
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.nano-form input,
+.nano-form select,
+.nano-form textarea {
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  border: 1px solid #555;
+  border-radius: var(--radius);
+  padding: 0.75rem 0.9rem;
+  font-size: var(--font-size-base);
+  font-family: var(--font-body);
+  transition: var(--transition);
+}
+
+.nano-form input::placeholder,
+.nano-form textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.nano-form textarea,
+.nano-form button,
+.nano-trust {
+  grid-column: 1 / -1;
+}
+
+.nano-form input:focus,
+.nano-form select:focus,
+.nano-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(212, 127, 53, 0.25);
+}
+
+.nano-submit {
+  margin-top: var(--space-sm);
+  background-color: var(--accent);
+  color: var(--text-light);
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.9rem 1.2rem;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.nano-submit:hover {
+  background-color: var(--accent-light);
+}
+
+.nano-trust {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: var(--space-sm);
+}
+
+@media (max-width: 768px) {
+  .nano-form {
+    grid-template-columns: 1fr;
+  }
+
+  .nano-container .title {
+    font-size: var(--font-size-xl);
+  }
+}
