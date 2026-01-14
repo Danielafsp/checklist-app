@@ -54,7 +54,14 @@ export default function Frugal() {
 
   return (
     <div className="client-request">
-      <h1>Project Request</h1>
+      <h1 className="title">FRUGAL</h1>
+      <p className="subtitle">
+        Take the next step toward smarter property management. Build for
+        Property Managers and Condo Boards. Frugal can streamline your planning,
+        budgeting, and project oversight.
+      </p>
+      <br />
+      <h4>Project Request</h4>
 
       {!submitted ? (
         <form onSubmit={handleSubmit} className="request-form">

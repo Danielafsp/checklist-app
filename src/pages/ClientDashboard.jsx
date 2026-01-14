@@ -4,7 +4,7 @@ import "../styles/ClientDashboard.css";
 import PromptImg from "../assets/Prompt.webp";
 import SubdewImg from "../assets/Subdew.webp";
 import FrugalImg from "../assets/Frugal.webp";
-import NanoImg from "../assets/fs-nano.png";
+import NanoImg from "../assets/roofrevive.webp";
 
 export default function ClientDashboard() {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ export default function ClientDashboard() {
       route: "/frugal",
     },
     {
-      label: "Roof Revitalizations",
+      label: "Revive NOT Replace",
       img: NanoImg,
       route: "/nano",
     },

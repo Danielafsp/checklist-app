@@ -18,7 +18,7 @@ const areas = [
 export default function SubdewChecklist() {
   return (
     <div className="container">
-      <h1 className="title">Subdew</h1>
+      <h1 className="title">SUBDEW</h1>
       <p className="subtitle">
         A lot of what can happen to a building in the Winter should be taken
         care of before the season arrives. BUT, there’s also a lot we can do to

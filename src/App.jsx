@@ -34,6 +34,8 @@ export default function App() {
           <Route path="/subdew/area/:areaId" element={<SubdewArea />} />
 
           <Route path="/frugal" element={<FrugalUploader />} />
+
+          <Route path="/nano" element={<Nano />} />
         </Route>
       </Routes>
       <Footer />
