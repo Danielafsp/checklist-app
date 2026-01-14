@@ -13,6 +13,10 @@ export default function BackButton() {
       navigate("/subdew");
     } else if (location.pathname === "/subdew") {
       navigate("/client");
+    } else if (location.pathname === "/frugal") {
+      navigate("client");
+    } else if (location.pathname === "/nano") {
+      navigate("client");
     } else if (location.pathname === "/team") {
       navigate("/");
     } else {
@@ -31,6 +35,12 @@ export default function BackButton() {
       return "← Back to Subdew";
     }
     if (location.pathname === "/subdew") {
+      return "← Back to Tools";
+    }
+    if (location.pathname === "/frugal") {
+      return "← Back to Tools";
+    }
+    if (location.pathname === "/nano") {
       return "← Back to Tools";
     }
     if (location.pathname === "/team") {
