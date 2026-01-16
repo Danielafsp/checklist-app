@@ -33,7 +33,6 @@ Code optimization and refactoring
 ## Notes
 
 This project is part of my ongoing learning journey as a rookie in tech, focusing on learning by building real applications.
-
 Notes
 
-This project is part of my ongoing learning journey as a rookie in tech, focusing on learning by building real applications.
+This project is part of my ongoing learning journey as a rookie in tech, focusing on learning by building real appli
