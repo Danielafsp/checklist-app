@@ -1,16 +1,29 @@
-# React + Vite
+# Checklist App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🚧 Status: In progress
 
-Currently, two official plugins are available:
+## Overview
+This is a checklist application currently under development.
+The goal of this project is to build a practical, real-world tool while improving my skills in React and front-end development.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Purpose
+The app is designed to manage dynamic checklists and prepare structured data that can later be used for reporting and team workflows.
 
-## React Compiler
+## Built With
+React
+JavaScript
+CSS
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## What I’m Practicing
+Component-based architecture
+State management
+Handling and organizing data
+Improving UI consistency and usability
 
-## Expanding the ESLint configuration
+## Planned Improvements
+Better data organization for reporting
+UI/UX refinements
+Code optimization and refactoring
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Notes
+This project is part of my ongoing learning journey as a rookie in tech, focusing on learning by building real applications.
