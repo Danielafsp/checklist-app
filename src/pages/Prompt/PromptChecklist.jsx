@@ -20,8 +20,15 @@ export default function PromptChecklist() {
     <div className="container">
       <h1 className="title">PROMPT</h1>
       <p className="subtitle">
-        Everyone on a condo board should feel empowered to help protect their
-        community and the equity in their building.
+        Welcome to Prompt, a proactive maintenace tool to spot building
+        defeciencies which can cause costly future repairs.
+        <br />
+        To use this Tool simply walk around your development and complete the
+        intuitive questionnaire, take pictures that show defeciencies, damage or
+        areas you feel need to be included in the report.
+        <br />
+        Once complete click Submit and a Fort Sands Advisor will review your
+        report.
       </p>
 
       <div className="list">

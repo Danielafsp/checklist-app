@@ -61,7 +61,11 @@ export default function Frugal() {
         budgeting, and project oversight.
       </p>
       <br />
-      <h4>Project Request</h4>
+      <h4>Start your Frugal Journey</h4>
+      <p>
+        Please complete all fields below and upload your current Reserve Fund
+        Study.
+      </p>
 
       {!submitted ? (
         <form onSubmit={handleSubmit} className="request-form">
@@ -118,8 +122,9 @@ export default function Frugal() {
       ) : (
         <div className="confirmation-message fade-in">
           <p>
-            A member of the team will contact you in
-            <strong> 3 to 5 business days.</strong>
+            Your Frugal journey has now begun, your data is being analyzed. A
+            Fort Sands Frugal Advisor will contact you in
+            <strong> 3-5 Working days.</strong>
           </p>
         </div>
       )}

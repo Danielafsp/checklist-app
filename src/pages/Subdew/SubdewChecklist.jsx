@@ -20,9 +20,15 @@ export default function SubdewChecklist() {
     <div className="container">
       <h1 className="title">SUBDEW</h1>
       <p className="subtitle">
-        A lot of what can happen to a building in the Winter should be taken
-        care of before the season arrives. BUT, there’s also a lot we can do to
-        remediate problems in the Winter time as well.
+        Welcome to Subdew, your guide to spot 11 winter building deficiencies
+        that can cause costly repairs.
+        <br />
+        To use this tool simply walk around your development and complete the
+        intuitive questionnaire, take pictures that show defeciencies, damage or
+        areas you feel need to be included in the report.
+        <br />
+        Once complete click Submit and a Fort Sands Advisor will review your
+        report.
       </p>
 
       <div className="list">
