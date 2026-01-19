@@ -84,7 +84,7 @@ export const teamData = [
     name: "Rick Ochitwa",
     title: "Senior Project Advisor",
     email: "rochitwa@fortsands.com",
-    phone: "-",
+    phone: "306-580-6191",
     city: "Saskatoon",
   },
   {
