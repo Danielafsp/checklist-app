@@ -25,7 +25,6 @@ export default function App() {
         <Route path="/" element={<ClientDashboard />} />
 
         <Route element={<MainLayout />}>
-          <Route path="/client" element={<ClientDashboard />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/team" element={<Team />} />
 

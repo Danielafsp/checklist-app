@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import "../styles/ClientDashboard.css";
+import logo from "../assets/fsweblogo.webp";
+import Navbar from "../components/NavBar";
 
 import PromptImg from "../assets/Prompt.webp";
 import SubdewImg from "../assets/Subdew.webp";
@@ -33,25 +35,39 @@ export default function ClientDashboard() {
   ];
 
   return (
-    <div className="client-dashboard-container">
-      <h1 className="client-dashboard-title">Condo Board Tools</h1>
+    <>
+      <Navbar />
+      <div className="client-dashboard-container">
+        <img src={logo} alt="Fortsands Logo" className="home-logo" />
 
-      <div className="client-dashboard-grid">
-        {items.map((item) => (
-          <div
-            key={item.route}
-            className="client-dashboard-card"
-            onClick={() => navigate(item.route)}
-          >
-            <img
-              src={item.img}
-              alt={item.label}
-              className="client-dashboard-image"
-            />
-            <p className="client-dashboard-label">{item.label}</p>
-          </div>
-        ))}
+        <h1 className="client-dashboard-title">Condo Board Tools</h1>
+        <p className="client-dashboard-subtitle">
+          A streamlined toolkit to support condo boards with compliance,
+          documentation, and informed decision-making..
+        </p>
+
+        <div className="client-dashboard-grid">
+          {items.map((item) => (
+            <div
+              key={item.route}
+              className="client-dashboard-card"
+              onClick={() => navigate(item.route)}
+            >
+              <img
+                src={item.img}
+                alt={item.label}
+                className="client-dashboard-image"
+              />
+              <p className="client-dashboard-label">{item.label}</p>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+      <div className="home-button">
+        <button className="home-btn" onClick={() => navigate("/team")}>
+          Contact your Fort Sands Team
+        </button>
+      </div>
+    </>
   );
 }

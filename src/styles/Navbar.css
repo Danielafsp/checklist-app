@@ -1,16 +1,16 @@
 .navbar {
   width: 100%;
-  height: auto;
   background-color: var(--bg-card);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--space-sm);
   box-shadow: var(--shadow);
-  box-sizing: border-box;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+}
+
+.navbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.5rem;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
 }
 
 .nav-logo {
@@ -32,13 +32,37 @@
 }
 
 .navbar-left {
-  min-width: 150px;
+  display: flex;
+  align-items: center;
+  justify-self: start;
 }
 
 .navbar-right {
   display: flex;
   align-items: center;
-  min-width: 100px;
+  justify-self: end;
+  gap: 0.5rem;
+}
+
+.navbar-center {
+  display: flex;
+  justify-content: center;
+}
+
+.nav-auth-button {
+  background-color: var(--accent);
+  color: var(--text-light);
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.5rem 1rem;
+  margin-left: 0.5rem;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.nav-auth-button:hover {
+  background-color: var(--accent-light);
 }
 
 .nav-logout {

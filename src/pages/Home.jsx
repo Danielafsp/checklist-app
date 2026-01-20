@@ -16,7 +16,7 @@ export default function Home() {
       </p>
 
       <div className="home-buttons">
-        <button className="home-btn" onClick={() => navigate("/client")}>
+        <button className="home-btn" onClick={() => navigate("/")}>
           Client Login
         </button>
 
