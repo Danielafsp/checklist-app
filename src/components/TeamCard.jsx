@@ -3,6 +3,7 @@ import "../styles/TeamCard.css";
 export default function TeamCard({ member }) {
   return (
     <div className="team-card">
+      <img src={member.image} alt={member.name} className="team-avatar" />
       <h3 className="team-name">{member.name}</h3>
       <p className="team-title">{member.title}</p>
 

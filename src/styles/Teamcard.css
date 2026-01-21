@@ -5,6 +5,7 @@
   border-top: 4px solid var(--accent-light);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   transition: var(--transition);
+  text-align: center;
 }
 
 .team-card:hover {
@@ -12,6 +13,14 @@
   box-shadow: var(--shadow);
 }
 
+.team-avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1rem;
+  border: 3px solid var(--accent);
+}
 .team-name {
   margin: 0;
   font-size: 1.2rem;
