@@ -21,16 +21,20 @@ export default function Frugal() {
 
   const handleFileUpload = (index) => {
     setFiles((prev) =>
-      prev.map((f, i) => (i === index ? { ...f, uploading: true } : f))
+      prev.map((f, i) => (i === index ? { ...f, uploading: true } : f)),
     );
 
     setTimeout(() => {
       setFiles((prev) =>
         prev.map((f, i) =>
-          i === index ? { ...f, uploading: false, uploaded: true } : f
-        )
+          i === index ? { ...f, uploading: false, uploaded: true } : f,
+        ),
       );
     }, 1000);
+  };
+
+  const handleFileDelete = (index) => {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = (e) => {
@@ -60,16 +64,19 @@ export default function Frugal() {
         Property Managers and Condo Boards. Frugal can streamline your planning,
         budgeting, and project oversight.
       </p>
-      <br />
-      <h4>Start your Frugal Journey</h4>
-      <p>
-        Please complete all fields below and upload your current Reserve Fund
-        Study.
-      </p>
+      {!submitted && (
+        <>
+          <br />
+          <h4>Start your Frugal Journey</h4>
+          <p>
+            Please complete all fields below and upload your current Reserve
+            Fund Study.
+          </p>
+        </>
+      )}
 
       {!submitted ? (
         <form onSubmit={handleSubmit} className="request-form">
-          {/* Upload */}
           <label>
             Upload files:
             <input type="file" multiple onChange={handleFileChange} />
@@ -79,17 +86,28 @@ export default function Frugal() {
                   <li key={index} className="file-item">
                     <span>{f.file.name}</span>
 
-                    {f.uploaded ? (
-                      <span className="file-success">Uploaded</span>
-                    ) : (
+                    <div className="file-actions">
+                      {f.uploaded ? (
+                        <span className="file-success">Uploaded</span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleFileUpload(index)}
+                          disabled={f.uploading}
+                        >
+                          {f.uploading ? "Uploading..." : "Upload"}
+                        </button>
+                      )}
+
                       <button
                         type="button"
-                        onClick={() => handleFileUpload(index)}
-                        disabled={f.uploading}
+                        className="file-delete"
+                        onClick={() => handleFileDelete(index)}
+                        aria-label="Delete file"
                       >
-                        {f.uploading ? "Uploading..." : "Upload"}
+                        🗑️
                       </button>
-                    )}
+                    </div>
                   </li>
                 ))}
               </ul>

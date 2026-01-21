@@ -133,9 +133,36 @@
   }
 }
 
-.file-sucess {
+.file-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.file-actions button {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+  border-radius: 6px;
+}
+
+.file-success {
   color: var(--accent);
   font-size: var(--font-size-sm);
+}
+
+.file-delete {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  font-size: 0.9rem;
+  line-height: 1;
+  color: var(--text-light);
+  transition: 0.2s ease;
+}
+
+.file-delete:hover {
+  color: var(--accent-light);
 }
 
 .confirmation-message {
@@ -145,6 +172,8 @@
   box-shadow: var(--shadow);
   text-align: center;
   font-size: var(--font-size-lg);
+  margin-top: 2rem;
+  max-width: 520px;
 }
 
 .confirmation-message strong {
