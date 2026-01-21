@@ -3,32 +3,28 @@ import "../styles/ClientDashboard.css";
 import logo from "../assets/fsweblogo.webp";
 import Navbar from "../components/NavBar";
 
-import PromptImg from "../assets/Prompt.webp";
-import SubdewImg from "../assets/Subdew.webp";
-import FrugalImg from "../assets/Frugal.webp";
-import NanoImg from "../assets/roofrevive.webp";
+import PromptImg from "../assets/prompt.png";
+import SubdewImg from "../assets/subdew.png";
+import FrugalImg from "../assets/frugal.png";
+import NanoImg from "../assets/nano.png";
 
 export default function ClientDashboard() {
   const navigate = useNavigate();
 
   const items = [
     {
-      label: "Proactive Property Maintenance",
       img: PromptImg,
       route: "/prompt",
     },
     {
-      label: "Winter Building Deficiencies",
       img: SubdewImg,
       route: "/subdew",
     },
     {
-      label: "Reserve Fund Analysis",
       img: FrugalImg,
       route: "/frugal",
     },
     {
-      label: "Revive NOT Replace",
       img: NanoImg,
       route: "/nano",
     },
@@ -37,6 +33,7 @@ export default function ClientDashboard() {
   return (
     <>
       <Navbar />
+
       <div className="client-dashboard-container">
         <img src={logo} alt="Fortsands Logo" className="home-logo" />
 
@@ -53,16 +50,12 @@ export default function ClientDashboard() {
               className="client-dashboard-card"
               onClick={() => navigate(item.route)}
             >
-              <img
-                src={item.img}
-                alt={item.label}
-                className="client-dashboard-image"
-              />
-              <p className="client-dashboard-label">{item.label}</p>
+              <img src={item.img} alt="" className="client-dashboard-image" />
             </div>
           ))}
         </div>
       </div>
+
       <div className="home-button">
         <button className="home-btn" onClick={() => navigate("/team")}>
           Contact your Fort Sands Team
