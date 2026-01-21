@@ -60,7 +60,7 @@ export default function Frugal() {
     <div className="client-request">
       <h1 className="title">FRUGAL</h1>
       <p className="subtitle">
-        Take the next step toward smarter property management. Build for
+        Take the next step toward smarter property management. Built for
         Property Managers and Condo Boards. Frugal can streamline your planning,
         budgeting, and project oversight.
       </p>

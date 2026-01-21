@@ -21,17 +21,18 @@ export default function Nano() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Roof Revive form submitted:", formData);
+    console.log("Roof Armour form submitted:", formData);
   };
 
   return (
     <div className="client-request">
-      <h1 className="title">ROOF REVIVE</h1>
+      <img className="title" src="/src/assets/nano.png" alt="ROOF ARMOUR" />
+      <p className="title-label">Complimentary Service</p>
       <p className="subtitle">
-        Not every roof needs a full replacement. Roof Revive is a cost-effective
+        Not every roof needs a full replacement. Roof Armour is a cost-effective
         solution designed to extend the life of your existing roof, improve its
         appearance, and protect your home for years to come. If you’re unsure
-        whether Roof Revive is right for your roof, get in touch with our team.
+        whether Roof Armour is right for your roof, get in touch with our team.
         We’ll assess your situation, answer your questions, and help you choose
         the best option — with no obligation.
       </p>
