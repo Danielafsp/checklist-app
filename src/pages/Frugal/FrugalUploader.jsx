@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../../styles/Frugal.css";
+import FrugalVideo from "../../assets/Frugal/FRUGAL AD.mp4";
 
 export default function Frugal() {
   const [files, setFiles] = useState([]);
@@ -68,6 +69,19 @@ export default function Frugal() {
         Property Managers and Condo Boards. Frugal can streamline your planning,
         budgeting, and project oversight.
       </p>
+
+      <section className="frugal-video-section">
+        <h2 className="video-title">How does Frugal Work!</h2>
+        <video
+          className="frugal-video"
+          src={FrugalVideo}
+          poster="../src/assets/Frugal/frugal_thumbnail.png"
+          controls
+          preload="metadata"
+        >
+          Your browser does not support the video tag.
+        </video>
+      </section>
 
       {!submitted && (
         <>
