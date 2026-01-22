@@ -79,3 +79,35 @@
 .nav-logout:hover {
   opacity: 0.8;
 }
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0 var(--space-md);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    width: 100vw;
+    left: 0;
+    right: 0;
+  }
+
+  .navbar-left {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .navbar-right {
+    flex: 0 0 auto;
+    margin-left: auto;
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .nav-auth-button,
+  .nav-logout {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.75rem;
+  }
+}
