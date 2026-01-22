@@ -13,6 +13,28 @@
   margin-bottom: var(--space-md);
 }
 
+.nano-logo {
+  width: 100%;
+  max-width: 350px;
+  margin: 0 auto;
+}
+
+.logo {
+  width: 100%;
+  max-width: 350px;
+  height: auto;
+  border-radius: var(--radius);
+  display: block;
+  margin: 0 auto;
+}
+
+.logo-label {
+  margin-top: var(--space-xs);
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  text-align: start;
+}
+
 .nano-container .subtitle {
   font-size: var(--font-size-base);
   line-height: 1.7;
