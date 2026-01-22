@@ -58,12 +58,17 @@ export default function Frugal() {
 
   return (
     <div className="client-request">
-      <h1 className="title">FRUGAL</h1>
+      <figure className="frugal-logo">
+        <img className="logo" src="/src/assets/frugal.png" alt="FRUGAL" />
+        <figcaption className="logo-label">Complimentary Service</figcaption>
+      </figure>
+
       <p className="subtitle">
         Take the next step toward smarter property management. Built for
         Property Managers and Condo Boards. Frugal can streamline your planning,
         budgeting, and project oversight.
       </p>
+
       {!submitted && (
         <>
           <br />
