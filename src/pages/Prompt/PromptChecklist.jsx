@@ -26,11 +26,11 @@ export default function PromptChecklist() {
       <p className="subtitle">
         Welcome to Prompt, a proactive maintenace tool to spot building
         defeciencies which can cause costly future repairs.
-        <br />
+        <br /> <br />
         To use this Tool simply walk around your development and complete the
         intuitive questionnaire, take pictures that show defeciencies, damage or
         areas you feel need to be included in the report.
-        <br />
+        <br /> <br />
         Once complete click Submit and a Fort Sands Advisor will review your
         report.
       </p>

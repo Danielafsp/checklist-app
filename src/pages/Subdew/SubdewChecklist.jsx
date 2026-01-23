@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import "../../styles/Checklist.css";
+import subdewLogo from "../../assets/subdew.png";
 
 const areas = [
   { id: 1, name: "RAINWATER MANAGEMENT SYSTEM" },
@@ -18,14 +19,19 @@ const areas = [
 export default function SubdewChecklist() {
   return (
     <div className="container">
-      <h1 className="title">SUBDEW</h1>
+      <figure className="area-logo">
+        <img className="logo" src={subdewLogo} alt="SUBDEW" />
+        <figcaption className="logo-label">Complimentary Service</figcaption>
+      </figure>
       <p className="subtitle">
         Welcome to Subdew, your guide to spot 11 winter building deficiencies
         that can cause costly repairs.
         <br />
+        <br />
         To use this tool simply walk around your development and complete the
         intuitive questionnaire, take pictures that show defeciencies, damage or
         areas you feel need to be included in the report.
+        <br />
         <br />
         Once complete click Submit and a Fort Sands Advisor will review your
         report.
