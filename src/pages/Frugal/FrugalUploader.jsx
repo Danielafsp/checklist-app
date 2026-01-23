@@ -65,6 +65,18 @@ export default function Frugal() {
 
       {!submitted && (
         <>
+          <section className="frugal-video-section">
+            <h2 className="video-title">How does Frugal Work!</h2>
+            <div className="video-wrapper">
+              <iframe
+                src="https://www.youtube.com/embed/bJbFoEDwYvs"
+                title="How does Frugal Work"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </section>
+
           <p className="subtitle">
             Take the next step toward smarter property management. Built for
             Property Managers and Condo Boards. Frugal can streamline your
