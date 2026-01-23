@@ -57,7 +57,7 @@ export default function PromptArea() {
     setPhotos((prev) => ({
       ...prev,
       [questionId]: prev[questionId].filter(
-        (_, index) => index !== indexToRemove
+        (_, index) => index !== indexToRemove,
       ),
     }));
 

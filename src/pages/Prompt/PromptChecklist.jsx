@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import "../../styles/Checklist.css";
+import promptLogo from "../../assets/prompt.png";
 
 const areas = [
   { id: 1, name: "RAINWATER MANAGEMENT SYSTEM" },
@@ -18,7 +19,10 @@ const areas = [
 export default function PromptChecklist() {
   return (
     <div className="container">
-      <h1 className="title">PROMPT</h1>
+      <figure className="area-logo">
+        <img className="logo" src={promptLogo} alt="PROMPT" />
+        <figcaption className="logo-label">Complimentary Service</figcaption>
+      </figure>
       <p className="subtitle">
         Welcome to Prompt, a proactive maintenace tool to spot building
         defeciencies which can cause costly future repairs.
