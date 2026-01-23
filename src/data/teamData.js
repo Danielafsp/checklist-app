@@ -11,7 +11,7 @@ import randy from "../assets/team/Randy.png";
 import rick from "../assets/team/Rick.png";
 import simon from "../assets/team/simon.png";
 import trent from "../assets/team/Trent.png";
-import zach from "../assets/team/Zach.png";
+import zach from "../assets/team/zach.png";
 
 export const teamData = [
   {
