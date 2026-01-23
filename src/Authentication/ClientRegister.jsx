@@ -10,6 +10,8 @@ export default function ClientRegister() {
     propertyName: "",
     address: "",
     email: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const handleChange = (e) => {
@@ -20,15 +22,42 @@ export default function ClientRegister() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const { name, propertyName, address, email, password, confirmPassword } =
+      formData;
+
     if (
-      !formData.name ||
-      !formData.propertyName ||
-      !formData.address ||
-      !formData.email
+      !name ||
+      !propertyName ||
+      !address ||
+      !email ||
+      !password ||
+      !confirmPassword
     ) {
       alert("Please fill in all fields");
       return;
     }
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    const newUser = {
+      name,
+      propertyName,
+      address,
+      email,
+      password,
+    };
+
+    const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+
+    if (existingUsers.some((u) => u.email === email)) {
+      alert("An account with this email already exists");
+      return;
+    }
+
+    localStorage.setItem("users", JSON.stringify([...existingUsers, newUser]));
 
     alert("Registration successful! You can now log in.");
     navigate("/login");
@@ -68,6 +97,22 @@ export default function ClientRegister() {
           onChange={handleChange}
         />
 
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+        />
+
+        <input
+          type="password"
+          name="confirmPassword"
+          placeholder="Confirm Password"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+        />
+
         <button type="submit" className="button-primary">
           Register
         </button>
@@ -76,6 +121,10 @@ export default function ClientRegister() {
       <p className="auth-switch">
         Already registered?{" "}
         <span onClick={() => navigate("/login")}>Login</span>
+      </p>
+      <br />
+      <p className="auth-back">
+        <span onClick={() => navigate("/")}> Go Back to Homepage</span>
       </p>
     </div>
   );

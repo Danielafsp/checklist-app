@@ -30,3 +30,19 @@
   color: var(--accent);
   cursor: pointer;
 }
+
+.auth-back {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: var(--font-size-sm);
+}
+
+.auth-back span {
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.auth-back span:hover {
+  color: var(--accent);
+}

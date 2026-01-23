@@ -20,13 +20,29 @@ export default function ClientLogin() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.email || !formData.password) {
+    const { email, password } = formData;
+
+    if (!email || !password) {
       alert("Please fill in all fields");
       return;
     }
 
-    login(formData.email, "client");
-    navigate("/client");
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+
+    const user = users.find((u) => u.email === email);
+
+    if (!user) {
+      alert("No account found with this email");
+      return;
+    }
+
+    if (user.password !== password) {
+      alert("Incorrect password");
+      return;
+    }
+
+    login(user.email, "client");
+    navigate("/");
   };
 
   return (
@@ -58,6 +74,10 @@ export default function ClientLogin() {
       <p className="auth-switch">
         Don’t have an account?{" "}
         <span onClick={() => navigate("/register")}>Register</span>
+      </p>
+      <br />
+      <p className="auth-back">
+        <span onClick={() => navigate("/")}> Go Back to Homepage</span>
       </p>
     </div>
   );
