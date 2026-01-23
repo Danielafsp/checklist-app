@@ -21,6 +21,7 @@ import Footer from "./components/Footer.jsx";
 import ClientLogin from "./Authentication/ClientLogin.jsx";
 import ClientRegister from "./Authentication/ClientRegister.jsx";
 import AdminLogin from "./Authentication/AdminLogin.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 export default function App() {
   return (
