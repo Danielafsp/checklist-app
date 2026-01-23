@@ -9,7 +9,7 @@ import lukasz from "../assets/team/Lukasz.png";
 import max from "../assets/team/Max.png";
 import randy from "../assets/team/Randy.png";
 import rick from "../assets/team/Rick.png";
-import simon from "../assets/team/Simon.png";
+import simon from "../assets/team/simon.png";
 import trent from "../assets/team/Trent.png";
 import zach from "../assets/team/Zach.png";
 
