@@ -29,18 +29,67 @@ export default function App() {
         <Route path="/" element={<ClientDashboard />} />
 
         <Route element={<MainLayout />}>
-          <Route path="/admin" element={<AdminDashboard />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute role="admin">
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/team" element={<Team />} />
 
-          <Route path="/prompt" element={<PromptChecklist />} />
-          <Route path="/prompt/area/:areaId" element={<PromptArea />} />
+          <Route
+            path="/prompt"
+            element={
+              <ProtectedRoute role="client">
+                <PromptChecklist />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/prompt/area/:areaId"
+            element={
+              <ProtectedRoute role="client">
+                <PromptArea />
+              </ProtectedRoute>
+            }
+          />
 
-          <Route path="/subdew" element={<SubdewChecklist />} />
-          <Route path="/subdew/area/:areaId" element={<SubdewArea />} />
+          <Route
+            path="/subdew"
+            element={
+              <ProtectedRoute role="client">
+                <SubdewChecklist />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/subdew/area/:areaId"
+            element={
+              <ProtectedRoute role="client">
+                <SubdewArea />
+              </ProtectedRoute>
+            }
+          />
 
-          <Route path="/frugal" element={<FrugalUploader />} />
+          <Route
+            path="/frugal"
+            element={
+              <ProtectedRoute role="client">
+                <FrugalUploader />
+              </ProtectedRoute>
+            }
+          />
 
-          <Route path="/nano" element={<Nano />} />
+          <Route
+            path="/nano"
+            element={
+              <ProtectedRoute role="client">
+                <Nano />
+              </ProtectedRoute>
+            }
+          />
 
           <Route path="/login" element={<ClientLogin />} />
           <Route path="/register" element={<ClientRegister />} />
