@@ -1,4 +1,4 @@
-import "../styles/TeamCard.css";
+import "../styles/Teamcard.css";
 
 export default function TeamCard({ member }) {
   return (
