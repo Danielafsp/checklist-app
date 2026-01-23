@@ -18,6 +18,10 @@ import Nano from "./pages/Nano/Nano.jsx";
 import MainLayout from "./layouts/MainLayout.jsx";
 import Footer from "./components/Footer.jsx";
 
+import ClientLogin from "./Authentication/ClientLogin.jsx";
+import ClientRegister from "./Authentication/ClientRegister.jsx";
+import AdminLogin from "./Authentication/AdminLogin.jsx";
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -37,6 +41,10 @@ export default function App() {
           <Route path="/frugal" element={<FrugalUploader />} />
 
           <Route path="/nano" element={<Nano />} />
+
+          <Route path="/login" element={<ClientLogin />} />
+          <Route path="/register" element={<ClientRegister />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
         </Route>
       </Routes>
       <Footer />
