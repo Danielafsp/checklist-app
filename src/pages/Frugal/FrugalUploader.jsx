@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../../styles/Frugal.css";
+import frugalLogo from "../../assets/frugal.png";
 
 export default function Frugal() {
   const [files, setFiles] = useState([]);
@@ -59,7 +60,7 @@ export default function Frugal() {
   return (
     <div className="client-request">
       <figure className="frugal-logo">
-        <img className="logo" src="/src/assets/frugal.png" alt="FRUGAL" />
+        <img className="logo" src={frugalLogo} alt="FRUGAL" />
         <figcaption className="logo-label">Complimentary Service</figcaption>
       </figure>
 
