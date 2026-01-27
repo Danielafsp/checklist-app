@@ -22,6 +22,7 @@ import ClientLogin from "./Authentication/ClientLogin.jsx";
 import ClientRegister from "./Authentication/ClientRegister.jsx";
 import AdminLogin from "./Authentication/AdminLogin.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import ClientResetPassword from "./Authentication/ClientResetPassword.jsx";
 
 export default function App() {
   return (
@@ -95,6 +96,10 @@ export default function App() {
           <Route path="/login" element={<ClientLogin />} />
           <Route path="/register" element={<ClientRegister />} />
           <Route path="/admin-login" element={<AdminLogin />} />
+          <Route
+            path="/client-reset-password"
+            element={<ClientResetPassword />}
+          />
         </Route>
       </Routes>
       <Footer />
