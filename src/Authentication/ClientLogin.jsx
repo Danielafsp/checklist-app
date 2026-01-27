@@ -71,7 +71,7 @@ export default function ClientLogin() {
         </button>
       </form>
 
-      <p className="auth=switch">
+      <p className="auth-switch">
         <span onClick={() => navigate("/client-reset-password")}>
           Forgot Password?
         </span>
