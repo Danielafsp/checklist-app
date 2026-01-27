@@ -1,8 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../../styles/Frugal.css";
 import frugalLogo from "../../assets/frugal.png";
 
 export default function Frugal() {
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    Boolean(localStorage.getItem("user")),
+  );
+
+  useEffect(() => {
+    const handleStorage = () => {
+      setIsLoggedIn(Boolean(localStorage.getItem("user")));
+    };
+
+    window.addEventListener("storage", handleStorage);
+    handleStorage();
+
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
   const [files, setFiles] = useState([]);
   const [notes, setNotes] = useState("");
   const [visitDate, setVisitDate] = useState("");
@@ -21,6 +36,7 @@ export default function Frugal() {
   };
 
   const handleFileUpload = (index) => {
+    if (!isLoggedIn) return;
     setFiles((prev) =>
       prev.map((f, i) => (i === index ? { ...f, uploading: true } : f)),
     );
@@ -40,6 +56,10 @@ export default function Frugal() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!isLoggedIn) {
+      alert("Please login or register to submit your request.");
+      return;
+    }
     setLoading(true);
 
     console.log({
@@ -97,7 +117,12 @@ export default function Frugal() {
         <form onSubmit={handleSubmit} className="request-form">
           <label>
             Upload files:
-            <input type="file" multiple onChange={handleFileChange} />
+            <input
+              type="file"
+              multiple
+              disabled={!isLoggedIn}
+              onChange={handleFileChange}
+            />
             {files.length > 0 && (
               <ul className="file-list">
                 {files.map((f, index) => (
@@ -110,8 +135,8 @@ export default function Frugal() {
                       ) : (
                         <button
                           type="button"
+                          disabled={!isLoggedIn || f.uploading}
                           onClick={() => handleFileUpload(index)}
-                          disabled={f.uploading}
                         >
                           {f.uploading ? "Uploading..." : "Upload"}
                         </button>
@@ -163,6 +188,12 @@ export default function Frugal() {
             <strong> 3-5 Working days.</strong>
           </p>
         </div>
+      )}
+
+      {!isLoggedIn && (
+        <p className="login-hint">
+          Please login or register to upload files and submit your request.
+        </p>
       )}
     </div>
   );

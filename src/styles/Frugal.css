@@ -218,6 +218,13 @@
   color: var(--accent);
 }
 
+.login-hint {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
 @media (max-width: 480px) {
   .client-request {
     padding: var(--space-lg) var(--space-sm);

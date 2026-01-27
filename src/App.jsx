@@ -41,57 +41,15 @@ export default function App() {
           />
           <Route path="/team" element={<Team />} />
 
-          <Route
-            path="/prompt"
-            element={
-              <ProtectedRoute role="client">
-                <PromptChecklist />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/prompt/area/:areaId"
-            element={
-              <ProtectedRoute role="client">
-                <PromptArea />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/prompt" element={<PromptChecklist />} />
+          <Route path="/prompt/area/:areaId" element={<PromptArea />} />
 
-          <Route
-            path="/subdew"
-            element={
-              <ProtectedRoute role="client">
-                <SubdewChecklist />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/subdew/area/:areaId"
-            element={
-              <ProtectedRoute role="client">
-                <SubdewArea />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/subdew" element={<SubdewChecklist />} />
+          <Route path="/subdew/area/:areaId" element={<SubdewArea />} />
 
-          <Route
-            path="/frugal"
-            element={
-              <ProtectedRoute role="client">
-                <FrugalUploader />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/frugal" element={<FrugalUploader />} />
 
-          <Route
-            path="/nano"
-            element={
-              <ProtectedRoute role="client">
-                <Nano />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/nano" element={<Nano />} />
 
           <Route path="/login" element={<ClientLogin />} />
           <Route path="/register" element={<ClientRegister />} />
