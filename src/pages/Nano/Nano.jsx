@@ -3,6 +3,15 @@ import "../../styles/Nano.css";
 import nanoLogo from "../../assets/nano.png";
 
 export default function Nano() {
+  const isLoggedIn = (() => {
+    try {
+      const auth = JSON.parse(localStorage.getItem("auth"));
+      return auth?.isAuthenticated === true;
+    } catch {
+      return false;
+    }
+  })();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -24,6 +33,12 @@ export default function Nano() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!isLoggedIn) {
+      alert("Please login or register to submit your request.");
+      return;
+    }
+
     console.log("Roof Armour form submitted:", formData);
     setSubmitted(true);
   };
@@ -59,6 +74,7 @@ export default function Nano() {
             name="name"
             placeholder="Full Name *"
             value={formData.name}
+            disabled={!isLoggedIn}
             onChange={handleChange}
             required
           />
@@ -68,6 +84,7 @@ export default function Nano() {
             name="email"
             placeholder="Email Address *"
             value={formData.email}
+            disabled={!isLoggedIn}
             onChange={handleChange}
             required
           />
@@ -77,6 +94,7 @@ export default function Nano() {
             name="phone"
             placeholder="Phone Number *"
             value={formData.phone}
+            disabled={!isLoggedIn}
             onChange={handleChange}
             required
           />
@@ -84,6 +102,7 @@ export default function Nano() {
           <select
             name="roofAge"
             value={formData.roofAge}
+            disabled={!isLoggedIn}
             onChange={handleChange}
             required
           >
@@ -95,6 +114,7 @@ export default function Nano() {
           <select
             name="roofType"
             value={formData.roofType}
+            disabled={!isLoggedIn}
             onChange={handleChange}
             required
           >
@@ -107,6 +127,7 @@ export default function Nano() {
           <select
             name="propertyType"
             value={formData.propertyType}
+            disabled={!isLoggedIn}
             onChange={handleChange}
             required
           >
@@ -117,7 +138,7 @@ export default function Nano() {
             <option value="Comercial/industrial">Comercial / Industrial</option>
           </select>
 
-          <button type="submit" className="nano-submit">
+          <button type="submit" className="nano-submit" disabled={!isLoggedIn}>
             Request a Roof Assessment
           </button>
 
@@ -132,6 +153,11 @@ export default function Nano() {
             contact you soon.
           </p>
         </div>
+      )}
+      {!isLoggedIn && (
+        <p className="login-hint">
+          Please login or register to request a Roof Armour assessment.
+        </p>
       )}
     </div>
   );

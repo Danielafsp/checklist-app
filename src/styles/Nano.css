@@ -119,6 +119,13 @@
   margin-top: var(--space-sm);
 }
 
+.login-hint {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
 @media (max-width: 768px) {
   .nano-form {
     grid-template-columns: 1fr;

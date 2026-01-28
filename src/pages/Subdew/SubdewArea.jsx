@@ -5,6 +5,15 @@ import { subdewAreas } from "../../data/subdewAreas";
 import "../../styles/Area.css";
 
 export default function SubdewArea() {
+  const isLoggedIn = (() => {
+    try {
+      const auth = JSON.parse(localStorage.getItem("auth"));
+      return auth?.isAuthenticated === true;
+    } catch {
+      return false;
+    }
+  })();
+
   const { areaId } = useParams();
   const navigate = useNavigate();
 
@@ -57,7 +66,7 @@ export default function SubdewArea() {
     setPhotos((prev) => ({
       ...prev,
       [questionId]: prev[questionId].filter(
-        (_, index) => index !== indexToRemove
+        (_, index) => index !== indexToRemove,
       ),
     }));
 
@@ -84,6 +93,7 @@ export default function SubdewArea() {
             <select
               className="select-input"
               value={ratings[q.id] || ""}
+              disabled={!isLoggedIn}
               onChange={(e) => {
                 setRatings((prev) => ({ ...prev, [q.id]: e.target.value }));
                 setSaved((prev) => ({ ...prev, [q.id]: false }));
@@ -105,6 +115,8 @@ export default function SubdewArea() {
               rows="3"
               className="textarea-input"
               value={notes[q.id] || ""}
+              disabled={!isLoggedIn}
+              placeholder={!isLoggedIn ? "Login to add notes" : ""}
               onChange={(e) => {
                 setNotes((prev) => ({ ...prev, [q.id]: e.target.value }));
                 setSaved((prev) => ({ ...prev, [q.id]: false }));
@@ -120,6 +132,7 @@ export default function SubdewArea() {
               accept="image/*"
               multiple
               className="file-input"
+              disabled={!isLoggedIn}
               onChange={(e) => {
                 setPhotos((prev) => ({
                   ...prev,
@@ -148,12 +161,16 @@ export default function SubdewArea() {
                 ))}
               </ul>
             )}
-            {saved[q.id] ? (
+            {!isLoggedIn ? (
+              <p className="login-hint">
+                🔒 Login to save answers and upload photos
+              </p>
+            ) : saved[q.id] ? (
               <span className="saved-label">Saved ✓</span>
             ) : (
               <button
                 className="save-btn"
-                onClick={() => handleSaveQuestion(q.id)}
+                onClick={() => handleSavingQuestion(q.id)}
                 disabled={!ratings[q.id]}
               >
                 Save

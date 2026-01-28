@@ -3,20 +3,14 @@ import "../../styles/Frugal.css";
 import frugalLogo from "../../assets/frugal.png";
 
 export default function Frugal() {
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    Boolean(localStorage.getItem("user")),
-  );
-
-  useEffect(() => {
-    const handleStorage = () => {
-      setIsLoggedIn(Boolean(localStorage.getItem("user")));
-    };
-
-    window.addEventListener("storage", handleStorage);
-    handleStorage();
-
-    return () => window.removeEventListener("storage", handleStorage);
-  }, []);
+  const isLoggedIn = (() => {
+    try {
+      const auth = JSON.parse(localStorage.getItem("auth"));
+      return auth?.isAuthenticated === true;
+    } catch {
+      return false;
+    }
+  })();
 
   const [files, setFiles] = useState([]);
   const [notes, setNotes] = useState("");
