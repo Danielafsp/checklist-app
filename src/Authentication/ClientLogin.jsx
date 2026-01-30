@@ -82,6 +82,12 @@ export default function ClientLogin() {
         <span onClick={() => navigate("/register")}>Register</span>
       </p>
       <br />
+
+      <p className="auth-switch">
+        Are you an admin?{" "}
+        <span onClick={() => navigate("/admin-login")}>Admin login</span>
+      </p>
+
       <p className="auth-back">
         <span onClick={() => navigate("/")}> Go Back to Homepage</span>
       </p>
