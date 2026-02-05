@@ -5,14 +5,13 @@ import { subdewAreas } from "../../data/subdewAreas";
 import "../../styles/Area.css";
 
 export default function SubdewArea() {
-  const isLoggedIn = (() => {
-    try {
-      const auth = JSON.parse(localStorage.getItem("auth"));
-      return auth?.isAuthenticated === true;
-    } catch {
-      return false;
-    }
-  })();
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+  if (!isLoggedIn) {
+    alert("Please login to save your work");
+    navigate("/login");
+    return;
+  }
 
   const { areaId } = useParams();
   const navigate = useNavigate();

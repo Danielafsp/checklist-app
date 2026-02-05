@@ -3,14 +3,13 @@ import "../../styles/Nano.css";
 import nanoLogo from "../../assets/nano.png";
 
 export default function Nano() {
-  const isLoggedIn = (() => {
-    try {
-      const auth = JSON.parse(localStorage.getItem("auth"));
-      return auth?.isAuthenticated === true;
-    } catch {
-      return false;
-    }
-  })();
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+  if (!isLoggedIn) {
+    alert("Please login to save your work");
+    navigate("/login");
+    return;
+  }
 
   const [formData, setFormData] = useState({
     name: "",
