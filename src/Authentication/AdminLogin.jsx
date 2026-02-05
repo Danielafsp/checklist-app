@@ -6,7 +6,9 @@ export default function AdminLogin() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    localStorage.setItem("isAdmin", "true");
+    localStorage.setItem("isLoggedIn", "true");
+    localStorage.setItem("role", "admin");
+
     navigate("/admin");
   };
 

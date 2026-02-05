@@ -41,7 +41,10 @@ export default function ClientLogin() {
       return;
     }
 
-    login(user.email, "client");
+    localStorage.setItem("isLoggedIn", "true");
+    localStorage.setItem("role", "client");
+    localStorage.setItem("email", user.email);
+
     navigate("/");
   };
 
