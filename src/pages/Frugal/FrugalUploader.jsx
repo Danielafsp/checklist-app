@@ -5,12 +5,6 @@ import frugalLogo from "../../assets/frugal.png";
 export default function Frugal() {
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
-  if (!isLoggedIn) {
-    alert("Please login to save your work");
-    navigate("/login");
-    return;
-  }
-
   const [files, setFiles] = useState([]);
   const [notes, setNotes] = useState("");
   const [visitDate, setVisitDate] = useState("");

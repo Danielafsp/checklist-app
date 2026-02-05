@@ -7,12 +7,6 @@ import "../../styles/Area.css";
 export default function SubdewArea() {
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
-  if (!isLoggedIn) {
-    alert("Please login to save your work");
-    navigate("/login");
-    return;
-  }
-
   const { areaId } = useParams();
   const navigate = useNavigate();
 
@@ -46,7 +40,7 @@ export default function SubdewArea() {
     navigate(`/subdew/area/${id + 1}`);
   };
 
-  const handleSaveQuestion = (questionId) => {
+  const handleSavingQuestion = (questionId) => {
     const payload = {
       questionId,
       rating: ratings[questionId],

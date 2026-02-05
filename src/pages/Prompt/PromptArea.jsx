@@ -7,12 +7,6 @@ import "../../styles/Area.css";
 export default function PromptArea() {
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
-  if (!isLoggedIn) {
-    alert("Please login to save your work");
-    navigate("/login");
-    return;
-  }
-
   const { areaId } = useParams();
   const navigate = useNavigate();
 

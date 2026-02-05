@@ -1,5 +1,4 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import logo from "../assets/fsweblogo.webp";
 import "../styles/Navbar.css";
 import BackButton from "./BackButton";
@@ -7,10 +6,9 @@ import BackButton from "./BackButton";
 export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { auth, logout } = useAuth();
 
   const isHome = location.pathname === "/";
-  const isAuthenticated = auth.isAuthenticated;
+  const isAuthenticated = localStorage.getItem("isLoggedIn") === "true";
 
   const handleLogin = () => {
     navigate("/login");
@@ -21,7 +19,8 @@ export default function Navbar() {
   };
 
   const handleLogout = () => {
-    logout();
+    localStorage.clear();
+    sessionStorage.clear();
     navigate("/");
   };
 
