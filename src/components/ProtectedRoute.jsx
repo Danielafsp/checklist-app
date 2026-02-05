@@ -8,8 +8,10 @@ export default function ProtectedRoute({ children, allowedRole }) {
     return <Navigate to="/" replace />;
   }
 
-  if (allowedRole && role !== allowedRole) {
-    return <Navigate to={`/${role}`} replace />;
+  if (allowedRole === "admin") {
+    if (!isLoggedIn || role !== "admin") {
+      return <Navigate to="/" replace />;
+    }
   }
 
   return children;
