@@ -158,6 +158,7 @@ export default function PromptArea() {
               type="file"
               accept="image/*"
               multiple
+              capture="environment"
               className="file-input"
               disabled={!isLoggedIn || submitted}
               onChange={(e) => {
