@@ -69,6 +69,34 @@ export default function SubdewArea() {
     }));
   };
 
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
+  const handleSubmitReport = async () => {
+    try {
+      setSubmitting(true);
+      setSubmitError("");
+
+      const reportPayload = {
+        areaId: id,
+        notes,
+        ratings,
+        photos,
+        status: "submitted",
+        submittedAt: new Date().toISOString(),
+      };
+
+      console.log("FINAL REPORT SUBMIT:", reportPayload);
+
+      setSubmitted(true);
+    } catch (err) {
+      setSubmitError("Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="area-container">
       <h1 className="area-title">{title}</h1>
@@ -82,11 +110,17 @@ export default function SubdewArea() {
               <strong>{q.text}</strong>
             </p>
 
+            {submitted && (
+              <p className="read-only-hint">
+                🔒 This report has been submitted and is now read-only.
+              </p>
+            )}
+
             <label>rating: </label>
             <select
               className="select-input"
               value={ratings[q.id] || ""}
-              disabled={!isLoggedIn}
+              disabled={!isLoggedIn || submitted}
               onChange={(e) => {
                 setRatings((prev) => ({ ...prev, [q.id]: e.target.value }));
                 setSaved((prev) => ({ ...prev, [q.id]: false }));
@@ -108,7 +142,7 @@ export default function SubdewArea() {
               rows="3"
               className="textarea-input"
               value={notes[q.id] || ""}
-              disabled={!isLoggedIn}
+              disabled={!isLoggedIn || submitted}
               placeholder={!isLoggedIn ? "Login to add notes" : ""}
               onChange={(e) => {
                 setNotes((prev) => ({ ...prev, [q.id]: e.target.value }));
@@ -125,7 +159,7 @@ export default function SubdewArea() {
               accept="image/*"
               multiple
               className="file-input"
-              disabled={!isLoggedIn}
+              disabled={!isLoggedIn || submitted}
               onChange={(e) => {
                 setPhotos((prev) => ({
                   ...prev,
@@ -158,6 +192,8 @@ export default function SubdewArea() {
               <p className="login-hint">
                 🔒 Login to save answers and upload photos
               </p>
+            ) : submitted ? (
+              <span className="saved-label">Submitted ✓</span>
             ) : saved[q.id] ? (
               <span className="saved-label">Saved ✓</span>
             ) : (
@@ -172,6 +208,33 @@ export default function SubdewArea() {
           </li>
         ))}
       </ul>
+
+      {isLoggedIn && id === TOTAL_AREAS && (
+        <div className="final-submit-section">
+          {!submitted ? (
+            <>
+              <button
+                className="submit-report-btn"
+                onClick={handleSubmitReport}
+                disabled={!isLoggedIn || submitted}
+              >
+                {submitting ? "Submitting..." : "Submit Report"}
+              </button>
+
+              {submitError && <p className="error-text">{submitError}</p>}
+            </>
+          ) : (
+            <div className="confirmation-message fade-in">
+              <p>
+                <strong>Your entries have been successfully submitted.</strong>
+                <br />A member of the <strong>Fort Sands team</strong> will
+                contact you within
+                <strong> 3–5 business days.</strong>
+              </p>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="area-navigation">
         {id > Math.min(...areaKeys) && (
