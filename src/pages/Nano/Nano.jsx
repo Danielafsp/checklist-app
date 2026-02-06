@@ -42,30 +42,31 @@ export default function Nano() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
 
     if (!isLoggedIn) {
       alert("Please login or register to submit your request.");
       return;
     }
 
-    try {
-      setLoading(true);
+    const existing = JSON.parse(localStorage.getItem("nano_requests")) || [];
 
-      await new Promise((res, rej) =>
-        navigator.onLine ? setTimeout(res, 1000) : rej(),
-      );
+    const newRequest = {
+      id: crypto.randomUUID(), // ⭐ NEW
+      ...draft,
+      status: "new",
+      notes: "",
+      createdAt: Date.now(), // ⭐ timestamp
+      updatedAt: Date.now(), // ⭐ timestamp
+    };
 
-      console.log("Roof Armour form submitted:", draft);
+    existing.push(newRequest);
 
-      localStorage.removeItem("draft:roof-armour");
-      setDraft(initialDraft);
-      setSubmitted(true);
-    } catch {
-      setError("Network error. Please check your connection and try again.");
-    } finally {
-      setLoading(false);
-    }
+    localStorage.setItem("nano_requests", JSON.stringify(existing));
+
+    localStorage.removeItem("draft:roof-armour");
+    setDraft(initialDraft);
+
+    setSubmitted(true);
   };
 
   return (
