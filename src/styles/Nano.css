@@ -126,6 +126,22 @@
   font-style: italic;
 }
 
+.confirmation-message {
+  background-color: var(--bg-card);
+  padding: var(--space-xl);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  text-align: center;
+  font-size: var(--font-size-lg);
+  margin-top: 2rem;
+  max-width: 520px;
+  color: var(--text-light);
+}
+
+.confirmation-message strong {
+  color: var(--accent);
+}
+
 @media (max-width: 768px) {
   .nano-form {
     grid-template-columns: 1fr;
