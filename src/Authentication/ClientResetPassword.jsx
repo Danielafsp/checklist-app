@@ -29,7 +29,7 @@ export default function ClientResetPassword() {
     localStorage.setItem("users", JSON.stringify(users));
 
     alert("Password updated successfully!");
-    navigate("/client-login");
+    navigate("/login");
   };
 
   return (
@@ -57,7 +57,7 @@ export default function ClientResetPassword() {
       </form>
 
       <p className="auth-back">
-        <span onClick={() => navigate("/client-login")}>Back to Login</span>
+        <span onClick={() => navigate("/login")}>Back to Login</span>
       </p>
     </div>
   );
