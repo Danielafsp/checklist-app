@@ -93,5 +93,9 @@
   .client-dashboard-container {
     flex-direction: column;
     align-items: center;
+    padding-top: var(--space-lg);
+    padding-bottom: var(--space-lg);
+    padding-left: var(--space-sm);
+    padding-right: var(--space-sm);
   }
 }
