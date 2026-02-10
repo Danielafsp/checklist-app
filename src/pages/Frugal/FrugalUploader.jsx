@@ -10,6 +10,7 @@ export default function Frugal() {
   const [visitDate, setVisitDate] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files).map((file) => ({
@@ -41,12 +42,37 @@ export default function Frugal() {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const validateForm = () => {
+    if (files.length === 0) {
+      return "Please upload at least one file.";
+    }
+
+    if (files.some((f) => !f.uploaded)) {
+      return "Please upload all selected files before submitting.";
+    }
+
+    if (!visitDate) {
+      return "Please select a preferred on-site visit date.";
+    }
+
+    return null;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!isLoggedIn) {
       alert("Please login or register to submit your request.");
       return;
     }
+
+    const error = validateForm();
+    if (error) {
+      setErrorMessage(error);
+      return;
+    }
+
+    setErrorMessage("");
     setLoading(true);
 
     console.log({
