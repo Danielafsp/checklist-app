@@ -82,14 +82,11 @@
 
 @media (max-width: 480px) {
   .navbar {
+    width: 100%;
+    max-width: 100%;
     padding: 0 var(--space-md);
-    height: 60px;
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-    width: 100vw;
-    left: 0;
-    right: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
   }
 
   .navbar-left {

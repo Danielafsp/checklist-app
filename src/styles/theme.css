@@ -41,6 +41,8 @@ body {
   background-color: var(--bg-dark);
   color: var(--text-light);
   font-family: var(--font-body);
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 a {

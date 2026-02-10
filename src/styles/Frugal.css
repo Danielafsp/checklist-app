@@ -31,13 +31,16 @@
   font-size: var(--font-size-md);
   margin-bottom: var(--space-xs);
   margin-top: var(--space-xl);
-  text-align: start;
+  text-align: justify;
+  text-justify: inter-word;
+  max-width: 100%;
 }
 
 .video-wrapper {
   position: relative;
   width: 100%;
   padding-top: 56.25%;
+  overflow: hidden;
 }
 
 .video-wrapper iframe {
@@ -47,6 +50,7 @@
   width: 100%;
   height: 100%;
   border-radius: 8px;
+  box-sizing: border-box;
 }
 
 .request-form {
@@ -114,6 +118,14 @@
   padding: var(--space-sm);
   border-radius: var(--radius);
   font-size: var(--font-size-sm);
+  min-width: 0;
+}
+
+.file-item span,
+.file-item p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .file-item button {
@@ -228,10 +240,31 @@
 @media (max-width: 480px) {
   .client-request {
     padding: var(--space-lg) var(--space-sm);
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .request-form {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
   .request-form button {
     width: 100%;
     align-self: stretch;
+  }
+
+  .client-request,
+  .client-request * {
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+
+  .subtitle {
+    width: 100%;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
 }
