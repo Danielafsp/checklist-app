@@ -62,7 +62,7 @@ export default function Frugal() {
     e.preventDefault();
 
     if (!isLoggedIn) {
-      alert("Please login or register to submit your request.");
+      setErrorMessage("Please login or register to submit your request.");
       return;
     }
 
@@ -84,11 +84,43 @@ export default function Frugal() {
     setTimeout(() => {
       setLoading(false);
       setSubmitted(true);
+      localStorage.removeItem("frugalDraft");
     }, 1000);
   };
 
   const isSubmitDisabled =
     !visitDate || files.some((f) => !f.uploaded) || loading;
+
+  useEffect(() => {
+    if (submitted) return;
+
+    localStorage.setItem(
+      "frugalDraft",
+      JSON.stringify({ files, notes, visitDate }),
+    );
+  }, [files, notes, visitDate, submitted]);
+
+  useEffect(() => {
+    const savedDraft = localStorage.getItem("frugalDraft");
+
+    if (!savedDraft) return;
+
+    try {
+      const parsedDraft = JSON.parse(savedDraft);
+
+      if (parsedDraft.files || parsedDraft.notes || parsedDraft.visitDate) {
+        setFiles(parsedDraft.files || []);
+        setNotes(parsedDraft.notes || "");
+        setVisitDate(parsedDraft.visitDate || "");
+      }
+    } catch {
+      localStorage.removeItem("frugalDraft");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (errorMessage) setErrorMessage("");
+  }, [files, notes, visitDate]);
 
   return (
     <div className="client-request">
@@ -124,6 +156,10 @@ export default function Frugal() {
             Fund Study.
           </p>
         </>
+      )}
+
+      {!submitted && errorMessage && (
+        <p className="error-message">{errorMessage}</p>
       )}
 
       {!submitted ? (
