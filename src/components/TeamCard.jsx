@@ -10,7 +10,8 @@ export default function TeamCard({ member }) {
       <div className="team-info">
         <p>📍 {member.city}</p>
         <p>
-          📞 <a href={`phone:${member.phone}`}>{member.phone}</a>
+          📞{" "}
+          <a href={`tel:${member.phone.replace(/\s+/g, "")}`}>{member.phone}</a>
         </p>
         <p>
           ✉️ <a href={`mailto:${member.email}`}>{member.email}</a>
