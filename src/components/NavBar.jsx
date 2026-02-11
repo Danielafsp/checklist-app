@@ -14,10 +14,6 @@ export default function Navbar() {
     navigate("/login");
   };
 
-  const handleRegister = () => {
-    navigate("/register");
-  };
-
   const handleLogout = () => {
     localStorage.clear();
     sessionStorage.clear();
@@ -38,9 +34,6 @@ export default function Navbar() {
             <>
               <button className="nav-auth-button" onClick={handleLogin}>
                 Login
-              </button>
-              <button className="nav-auth-button" onClick={handleRegister}>
-                Register
               </button>
             </>
           ) : (

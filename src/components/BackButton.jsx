@@ -26,25 +26,25 @@ export default function BackButton() {
 
   const getLabel = () => {
     if (location.pathname.startsWith("/prompt/area")) {
-      return "← Back to Prompt";
+      return "← Back";
     }
     if (location.pathname === "/prompt") {
-      return "← Back to Home";
+      return "← Back";
     }
     if (location.pathname.startsWith("/subdew/area")) {
-      return "← Back to Subdew";
+      return "← Back";
     }
     if (location.pathname === "/subdew") {
-      return "← Back to Home";
+      return "← Back";
     }
     if (location.pathname === "/frugal") {
-      return "← Back to Home";
+      return "← Back";
     }
     if (location.pathname === "/nano") {
-      return "← Back to Home";
+      return "← Back";
     }
     if (location.pathname === "/team") {
-      return "← Back to Home";
+      return "← Back";
     }
     return null;
   };
