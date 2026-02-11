@@ -1,7 +1,7 @@
 .container {
   min-height: 100vh;
   padding: var(--space-xl);
-  padding-bottom: 6rem;
+  padding-bottom: 2rem;
   background-color: var(--bg-dark);
   color: var(--text-light);
 }
@@ -39,7 +39,7 @@
 .subtitle {
   text-align: center;
   opacity: 0.9;
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-lg);
   font-size: var(--font-size-base);
   max-width: 600px;
   margin-left: auto;
