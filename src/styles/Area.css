@@ -3,7 +3,7 @@
   background-color: var(--bg-dark);
   color: var(--text-light);
   padding: var(--space-xl);
-  padding-bottom: 6rem;
+  padding-bottom: 2rem;
 }
 
 .area-title {
@@ -54,8 +54,8 @@
   padding: var(--space-xs);
   border-radius: var(--radius);
   border: 1px solid #444;
-  background-color: var(--bg-light);
-  color: var(--text-dark);
+  background-color: var(--bg-dark);
+  color: var(--text-light);
 }
 
 .textarea-input {
@@ -78,7 +78,7 @@
 .file-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
 }
 
 .remove-photo-btn {
@@ -86,7 +86,7 @@
   border: none;
   cursor: pointer;
   color: #c00;
-  font-size: 14px;
+  font-size: 2px;
 }
 
 .remove-photo-btn:hover {
@@ -139,6 +139,14 @@
 
 .fade-in {
   animation: fadeIn 0.4s ease forwards;
+}
+
+.save-btn {
+  background-color: var(--accent);
+  color: var(--text-light);
+  border: none;
+  border-radius: var(--radius);
+  padding: var(--space-xs);
 }
 
 .area-navigation {
