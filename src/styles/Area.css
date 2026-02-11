@@ -35,7 +35,7 @@
 
 .area-item {
   background-color: var(--bg-card);
-  padding: var(--space-md);
+  padding: var(--space-lg);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
 }
@@ -50,8 +50,8 @@
 .textarea-input,
 .file-input {
   width: 100%;
-  margin-bottom: var(--space-md);
-  padding: var(--space-sm);
+  margin-bottom: var(--space-sm);
+  padding: var(--space-xs);
   border-radius: var(--radius);
   border: 1px solid #444;
   background-color: var(--bg-light);
@@ -171,5 +171,20 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (max-width: 470px) {
+  .area-title {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-xl);
+    text-align: center;
+    color: var(--accent);
+    margin-bottom: var(--space-lg);
+  }
+  .question-text {
+    margin-bottom: var(--space-md);
+    font-size: var(--font-size-lg);
+    color: var(--accent-light);
   }
 }
