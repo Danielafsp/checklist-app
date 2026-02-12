@@ -40,7 +40,7 @@ export default function ClientDashboard() {
         <h1 className="client-dashboard-title">Condo Board Tools</h1>
         <p className="client-dashboard-subtitle">
           A streamlined toolkit to support condo boards with compliance,
-          documentation, and informed decision-making..
+          documentation, and informed decision-making.
         </p>
 
         <div className="client-dashboard-grid">

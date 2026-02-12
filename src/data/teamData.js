@@ -99,7 +99,7 @@ export const teamData = [
     id: 11,
     name: "Easton Carriere",
     title: "I.T Manager & Site Safety Officer",
-    email: "ecarrier@fortsands.com",
+    email: "ecarriere@fortsands.com",
     phone: "403-620-8324",
     city: "Calgary",
     image: easton,
