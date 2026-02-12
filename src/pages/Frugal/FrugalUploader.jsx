@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
 import "../../styles/Frugal.css";
 import frugalLogo from "../../assets/frugal.png";
 
 export default function Frugal() {
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  const { user } = useAuth();
 
   const [files, setFiles] = useState([]);
   const [notes, setNotes] = useState("");
@@ -24,7 +25,7 @@ export default function Frugal() {
   };
 
   const handleFileUpload = (index) => {
-    if (!isLoggedIn) return;
+    if (!user) return;
     setFiles((prev) =>
       prev.map((f, i) => (i === index ? { ...f, uploading: true } : f)),
     );
@@ -61,7 +62,7 @@ export default function Frugal() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!isLoggedIn) {
+    if (!user) {
       setErrorMessage("Please login or register to submit your request.");
       return;
     }
@@ -169,7 +170,7 @@ export default function Frugal() {
             <input
               type="file"
               multiple
-              disabled={!isLoggedIn}
+              disabled={!user}
               onChange={handleFileChange}
             />
             {files.length > 0 && (
@@ -184,7 +185,7 @@ export default function Frugal() {
                       ) : (
                         <button
                           type="button"
-                          disabled={!isLoggedIn || f.uploading}
+                          disabled={!user || f.uploading}
                           onClick={() => handleFileUpload(index)}
                         >
                           {f.uploading ? "Uploading..." : "Upload"}
@@ -239,7 +240,7 @@ export default function Frugal() {
         </div>
       )}
 
-      {!isLoggedIn && (
+      {!user && (
         <p className="login-hint">
           Please login or register to upload files and submit your request.
         </p>

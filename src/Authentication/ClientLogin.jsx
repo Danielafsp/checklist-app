@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";
 import "../styles/Auth.css";
 
@@ -22,21 +21,22 @@ export default function ClientLogin() {
 
     const { email, password } = formData;
 
-    if (!email || !password) {
-      alert("Please fill in all fields");
-      return;
-    }
+    console.log("Trying login with:", email);
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
+    console.log("LOGIN DATA:", data);
+    console.log("LOGIN ERROR:", error);
+
     if (error) {
       alert(error.message);
       return;
     }
 
+    alert("Login successful");
     navigate("/");
   };
 

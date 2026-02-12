@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
 import "../../styles/Nano.css";
 import nanoLogo from "../../assets/nano.png";
 
@@ -17,7 +18,7 @@ const initialDraft = {
 };
 
 export default function Nano() {
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  const { user } = useAuth();
 
   const [draft, setDraft] = useState(initialDraft);
   const [hydrated, setHydrated] = useState(false);
@@ -43,7 +44,7 @@ export default function Nano() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!isLoggedIn) {
+    if (!user) {
       alert("Please login or register to submit your request.");
       return;
     }
@@ -107,7 +108,7 @@ export default function Nano() {
                 updatedAt: Date.now(),
               }))
             }
-            disabled={!isLoggedIn}
+            disabled={!user}
             required
           />
 
@@ -123,7 +124,7 @@ export default function Nano() {
                 updatedAt: Date.now(),
               }))
             }
-            disabled={!isLoggedIn}
+            disabled={!user}
             required
           />
 
@@ -139,7 +140,7 @@ export default function Nano() {
                 updatedAt: Date.now(),
               }))
             }
-            disabled={!isLoggedIn}
+            disabled={!user}
             required
           />
 
@@ -153,7 +154,7 @@ export default function Nano() {
                 updatedAt: Date.now(),
               }))
             }
-            disabled={!isLoggedIn}
+            disabled={!user}
             required
           >
             <option value="">Roof Age *</option>
@@ -171,7 +172,7 @@ export default function Nano() {
                 updatedAt: Date.now(),
               }))
             }
-            disabled={!isLoggedIn}
+            disabled={!user}
             required
           >
             <option value="">Roof Type *</option>
@@ -190,7 +191,7 @@ export default function Nano() {
                 updatedAt: Date.now(),
               }))
             }
-            disabled={!isLoggedIn}
+            disabled={!user}
             required
           >
             <option value="">Type of Property *</option>
@@ -205,7 +206,7 @@ export default function Nano() {
           <button
             type="submit"
             className="nano-submit"
-            disabled={!isLoggedIn || loading}
+            disabled={!user || loading}
           >
             {loading ? "Sending..." : "Request a Roof Assessment"}
           </button>
@@ -222,7 +223,7 @@ export default function Nano() {
           </p>
         </div>
       )}
-      {!isLoggedIn && (
+      {!user && (
         <p className="login-hint">
           Please login or register to request a Roof Armour assessment.
         </p>

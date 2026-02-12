@@ -1,11 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 import { promptQuestions } from "../../data/promptQuestions";
 import { promptAreas } from "../../data/promptAreas";
 import "../../styles/Area.css";
 
 export default function PromptArea() {
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  const { user } = useAuth();
 
   const { areaId } = useParams();
   const navigate = useNavigate();
@@ -120,7 +121,7 @@ export default function PromptArea() {
             <select
               className="select-input"
               value={ratings[q.id] || ""}
-              disabled={!isLoggedIn || submitted}
+              disabled={!user || submitted}
               onChange={(e) => {
                 setRatings((prev) => ({ ...prev, [q.id]: e.target.value }));
                 setSaved((prev) => ({ ...prev, [q.id]: false }));
@@ -142,8 +143,8 @@ export default function PromptArea() {
               rows="3"
               className="textarea-input"
               value={notes[q.id] || ""}
-              disabled={!isLoggedIn || submitted}
-              placeholder={!isLoggedIn ? "Login to add notes" : ""}
+              disabled={!user || submitted}
+              placeholder={!user ? "Login to add notes" : ""}
               onChange={(e) => {
                 setNotes((prev) => ({ ...prev, [q.id]: e.target.value }));
                 setSaved((prev) => ({ ...prev, [q.id]: false }));
@@ -160,7 +161,7 @@ export default function PromptArea() {
               multiple
               capture="environment"
               className="file-input"
-              disabled={!isLoggedIn || submitted}
+              disabled={!user || submitted}
               onChange={(e) => {
                 setPhotos((prev) => ({
                   ...prev,
@@ -191,7 +192,7 @@ export default function PromptArea() {
                 ))}
               </ul>
             )}
-            {!isLoggedIn ? (
+            {!user ? (
               <p className="login-hint">
                 🔒 Login to save answers and upload photos
               </p>
@@ -212,14 +213,14 @@ export default function PromptArea() {
         ))}
       </ul>
 
-      {isLoggedIn && id === TOTAL_AREAS && (
+      {user && id === TOTAL_AREAS && (
         <div className="final-submit-section">
           {!submitted ? (
             <>
               <button
                 className="submit-report-btn"
                 onClick={handleSubmitReport}
-                disabled={!isLoggedIn || submitted}
+                disabled={!user || submitted}
               >
                 {submitting ? "Submitting..." : "Submit Report"}
               </button>
