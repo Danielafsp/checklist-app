@@ -3,7 +3,7 @@ import "../styles/Footer.css";
 export default function Footer() {
   return (
     <footer className="footer">
-      <a href="phone:4032507999" className="footer-link">
+      <a href="tel:4032507999" className="footer-link">
         (403) 250-7999
       </a>
 
