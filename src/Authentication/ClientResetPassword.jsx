@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
+
 import "../styles/Auth.css";
 
 export default function ClientResetPassword() {
@@ -8,28 +10,24 @@ export default function ClientResetPassword() {
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
-  const handleReset = (e) => {
+  const handleReset = async (e) => {
     e.preventDefault();
 
-    if (!email || !newPassword) {
-      alert("Please fill in all fields");
+    if (!email) {
+      alert("Please enter your email");
       return;
     }
 
-    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + "/update-password",
+    });
 
-    const userIndex = users.findIndex((u) => u.email === email);
-
-    if (userIndex === -1) {
-      alert("No account found with this email");
+    if (error) {
+      alert(error.message);
       return;
     }
 
-    users[userIndex].password = newPassword;
-    localStorage.setItem("users", JSON.stringify(users));
-
-    alert("Password updated successfully!");
-    navigate("/login");
+    alert("Password reset email sent!");
   };
 
   return (

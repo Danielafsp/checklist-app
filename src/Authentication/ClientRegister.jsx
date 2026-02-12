@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
+
 import "../styles/Auth.css";
 
 export default function ClientRegister() {
@@ -19,7 +21,7 @@ export default function ClientRegister() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const { name, propertyName, address, email, password, confirmPassword } =
@@ -42,22 +44,15 @@ export default function ClientRegister() {
       return;
     }
 
-    const newUser = {
-      name,
-      propertyName,
-      address,
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
-    };
+    });
 
-    const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
-
-    if (existingUsers.some((u) => u.email === email)) {
-      alert("An account with this email already exists");
+    if (error) {
+      alert(error.message);
       return;
     }
-
-    localStorage.setItem("users", JSON.stringify([...existingUsers, newUser]));
 
     alert("Registration successful! You can now log in.");
     navigate("/login");

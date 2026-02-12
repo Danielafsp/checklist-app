@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { supabase } from "../lib/supabase";
 import "../styles/Auth.css";
 
 export default function ClientLogin() {
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -17,7 +17,7 @@ export default function ClientLogin() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const { email, password } = formData;
@@ -27,23 +27,15 @@ export default function ClientLogin() {
       return;
     }
 
-    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-    const user = users.find((u) => u.email === email);
-
-    if (!user) {
-      alert("No account found with this email");
+    if (error) {
+      alert(error.message);
       return;
     }
-
-    if (user.password !== password) {
-      alert("Incorrect password");
-      return;
-    }
-
-    localStorage.setItem("isLoggedIn", "true");
-    localStorage.setItem("role", "client");
-    localStorage.setItem("email", user.email);
 
     navigate("/");
   };

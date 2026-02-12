@@ -1,32 +1,45 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [auth, setAuth] = useState(() => {
-    const stored = localStorage.getItem("auth");
-    return stored ? JSON.parse(stored) : { isAuthenticated: false };
-  });
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    localStorage.setItem("auth", JSON.stringify(auth));
-  }, [auth]);
+    const getSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setUser(data.session?.user ?? null);
+      setLoading(false);
+    };
 
-  const login = (email, role = "client") => {
-    setAuth({
-      isAuthenticated: true,
-      role,
-      user: { email },
-    });
-  };
+    getSession();
 
-  const logout = () => {
-    localStorage.removeItem("auth");
-    setAuth({ isAuthenticated: false });
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+      },
+    );
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+
+  const logout = async () => {
+    await supabase.auth.signOut();
   };
 
   return (
-    <AuthContext.Provider value={{ auth, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated: !!user,
+        loading,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

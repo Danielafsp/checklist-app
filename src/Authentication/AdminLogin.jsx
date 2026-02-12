@@ -1,13 +1,29 @@
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    localStorage.setItem("isLoggedIn", "true");
-    localStorage.setItem("role", "admin");
+    const email = e.target[0].value;
+    const password = e.target[1].value;
+
+    if (!email || !password) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
 
     navigate("/admin");
   };
