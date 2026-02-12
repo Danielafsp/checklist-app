@@ -10,11 +10,6 @@ export default function AdminLogin() {
     const email = e.target[0].value;
     const password = e.target[1].value;
 
-    if (!email || !password) {
-      alert("Please fill in all fields");
-      return;
-    }
-
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -25,7 +20,24 @@ export default function AdminLogin() {
       return;
     }
 
-    navigate("/admin");
+    const user = data.user;
+
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
+    if (profileError) {
+      alert("Error fetching profile");
+      return;
+    }
+
+    if (profile.role === "admin") {
+      navigate("/admin");
+    } else {
+      navigate("/");
+    }
   };
 
   return (

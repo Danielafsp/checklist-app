@@ -21,23 +21,34 @@ export default function ClientLogin() {
 
     const { email, password } = formData;
 
-    console.log("Trying login with:", email);
-
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-
-    console.log("LOGIN DATA:", data);
-    console.log("LOGIN ERROR:", error);
 
     if (error) {
       alert(error.message);
       return;
     }
 
-    alert("Login successful");
-    navigate("/");
+    const user = data.user;
+
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
+    if (profileError) {
+      alert("Error fetching profile");
+      return;
+    }
+
+    if (profile.role === "admin") {
+      navigate("/admin");
+    } else {
+      navigate("/");
+    }
   };
 
   return (

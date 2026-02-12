@@ -49,12 +49,33 @@ export default function ClientRegister() {
       password,
     });
 
+    console.log("SIGNUP ERROR:", error);
+    console.log("SIGNUP DATA:", data);
+
     if (error) {
       alert(error.message);
       return;
     }
 
-    alert("Registration successful! You can now log in.");
+    const user = data.user;
+
+    if (!user) {
+      alert("Something went wrong during registration.");
+      return;
+    }
+
+    const { error: profileError } = await supabase.from("profiles").insert({
+      id: user.id,
+      email: user.email,
+      role: "client",
+    });
+
+    if (profileError) {
+      alert("Error creating profile: " + profileError.message);
+      return;
+    }
+
+    alert("Registration successful!");
     navigate("/login");
   };
 
