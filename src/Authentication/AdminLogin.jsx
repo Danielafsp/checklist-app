@@ -1,43 +1,34 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage("");
+    setLoading(true);
 
-    const email = e.target[0].value;
-    const password = e.target[1].value;
+    const formData = new FormData(e.target);
+    const email = formData.get("email");
+    const password = formData.get("password");
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error) {
-      alert(error.message);
+      setErrorMessage(error.message);
+      setLoading(false);
       return;
     }
 
-    const user = data.user;
-
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-
-    if (profileError) {
-      alert("Error fetching profile");
-      return;
-    }
-
-    if (profile.role === "admin") {
-      navigate("/admin");
-    } else {
-      navigate("/");
-    }
+    navigate("/admin", { replace: true });
   };
 
   return (
@@ -45,16 +36,27 @@ export default function AdminLogin() {
       <h1>Admin Login</h1>
 
       <form className="auth-form" onSubmit={handleSubmit}>
-        <input type="email" placeholder="Email" />
-        <input type="password" placeholder="Password" />
+        <input type="email" name="email" placeholder="Email" required />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          required
+        />
 
-        <button type="submit" className="button-primary">
-          Login
+        <button type="submit" className="button-primary" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
         </button>
       </form>
 
+      {errorMessage && (
+        <p style={{ color: "red", marginTop: "1rem" }}>{errorMessage}</p>
+      )}
+
       <p className="auth-back">
-        <span onClick={() => navigate("/")}>Go back to Homepage</span>
+        <span style={{ cursor: "pointer" }} onClick={() => navigate("/")}>
+          Go back to Homepage
+        </span>
       </p>
     </div>
   );

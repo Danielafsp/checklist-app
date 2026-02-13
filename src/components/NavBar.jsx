@@ -18,7 +18,7 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     await logout();
-    navigate("/");
+    navigate("/", { replace: true });
   };
 
   return (
