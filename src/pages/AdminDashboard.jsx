@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "../styles/AdminDashboard.css";
 
 export default function AdminDashboard() {
+  const [activeTab, setActiveTab] = useState("roof");
   const [requests, setRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [notesDraft, setNotesDraft] = useState("");
@@ -58,134 +59,173 @@ export default function AdminDashboard() {
 
   return (
     <div className="admin-dashboard">
-      <section className="admin-section prompt">
-        <h2>PROMPT Inspections</h2>
-        <p>Overview of submitted Prompt reports</p>
+      <div className="admin-tabs">
+        <button
+          className={activeTab === "prompt" ? "active" : ""}
+          onClick={() => setActiveTab("prompt")}
+        >
+          PROMPT
+        </button>
 
-        <div className="admin-state admin-empty">
-          No Prompt inspections submitted yet.
-        </div>
-      </section>
+        <button
+          className={activeTab === "subdew" ? "active" : ""}
+          onClick={() => setActiveTab("subdew")}
+        >
+          SUBDEW
+        </button>
 
-      <section className="admin-section subdew">
-        <h2>SUBDEW Inspections</h2>
-        <p>Overview of submitted Subdew reports</p>
+        <button
+          className={activeTab === "frugal" ? "active" : ""}
+          onClick={() => setActiveTab("frugal")}
+        >
+          FRUGAL
+        </button>
 
-        <div className="admin-state admin-empty">
-          No Subdew inspections available.
-        </div>
-      </section>
+        <button
+          className={activeTab === "roof" ? "active" : ""}
+          onClick={() => setActiveTab("roof")}
+        >
+          Roof Armour
+        </button>
+      </div>
 
-      <section className="admin-section frugal">
-        <h2>FRUGAL Uploads</h2>
-        <p>Overview of Frugal documentation</p>
+      {activeTab === "prompt" && (
+        <section className="admin-section prompt">
+          <h2>PROMPT Inspections</h2>
+          <p>Overview of submitted Prompt reports</p>
 
-        <div className="admin-state admin-empty">
-          No documents uploaded yet.
-        </div>
-      </section>
+          <div className="admin-state admin-empty">
+            No Prompt inspections submitted yet.
+          </div>
+        </section>
+      )}
 
-      <section className="admin-section roof">
-        <h2>Roof Armour Requests</h2>
-        <p>Overview of Roof Armour contact requests</p>
+      {activeTab === "subdew" && (
+        <section className="admin-section subdew">
+          <h2>SUBDEW Inspections</h2>
+          <p>Overview of submitted Subdew reports</p>
 
-        {requests.length === 0 ? (
-          <p>No requests yet.</p>
-        ) : (
-          <>
-            <ul>
-              {requests.map((req) => (
-                <li
-                  key={req.id}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    setSelectedRequest(req);
-                    setNotesDraft(req.notes || "");
-                  }}
-                >
-                  <strong>{req.name}</strong> — {req.email} —{" "}
-                  <em>{req.status}</em>
-                </li>
-              ))}
-            </ul>
+          <div className="admin-state admin-empty">
+            No Subdew inspections available.
+          </div>
+        </section>
+      )}
 
-            {selectedRequest && (
-              <div style={{ marginTop: "20px" }}>
-                <h3>Request details</h3>
+      {activeTab === "frugal" && (
+        <section className="admin-section frugal">
+          <h2>FRUGAL Uploads</h2>
+          <p>Overview of Frugal documentation</p>
 
-                <p>
-                  <strong>Name:</strong> {selectedRequest.name}
-                </p>
-                <p>
-                  <strong>Email:</strong> {selectedRequest.email}
-                </p>
-                <p>
-                  <strong>Phone:</strong> {selectedRequest.phone}
-                </p>
+          <div className="admin-state admin-empty">
+            No documents uploaded yet.
+          </div>
+        </section>
+      )}
 
-                <p>
-                  <strong>Roof age:</strong> {selectedRequest.roofAge}
-                </p>
-                <p>
-                  <strong>Roof type:</strong> {selectedRequest.roofType}
-                </p>
-                <p>
-                  <strong>Property type:</strong> {selectedRequest.propertyType}
-                </p>
+      {activeTab === "roof" && (
+        <section className="admin-section roof">
+          <h2>Roof Armour Requests</h2>
+          <p>Overview of Roof Armour contact requests</p>
 
-                <p>
-                  <strong>Status:</strong>{" "}
-                  <select
-                    value={selectedRequest.status}
-                    onChange={(e) => handleStatusChange(e.target.value)}
+          {requests.length === 0 ? (
+            <p>No requests yet.</p>
+          ) : (
+            <>
+              <ul>
+                {requests.map((req) => (
+                  <li
+                    key={req.id}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => {
+                      setSelectedRequest(req);
+                      setNotesDraft(req.notes || "");
+                    }}
                   >
-                    <option key="new" value="new">
-                      New
-                    </option>
-                    <option key="contacted" value="contacted">
-                      Contacted
-                    </option>
-                    <option key="closed" value="closed">
-                      Closed
-                    </option>
-                  </select>
-                </p>
-                <p>
-                  <strong>Notes:</strong>
-                </p>
+                    <strong>{req.name}</strong> — {req.email} —{" "}
+                    <em>{req.status}</em>
+                  </li>
+                ))}
+              </ul>
 
-                <textarea
-                  value={notesDraft}
-                  onChange={(e) => setNotesDraft(e.target.value)}
-                  placeholder="Add internal notes…"
-                  rows={4}
-                  style={{ width: "100%", marginTop: "5px" }}
-                />
-                <button
-                  type="button"
-                  onClick={handleSaveNotes}
-                  style={{ marginTop: "8px" }}
-                >
-                  Save notes
-                </button>
-                {saved && (
-                  <p style={{ color: "green", marginTop: "5px" }}>✓ Saved</p>
-                )}
+              {selectedRequest && (
+                <div style={{ marginTop: "20px" }}>
+                  <h3>Request details</h3>
 
-                <p>
-                  <strong>Created:</strong>{" "}
-                  {formatDate(selectedRequest.createdAt)}
-                </p>
+                  <p>
+                    <strong>Name:</strong> {selectedRequest.name}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {selectedRequest.email}
+                  </p>
+                  <p>
+                    <strong>Phone:</strong> {selectedRequest.phone}
+                  </p>
 
-                <p>
-                  <strong>Last updated:</strong>{" "}
-                  {formatDate(selectedRequest.updatedAt)}
-                </p>
-              </div>
-            )}
-          </>
-        )}
-      </section>
+                  <p>
+                    <strong>Roof age:</strong> {selectedRequest.roofAge}
+                  </p>
+                  <p>
+                    <strong>Roof type:</strong> {selectedRequest.roofType}
+                  </p>
+                  <p>
+                    <strong>Property type:</strong>{" "}
+                    {selectedRequest.propertyType}
+                  </p>
+
+                  <p>
+                    <strong>Status:</strong>{" "}
+                    <select
+                      value={selectedRequest.status}
+                      onChange={(e) => handleStatusChange(e.target.value)}
+                    >
+                      <option key="new" value="new">
+                        New
+                      </option>
+                      <option key="contacted" value="contacted">
+                        Contacted
+                      </option>
+                      <option key="closed" value="closed">
+                        Closed
+                      </option>
+                    </select>
+                  </p>
+                  <p>
+                    <strong>Notes:</strong>
+                  </p>
+
+                  <textarea
+                    value={notesDraft}
+                    onChange={(e) => setNotesDraft(e.target.value)}
+                    placeholder="Add internal notes…"
+                    rows={4}
+                    style={{ width: "100%", marginTop: "5px" }}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleSaveNotes}
+                    style={{ marginTop: "8px" }}
+                  >
+                    Save notes
+                  </button>
+                  {saved && (
+                    <p style={{ color: "green", marginTop: "5px" }}>✓ Saved</p>
+                  )}
+
+                  <p>
+                    <strong>Created:</strong>{" "}
+                    {formatDate(selectedRequest.createdAt)}
+                  </p>
+
+                  <p>
+                    <strong>Last updated:</strong>{" "}
+                    {formatDate(selectedRequest.updatedAt)}
+                  </p>
+                </div>
+              )}
+            </>
+          )}
+        </section>
+      )}
 
       <div className="admin-empty">No reports yet.</div>
     </div>

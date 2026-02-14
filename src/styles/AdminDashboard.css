@@ -7,6 +7,26 @@
   gap: var(--space-xl);
 }
 
+.admin-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.admin-tabs button {
+  padding: 8px 16px;
+  border: none;
+  background: #eee;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.admin-tabs button.active {
+  background: #222;
+  color: white;
+}
+
 .admin-section {
   background-color: var(--bg-card);
   border-radius: var(--radius);
@@ -84,4 +104,11 @@
   .admin-dashboard {
     padding: var(--space-md);
   }
+}
+.admin-tabs {
+  flex-direction: column;
+}
+
+.admin-tabs button {
+  width: 100%;
 }
