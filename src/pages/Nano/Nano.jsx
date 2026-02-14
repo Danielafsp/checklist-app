@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { supabase } from "../../lib/supabase";
 import "../../styles/Nano.css";
 import nanoLogo from "../../assets/nano.png";
 
@@ -23,6 +24,10 @@ export default function Nano() {
   const [draft, setDraft] = useState(initialDraft);
   const [hydrated, setHydrated] = useState(false);
 
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   useEffect(() => {
     const saved = localStorage.getItem("draft:roof-armour");
     if (saved) {
@@ -37,37 +42,33 @@ export default function Nano() {
     localStorage.setItem("draft:roof-armour", JSON.stringify(draft));
   }, [draft, hydrated]);
 
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
 
-    if (!user) {
-      alert("Please login or register to submit your request.");
+    const { error } = await supabase.from("roof_requests").insert([
+      {
+        name: draft.name,
+        email: draft.email,
+        phone: draft.phone,
+        roof_age: draft.roof_age,
+        roof_type: draft.roof_type,
+        property_type: draft.property_type,
+      },
+    ]);
+
+    if (error) {
+      console.error("Insert error:", error);
+      setError("Something went wrong. Please try again.");
+      setLoading(false);
       return;
     }
 
-    const existing = JSON.parse(localStorage.getItem("nano_requests")) || [];
-
-    const newRequest = {
-      id: crypto.randomUUID(), // ⭐ NEW
-      ...draft,
-      status: "new",
-      notes: "",
-      createdAt: Date.now(), // ⭐ timestamp
-      updatedAt: Date.now(), // ⭐ timestamp
-    };
-
-    existing.push(newRequest);
-
-    localStorage.setItem("nano_requests", JSON.stringify(existing));
-
     localStorage.removeItem("draft:roof-armour");
     setDraft(initialDraft);
-
     setSubmitted(true);
+    setLoading(false);
   };
 
   return (
@@ -98,62 +99,34 @@ export default function Nano() {
         <form className="nano-form" onSubmit={handleSubmit}>
           <input
             type="text"
-            name="name"
             placeholder="Full Name *"
             value={draft.name}
-            onChange={(e) =>
-              setDraft((prev) => ({
-                ...prev,
-                name: e.target.value,
-                updatedAt: Date.now(),
-              }))
-            }
+            onChange={(e) => setDraft({ ...draft, name: e.target.value })}
             disabled={!user}
             required
           />
 
           <input
             type="email"
-            name="email"
             placeholder="Email Address *"
             value={draft.email}
-            onChange={(e) =>
-              setDraft((prev) => ({
-                ...prev,
-                email: e.target.value,
-                updatedAt: Date.now(),
-              }))
-            }
+            onChange={(e) => setDraft({ ...draft, email: e.target.value })}
             disabled={!user}
             required
           />
 
           <input
             type="tel"
-            name="phone"
             placeholder="Phone Number *"
             value={draft.phone}
-            onChange={(e) =>
-              setDraft((prev) => ({
-                ...prev,
-                phone: e.target.value,
-                updatedAt: Date.now(),
-              }))
-            }
+            onChange={(e) => setDraft({ ...draft, phone: e.target.value })}
             disabled={!user}
             required
           />
 
           <select
-            name="roofAge"
-            value={draft.roofAge}
-            onChange={(e) =>
-              setDraft((prev) => ({
-                ...prev,
-                roofAge: e.target.value,
-                updatedAt: Date.now(),
-              }))
-            }
+            value={draft.roof_age}
+            onChange={(e) => setDraft({ ...draft, roof_age: e.target.value })}
             disabled={!user}
             required
           >
@@ -163,15 +136,8 @@ export default function Nano() {
           </select>
 
           <select
-            name="roofType"
-            value={draft.roofType}
-            onChange={(e) =>
-              setDraft((prev) => ({
-                ...prev,
-                roofType: e.target.value,
-                updatedAt: Date.now(),
-              }))
-            }
+            value={draft.roof_type}
+            onChange={(e) => setDraft({ ...draft, roof_type: e.target.value })}
             disabled={!user}
             required
           >
@@ -182,14 +148,9 @@ export default function Nano() {
           </select>
 
           <select
-            name="propertyType"
-            value={draft.propertyType}
+            value={draft.property_type}
             onChange={(e) =>
-              setDraft((prev) => ({
-                ...prev,
-                propertyType: e.target.value,
-                updatedAt: Date.now(),
-              }))
+              setDraft({ ...draft, property_type: e.target.value })
             }
             disabled={!user}
             required

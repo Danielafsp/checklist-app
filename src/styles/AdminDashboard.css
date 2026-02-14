@@ -63,6 +63,26 @@
   border-left: 4px solid #c45a5a;
 }
 
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.report-card {
+  background: white;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.report-card:hover {
+  transform: translateY(-3px);
+}
+
 .admin-state {
   margin-top: var(--space-md);
   padding: var(--space-md);

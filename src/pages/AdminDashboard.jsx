@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { supabase } from "../lib/supabase";
+import jsPDF from "jspdf";
 import "../styles/AdminDashboard.css";
 
 export default function AdminDashboard() {
@@ -12,49 +14,72 @@ export default function AdminDashboard() {
     timestamp ? new Date(timestamp).toLocaleString() : "—";
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("nano_requests")) || [];
-    setRequests(saved);
+    const fetchRequests = async () => {
+      const { data, error } = await supabase
+        .from("roof_requests")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Fetch error:", error);
+      } else {
+        setRequests(data);
+      }
+    };
+
+    fetchRequests();
   }, []);
 
-  const handleStatusChange = (newStatus) => {
+  const handleStatusChange = async (newStatus) => {
     if (!selectedRequest) return;
 
-    const updatedRequest = {
-      ...selectedRequest,
-      status: newStatus,
-      updatedAt: Date.now(),
-    };
+    const { error } = await supabase
+      .from("roof_requests")
+      .update({
+        status: newStatus,
+        updated_at: new Date(),
+      })
+      .eq("id", selectedRequest.id);
 
-    const updatedRequests = requests.map((req) =>
-      req.id === selectedRequest.id ? updatedRequest : req,
-    );
-
-    setSelectedRequest(updatedRequest);
-    setRequests(updatedRequests);
-    localStorage.setItem("nano_requests", JSON.stringify(updatedRequests));
+    if (!error) {
+      setSelectedRequest({ ...selectedRequest, status: newStatus });
+    }
   };
 
-  const handleSaveNotes = () => {
+  const handleSaveNotes = async () => {
     if (!selectedRequest) return;
 
-    const updatedRequest = {
-      ...selectedRequest,
-      notes: notesDraft,
-      updatedAt: Date.now(),
-    };
+    const { error } = await supabase
+      .from("roof_requests")
+      .update({
+        notes: notesDraft,
+        updated_at: new Date(),
+      })
+      .eq("id", selectedRequest.id);
 
-    const updatedRequests = requests.map((req) =>
-      req.id === selectedRequest.id ? updatedRequest : req,
-    );
+    if (!error) {
+      setSelectedRequest({ ...selectedRequest, notes: notesDraft });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    }
+  };
 
-    setSelectedRequest(updatedRequest);
-    setRequests(updatedRequests);
-    localStorage.setItem("nano_requests", JSON.stringify(updatedRequests));
+  const handleDownloadPDF = () => {
+    if (!selectedRequest) return;
 
-    setSaved(true);
-    setTimeout(() => {
-      setSaved(false);
-    }, 2000);
+    const doc = new jsPDF();
+
+    doc.text("Roof Armour Request", 20, 20);
+    doc.text(`Name: ${selectedRequest.name}`, 20, 30);
+    doc.text(`Email: ${selectedRequest.email}`, 20, 40);
+    doc.text(`Phone: ${selectedRequest.phone}`, 20, 50);
+    doc.text(`Roof Age: ${selectedRequest.roof_age}`, 20, 60);
+    doc.text(`Roof Type: ${selectedRequest.roof_type}`, 20, 70);
+    doc.text(`Property Type: ${selectedRequest.property_type}`, 20, 80);
+    doc.text(`Status: ${selectedRequest.status}`, 20, 90);
+    doc.text(`Notes: ${selectedRequest.notes || "-"}`, 20, 100);
+
+    doc.save(`${selectedRequest.name}-request.pdf`);
   };
 
   return (
@@ -131,21 +156,27 @@ export default function AdminDashboard() {
             <p>No requests yet.</p>
           ) : (
             <>
-              <ul>
+              <div className="reports-grid">
                 {requests.map((req) => (
-                  <li
+                  <div
                     key={req.id}
-                    style={{ cursor: "pointer" }}
+                    className="report-card"
                     onClick={() => {
                       setSelectedRequest(req);
                       setNotesDraft(req.notes || "");
                     }}
                   >
-                    <strong>{req.name}</strong> — {req.email} —{" "}
-                    <em>{req.status}</em>
-                  </li>
+                    <h4>{req.name}</h4>
+                    <p>{req.email}</p>
+                    <p>
+                      <strong>Status:</strong> {req.status}
+                    </p>
+                    <p>
+                      <strong>Submitted:</strong> {formatDate(req.createdAt)}
+                    </p>
+                  </div>
                 ))}
-              </ul>
+              </div>
 
               {selectedRequest && (
                 <div style={{ marginTop: "20px" }}>
@@ -207,6 +238,15 @@ export default function AdminDashboard() {
                   >
                     Save notes
                   </button>
+
+                  <button
+                    type="button"
+                    onClick={handleDownloadPDF}
+                    style={{ marginTop: "10px" }}
+                  >
+                    Download as PDF
+                  </button>
+
                   {saved && (
                     <p style={{ color: "green", marginTop: "5px" }}>✓ Saved</p>
                   )}
