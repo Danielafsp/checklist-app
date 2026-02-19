@@ -172,7 +172,7 @@ export default function AdminDashboard() {
                       <strong>Status:</strong> {req.status}
                     </p>
                     <p>
-                      <strong>Submitted:</strong> {formatDate(req.createdAt)}
+                      <strong>Submitted:</strong> {formatDate(req.created_at)}
                     </p>
                   </div>
                 ))}
@@ -253,12 +253,12 @@ export default function AdminDashboard() {
 
                   <p>
                     <strong>Created:</strong>{" "}
-                    {formatDate(selectedRequest.createdAt)}
+                    {formatDate(selectedRequest.created_at)}
                   </p>
 
                   <p>
                     <strong>Last updated:</strong>{" "}
-                    {formatDate(selectedRequest.updatedAt)}
+                    {formatDate(selectedRequest.updated_at)}
                   </p>
                 </div>
               )}
