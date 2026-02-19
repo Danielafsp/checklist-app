@@ -21,7 +21,7 @@ export default function NanoRequests() {
     setLoading(true);
 
     const { data, error } = await supabase
-      .from("nano_requests")
+      .from("roof_requests")
       .select("*")
       .order("created_at", { ascending: false });
 
@@ -37,7 +37,7 @@ export default function NanoRequests() {
     if (!selectedRequest) return;
 
     const { error } = await supabase
-      .from("nano_requests")
+      .from("roof_requests")
       .update({
         status: newStatus,
         updated_at: new Date(),
@@ -57,7 +57,7 @@ export default function NanoRequests() {
     if (!selectedRequest) return;
 
     const { error } = await supabase
-      .from("nano_requests")
+      .from("roof_requests")
       .update({
         notes: notesDraft,
         updated_at: new Date(),
