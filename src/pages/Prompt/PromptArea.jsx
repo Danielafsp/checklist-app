@@ -1,17 +1,28 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { promptQuestions } from "../../data/promptQuestions";
 import { promptAreas } from "../../data/promptAreas";
+import { supabase } from "../../lib/supabase";
+
 import "../../styles/Area.css";
 
 export default function PromptArea() {
-  const { user } = useAuth();
-
   const { areaId } = useParams();
   const navigate = useNavigate();
 
   const id = parseInt(areaId, 10);
+  const { user } = useAuth();
+  const inspectionId = localStorage.getItem("promptInspectionId");
+
+  const [notes, setNotes] = useState({});
+  const [photos, setPhotos] = useState({});
+  const [ratings, setRatings] = useState({});
+  const [saved, setSaved] = useState({});
+  const [uploading, setUploading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const areaKeys = Object.keys(promptQuestions).map(Number);
   const TOTAL_AREAS = Math.max(...areaKeys);
@@ -19,10 +30,32 @@ export default function PromptArea() {
   const questions = promptQuestions[id];
   const title = promptAreas[id];
 
-  const [notes, setNotes] = useState({});
-  const [photos, setPhotos] = useState({});
-  const [ratings, setRatings] = useState({});
-  const [uploading, setUploading] = useState(false);
+  useEffect(() => {
+    const ensureAreaExists = async () => {
+      if (!inspectionId) return;
+
+      const { data, error } = await supabase
+        .from("inspection_areas")
+        .upsert(
+          {
+            inspection_id: inspectionId,
+            area_id: id,
+          },
+          { onConflict: "inspection_id,area_id" },
+        )
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error creating area:", error);
+        return;
+      }
+
+      console.log("Area ready:", data.id);
+    };
+
+    ensureAreaExists();
+  }, [inspectionId, id]);
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -41,20 +74,47 @@ export default function PromptArea() {
     navigate(`/prompt/area/${id + 1}`);
   };
 
-  const handleSavingQuestion = (questionId) => {
-    const payload = {
-      questionId,
-      rating: ratings[questionId],
-      notes: notes[questionId] || "",
-      photos: photos[questionId] || [],
-    };
+  const handleSavingQuestion = async (questionNumber) => {
+    if (!inspectionId) return;
 
-    console.log("saving question:", payload);
+    try {
+      const { data: areaData, error: areaError } = await supabase
+        .from("inspection_areas")
+        .select("id")
+        .eq("inspection_id", inspectionId)
+        .eq("area_id", id)
+        .single();
 
-    setSaved((prev) => ({ ...prev, [questionId]: true }));
+      if (areaError) throw areaError;
+
+      const { data: answerData, error: answerError } = await supabase
+        .from("question_answers")
+        .upsert(
+          {
+            area_inspection_id: areaData.id,
+            question_number: questionNumber,
+            rating: parseInt(ratings[questionNumber]),
+          },
+          { onConflict: "area_inspection_id,question_number" },
+        )
+        .select()
+        .single();
+
+      if (answerError) throw answerError;
+
+      await supabase.from("question_notes").upsert(
+        {
+          question_answer_id: answerData.id,
+          note: notes[questionNumber] || "",
+        },
+        { onConflict: "question_answer_id" },
+      );
+
+      setSaved((prev) => ({ ...prev, [questionNumber]: true }));
+    } catch (err) {
+      console.error("Error saving question:", err);
+    }
   };
-
-  const [saved, setSaved] = useState({});
 
   const handleRemovePhoto = (questionId, indexToRemove) => {
     setPhotos((prev) => ({
@@ -69,10 +129,6 @@ export default function PromptArea() {
       [questionId]: false,
     }));
   };
-
-  const [submitted, setSubmitted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState("");
 
   const handleSubmitReport = async () => {
     try {
