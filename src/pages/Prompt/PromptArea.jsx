@@ -10,17 +10,20 @@ import "../../styles/Area.css";
 export default function PromptArea() {
   const { areaId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const id = parseInt(areaId, 10);
-  const { user } = useAuth();
-  const inspectionId = localStorage.getItem("promptInspectionId");
+
+  const [inspectionId, setInspectionId] = useState(null);
+  const [loadingInspection, setLoadingInspection] = useState(true);
 
   const [notes, setNotes] = useState({});
   const [photos, setPhotos] = useState({});
   const [ratings, setRatings] = useState({});
   const [saved, setSaved] = useState({});
-  const [uploading, setUploading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
@@ -31,53 +34,83 @@ export default function PromptArea() {
   const title = promptAreas[id];
 
   useEffect(() => {
-    const ensureAreaExists = async () => {
-      if (!inspectionId) return;
+    const getOrCreateInspection = async () => {
+      if (!user) return;
 
-      const { data, error } = await supabase
-        .from("inspection_areas")
-        .upsert(
-          {
-            inspection_id: inspectionId,
-            area_id: id,
-          },
-          { onConflict: "inspection_id,area_id" },
-        )
-        .select()
-        .single();
+      setLoadingInspection(true);
 
-      if (error) {
-        console.error("Error creating area:", error);
+      const { data: existing, error: fetchError } = await supabase
+        .from("inspections")
+        .select("*")
+        .eq("tool", "prompt")
+        .eq("created_by", user.id)
+        .eq("status", "draft")
+        .maybeSingle();
+
+      if (fetchError) {
+        console.error("Fetch draft error:", fetchError);
+        setLoadingInspection(false);
         return;
       }
 
-      console.log("Area ready:", data.id);
+      if (existing) {
+        setInspectionId(existing.id);
+        if (existing.status === "submitted") {
+          setSubmitted(true);
+        }
+        setLoadingInspection(false);
+        return;
+      }
+
+      const { data: created, error: createError } = await supabase
+        .from("inspections")
+        .insert({
+          tool: "prompt",
+          created_by: user.id,
+          status: "draft",
+          created_at: new Date(),
+        })
+        .select()
+        .single();
+
+      if (createError) {
+        console.error("Create draft error:", createError);
+      } else {
+        setInspectionId(created.id);
+      }
+
+      setLoadingInspection(false);
+    };
+
+    getOrCreateInspection();
+  }, [user]);
+
+  useEffect(() => {
+    if (!inspectionId) return;
+
+    const ensureAreaExists = async () => {
+      const { error } = await supabase.from("inspection_areas").upsert(
+        {
+          inspection_id: inspectionId,
+          area_id: id,
+        },
+        { onConflict: "inspection_id,area_id" },
+      );
+
+      if (error) {
+        console.error("Error ensuring area exists:", error);
+      }
     };
 
     ensureAreaExists();
   }, [inspectionId, id]);
 
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
-
-  const goPrevious = () => {
-    scrollToTop();
-    navigate(`/prompt/area/${id - 1}`);
-  };
-
-  const goNext = () => {
-    scrollToTop();
-    navigate(`/prompt/area/${id + 1}`);
-  };
-
   const handleSavingQuestion = async (questionNumber) => {
-    if (!inspectionId) return;
+    if (!inspectionId || !user) return;
 
     try {
+      setUploading(true);
+
       const { data: areaData, error: areaError } = await supabase
         .from("inspection_areas")
         .select("id")
@@ -102,7 +135,7 @@ export default function PromptArea() {
 
       if (answerError) throw answerError;
 
-      await supabase.from("question_notes").upsert(
+      const { error: noteError } = await supabase.from("question_notes").upsert(
         {
           question_answer_id: answerData.id,
           note: notes[questionNumber] || "",
@@ -110,9 +143,65 @@ export default function PromptArea() {
         { onConflict: "question_answer_id" },
       );
 
+      if (noteError) throw noteError;
+
+      if (photos[questionNumber]?.length > 0) {
+        for (const file of photos[questionNumber]) {
+          const filePath = `${inspectionId}/area-${id}/question-${questionNumber}/${Date.now()}-${file.name}`;
+
+          const { error: uploadError } = await supabase.storage
+            .from("inspection-photos")
+            .upload(filePath, file);
+
+          if (uploadError) {
+            console.error("Upload failed:", uploadError);
+            continue;
+          }
+
+          const { data: publicUrlData } = supabase.storage
+            .from("inspection-photos")
+            .getPublicUrl(filePath);
+
+          await supabase.from("question_photos").insert({
+            question_answer_id: answerData.id,
+            photo_url: publicUrlData.publicUrl,
+          });
+        }
+      }
+
+      setPhotos((prev) => ({
+        ...prev,
+        [questionNumber]: [],
+      }));
+
       setSaved((prev) => ({ ...prev, [questionNumber]: true }));
     } catch (err) {
       console.error("Error saving question:", err);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSubmitReport = async () => {
+    if (!inspectionId) return;
+
+    try {
+      setSubmitting(true);
+      setSubmitError("");
+
+      const { error } = await supabase
+        .from("inspections")
+        .update({ status: "submitted" })
+        .eq("id", inspectionId);
+
+      if (error) throw error;
+
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Submit error:", err);
+      setSubmitError("Something went wrong.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -130,29 +219,19 @@ export default function PromptArea() {
     }));
   };
 
-  const handleSubmitReport = async () => {
-    try {
-      setSubmitting(true);
-      setSubmitError("");
-
-      const reportPayload = {
-        areaId: id,
-        notes,
-        ratings,
-        photos,
-        status: "submitted",
-        submittedAt: new Date().toISOString(),
-      };
-
-      console.log("FINAL REPORT SUBMIT:", reportPayload);
-
-      setSubmitted(true);
-    } catch (err) {
-      setSubmitError("Something went wrong. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
+  const goPrevious = () => {
+    scrollToTop();
+    navigate(`/prompt/area/${id - 1}`);
   };
+
+  const goNext = () => {
+    scrollToTop();
+    navigate(`/prompt/area/${id + 1}`);
+  };
+
+  if (loadingInspection) {
+    return <div className="area-container">Loading inspection...</div>;
+  }
 
   return (
     <div className="area-container">
@@ -215,7 +294,6 @@ export default function PromptArea() {
               type="file"
               accept="image/*"
               multiple
-              capture="environment"
               className="file-input"
               disabled={!user || submitted}
               onChange={(e) => {
@@ -234,14 +312,15 @@ export default function PromptArea() {
               <ul className="file-list">
                 {photos[q.id].map((photo, index) => (
                   <li key={index} className="file-item">
-                    📷 {photo.name}
+                    <span className="file-name">📷 {photo.name}</span>
+
                     {!submitted && (
                       <button
                         type="button"
                         className="remove-photo-btn"
                         onClick={() => handleRemovePhoto(q.id, index)}
                       >
-                        ❌
+                        ✕
                       </button>
                     )}
                   </li>

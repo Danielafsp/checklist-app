@@ -82,15 +82,16 @@
 }
 
 .remove-photo-btn {
-  background: none;
+  background: transparent;
   border: none;
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
-  color: #c00;
-  font-size: 2px;
+  color: #888;
 }
 
 .remove-photo-btn:hover {
-  color: #900;
+  color: #c0392b;
 }
 
 .final-submit-section {
