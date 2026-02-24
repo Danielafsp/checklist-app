@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import "../../styles/Checklist.css";
 import subdewLogo from "../../assets/subdew.png";
+import { useEffect } from "react";
+import { supabase } from "../../lib/supabase";
+import { useAuth } from "../../context/AuthContext";
 
 const areas = [
   { id: 1, name: "RAINWATER MANAGEMENT SYSTEM" },
@@ -17,6 +20,38 @@ const areas = [
 ];
 
 export default function SubdewChecklist() {
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const createInspectionIfNeeded = async () => {
+      const existingId = localStorage.getItem("subdewInspectionId");
+      if (existingId) return;
+
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("inspections")
+        .insert({
+          tool: "subdew",
+          created_by: user.id,
+          status: "draft",
+          created_at: new Date(),
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error creating inspection:", error);
+        return;
+      }
+
+      localStorage.setItem("subdewInspectionId", data.id);
+      console.log("Created inspection:", data.id);
+    };
+
+    createInspectionIfNeeded();
+  }, [user]);
+
   return (
     <div className="container">
       <figure className="area-logo">
@@ -24,18 +59,19 @@ export default function SubdewChecklist() {
         <figcaption className="logo-label">Complimentary Service</figcaption>
       </figure>
       <p className="subtitle">
-        Welcome to Subdew, your guide to spot 11 winter building deficiencies
-        that can cause costly repairs.
+        Welcome to Subdew, your guide to spotting 11 winter building
+        deficiencies that can cause costly repairs.
         <br />
         <br />
-        To use this tool simply walk around your development and complete the
-        intuitive questionnaire, take pictures that show defeciencies, damage or
-        areas you feel need to be included in the report.
+        To use this tool, walk around your development and complete the
+        intuitive questionnaire, take pictures that show deficiencies, damage,
+        or areas you feel need to be included in the report.
         <br />
         <br />
-        Once complete click Submit and a Fort Sands Advisor will review your
+        Once complete, click Submit, and a Fort Sands Advisor will review your
         report.
       </p>
+      <br />
 
       <div className="list">
         {areas.map((area) => (
