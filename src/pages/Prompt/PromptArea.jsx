@@ -133,6 +133,7 @@ export default function PromptArea() {
         const loadedRatings = {};
         const loadedNotes = {};
         const loadedSaved = {};
+        const loadedPhotos = {};
 
         answers.forEach((answer) => {
           loadedRatings[answer.question_number] = answer.rating;
