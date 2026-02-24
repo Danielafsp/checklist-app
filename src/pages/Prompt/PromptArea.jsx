@@ -124,7 +124,13 @@ export default function PromptArea() {
         const { data: answers, error: answersError } = await supabase
           .from("question_answers")
           .select(
-            `id, question_number, rating, question_notes(note), question_photos (photo_url)`,
+            `
+          id,
+          question_number,
+          rating,
+          question_notes (note),
+          question_photos (photo_url)
+        `,
           )
           .eq("area_inspection_id", areaData.id);
 
@@ -139,11 +145,15 @@ export default function PromptArea() {
           loadedRatings[answer.question_number] = answer.rating;
 
           loadedNotes[answer.question_number] =
-            answer.question_notes?.note?.[0]?.note || "";
+            answer.question_notes?.[0]?.note || "";
 
           if (answer.question_photos?.length > 0) {
             loadedPhotos[answer.question_number] = answer.question_photos.map(
-              (p) => ({ name: "Saved photo", url: p.photo_url, isSaved: true }),
+              (p) => ({
+                name: "Saved photo",
+                url: p.photo_url,
+                isSaved: true,
+              }),
             );
           }
 
