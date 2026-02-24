@@ -89,26 +89,6 @@
   background-color: var(--accent-light);
 }
 
-.report-card.draft {
-  background-color: #fff4e5;
-  border: 1px solid #f5c27a;
-  color: #333;
-}
-
-.report-card.draft h4 {
-  color: #8a5a00;
-}
-
-.report-card.draft p {
-  color: #5c3d00;
-}
-
-.report-card.draft:hover {
-  background-color: #ffe8cc;
-  transform: translateY(-2px);
-  transition: all 0.2s ease;
-}
-
 @media (max-width: 480px) {
   .client-dashboard-container {
     flex-direction: column;

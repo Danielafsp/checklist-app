@@ -71,12 +71,12 @@
 }
 
 .report-card {
-  background: white;
-  padding: 16px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background-color: var(--bg-card);
+  padding: var(--space-md);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: var(--transition);
   cursor: pointer;
-  transition: 0.2s ease;
 }
 
 .report-card:hover {
@@ -84,8 +84,16 @@
 }
 
 .report-card.draft {
-  border: 2px solid #f0ad4e;
-  background-color: #fff8e6;
+  border: 2px solid var(--accent);
+  background-color: #463f3f;
+}
+
+.report-card.draft h4 {
+  color: var(--accent);
+}
+
+.report-card.draft p {
+  color: var(--text-light);
 }
 
 .admin-state {
