@@ -1,17 +1,31 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { subdewQuestions } from "../../data/subdewQuestions";
 import { subdewAreas } from "../../data/subdewAreas";
+import { supabase } from "../../lib/supabase";
+
 import "../../styles/Area.css";
 
 export default function SubdewArea() {
-  const { user } = useAuth();
-
   const { areaId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const id = parseInt(areaId, 10);
+
+  const [inspectionId, setInspectionId] = useState(null);
+  const [loadingInspection, setLoadingInspection] = useState(true);
+
+  const [notes, setNotes] = useState({});
+  const [photos, setPhotos] = useState({});
+  const [ratings, setRatings] = useState({});
+  const [saved, setSaved] = useState({});
+  const [submitted, setSubmitted] = useState(false);
+
+  const [uploading, setUploading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const areaKeys = Object.keys(subdewQuestions).map(Number);
   const TOTAL_AREAS = Math.max(...areaKeys);
@@ -19,10 +33,250 @@ export default function SubdewArea() {
   const questions = subdewQuestions[id];
   const title = subdewAreas[id];
 
-  const [notes, setNotes] = useState({});
-  const [photos, setPhotos] = useState({});
-  const [ratings, setRatings] = useState({});
-  const [uploading, setUploading] = useState(false);
+  useEffect(() => {
+    const createOrLoadInspection = async () => {
+      if (!user) return;
+      setLoadingInspection(true);
+
+      const { data: existing, error: fetchError } = await supabase
+        .from("inspections")
+        .select("*")
+        .eq("tool", "subdew")
+        .eq("created_by", user.id)
+        .eq("status", "draft")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (fetchError) {
+        console.error("Fetch draft error:", fetchError);
+        setLoadingInspection(false);
+        return;
+      }
+
+      if (existing) {
+        setInspectionId(existing.id);
+        if (existing.status === "submitted") {
+          setSubmitted(true);
+        }
+        setLoadingInspection(false);
+        return;
+      }
+
+      const { data: created, error: createError } = await supabase
+        .from("inspections")
+        .insert({
+          tool: "subdew",
+          created_by: user.id,
+          status: "draft",
+          created_at: new Date(),
+        })
+        .select()
+        .single();
+
+      if (createError) {
+        console.error("Create inspection error:", createError);
+      } else {
+        setInspectionId(created.id);
+      }
+
+      setLoadingInspection(false);
+    };
+
+    createOrLoadInspection();
+  }, [user]);
+
+  useEffect(() => {
+    if (!inspectionId) return;
+
+    const ensureAreaExists = async () => {
+      const { error } = await supabase
+        .from("inspection_areas")
+        .upsert(
+          { inspection_id: inspectionId, area_id: id },
+          { onConflict: "inspection_id,area_id" },
+        );
+
+      if (error) {
+        console.error("Error ensuring area exists:", error);
+      }
+    };
+
+    ensureAreaExists();
+  }, [inspectionId, id]);
+
+  useEffect(() => {
+    if (!inspectionId) return;
+
+    const loadExistingAnswers = async () => {
+      try {
+        const { data: areaData, error: areaError } = await supabase
+          .from("inspection_areas")
+          .select("id")
+          .eq("inspection_id", inspectionId)
+          .eq("area_id", id)
+          .single();
+
+        if (areaError || !areaData) return;
+
+        const { data: answers, error: answersError } = await supabase
+          .from("question_answers")
+          .select(
+            `
+          id, question_number, rating, question_notes (note), question_photos (photo_url)`,
+          )
+          .eq("area_inspection_id", areaData.id);
+
+        if (answersError || !answers) return;
+
+        const loadedRatings = {};
+        const loadedNotes = {};
+        const loadedSaved = {};
+        const loadedPhotos = {};
+
+        answers.forEach((answer) => {
+          loadedRatings[answer.question_number] = answer.rating;
+
+          loadedNotes[answer.question_number] =
+            answer.question_notes?.note || "";
+
+          if (answer.question_photos?.length > 0) {
+            loadedPhotos[answer.question_number] = answer.question_photos.map(
+              (p) => ({
+                name: "Saved photo",
+                url: p.photo_url,
+                isSaved: true,
+              }),
+            );
+          }
+
+          loadedSaved[answer.question_number] = true;
+        });
+
+        setRatings(loadedRatings);
+        setNotes(loadedNotes);
+        setSaved(loadedSaved);
+        setPhotos(loadedPhotos);
+      } catch (err) {
+        console.error("Error loading existing answers:", err);
+      }
+    };
+
+    loadExistingAnswers();
+  }, [inspectionId, id]);
+
+  const handleSavingQuestion = async (questionNumber) => {
+    if (!inspectionId || !user) return;
+
+    try {
+      setUploading(true);
+
+      const { data: areaData, error: areaError } = await supabase
+        .from("inspection_areas")
+        .select("id")
+        .eq("inspection_id", inspectionId)
+        .eq("area_id", id)
+        .single();
+
+      if (areaError) throw areaError;
+
+      const { data: answerData, error: answerError } = await supabase
+        .from("question_answers")
+        .upsert(
+          {
+            area_inspection_id: areaData.id,
+            question_number: questionNumber,
+            rating: parseInt(ratings[questionNumber]),
+          },
+          { onConflict: "area_inspection_id,question_number" },
+        )
+        .select()
+        .single();
+
+      if (answerError) throw answerError;
+
+      const { error: noteError } = await supabase.from("question_notes").upsert(
+        {
+          question_answer_id: answerData.id,
+          note: notes[questionNumber] || "",
+        },
+        { onConflict: "question_answer_id" },
+      );
+
+      if (noteError) throw noteError;
+
+      if (photos[questionNumber]?.length > 0) {
+        for (const file of photos[questionNumber]) {
+          const filePath = `inspection_${inspectionId}/area-${id}/question-${questionNumber}/${Date.now()}-${file.name}`;
+
+          const { error: uploadError } = await supabase.storage
+            .from("inspection-photos")
+            .upload(filePath, file);
+
+          if (uploadError) {
+            console.error("Upload failed", uploadError);
+            continue;
+          }
+
+          const { data: publicUrlData } = supabase.storage
+            .from("inspection-photos")
+            .getPublicUrl(filePath);
+
+          await supabase.from("question_photos").insert({
+            question_answer_id: answerData.id,
+            photo_url: publicUrlData.publicUrl,
+          });
+        }
+      }
+      setPhotos((prev) => ({
+        ...prev,
+        [questionNumber]: [],
+      }));
+
+      setSaved((prev) => ({ ...prev, [questionNumber]: true }));
+    } catch (err) {
+      console.error("Error saving question:", err);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSubmitReport = async () => {
+    if (!inspectionId) return;
+
+    try {
+      setSubmitting(true);
+      setSubmitError("");
+
+      const { error } = await supabase
+        .from("inspections")
+        .update({ status: "submitted", submitted_at: new Date() })
+        .eq("id", inspectionId);
+
+      if (error) throw error;
+
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Submit error:", err);
+      setSubmitError("Something went wrong.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleRemovePhoto = (questionId, indexToRemove) => {
+    setPhotos((prev) => ({
+      ...prev,
+      [questionId]: prev[questionId].filter(
+        (_, index) => index !== indexToRemove,
+      ),
+    }));
+
+    setSaved((prev) => ({
+      ...prev,
+      [questionId]: false,
+    }));
+  };
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -41,62 +295,9 @@ export default function SubdewArea() {
     navigate(`/subdew/area/${id + 1}`);
   };
 
-  const handleSavingQuestion = (questionId) => {
-    const payload = {
-      questionId,
-      rating: ratings[questionId],
-      notes: notes[questionId] || "",
-      photos: photos[questionId] || [],
-    };
-
-    console.log("saving question:", payload);
-
-    setSaved((prev) => ({ ...prev, [questionId]: true }));
-  };
-
-  const [saved, setSaved] = useState({});
-
-  const handleRemovePhoto = (questionId, indexToRemove) => {
-    setPhotos((prev) => ({
-      ...prev,
-      [questionId]: prev[questionId].filter(
-        (_, index) => index !== indexToRemove,
-      ),
-    }));
-
-    setSaved((prev) => ({
-      ...prev,
-      [questionId]: false,
-    }));
-  };
-
-  const [submitted, setSubmitted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState("");
-
-  const handleSubmitReport = async () => {
-    try {
-      setSubmitting(true);
-      setSubmitError("");
-
-      const reportPayload = {
-        areaId: id,
-        notes,
-        ratings,
-        photos,
-        status: "submitted",
-        submittedAt: new Date().toISOString(),
-      };
-
-      console.log("FINAL REPORT SUBMIT:", reportPayload);
-
-      setSubmitted(true);
-    } catch (err) {
-      setSubmitError("Something went wrong. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  if (loadingInspection) {
+    return <div className="area-container">Loading inspection...</div>;
+  }
 
   return (
     <div className="area-container">
@@ -159,7 +360,6 @@ export default function SubdewArea() {
               type="file"
               accept="image/*"
               multiple
-              capture="environment"
               className="file-input"
               disabled={!user || submitted}
               onChange={(e) => {
@@ -178,14 +378,27 @@ export default function SubdewArea() {
               <ul className="file-list">
                 {photos[q.id].map((photo, index) => (
                   <li key={index} className="file-item">
-                    📷 {photo.name}
-                    <button
-                      type="button"
-                      className="remove-photo-btn"
-                      onClick={() => handleRemovePhoto(q.id, index)}
-                    >
-                      ❌
-                    </button>
+                    {photo.isSaved ? (
+                      <a
+                        href={photo.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        📷 View saved photo
+                      </a>
+                    ) : (
+                      <span className="file-name">📷 {photo.name}</span>
+                    )}
+
+                    {!submitted && (
+                      <button
+                        type="button"
+                        className="remove-photo-btn"
+                        onClick={() => handleRemovePhoto(q.id, index)}
+                      >
+                        ✕
+                      </button>
+                    )}
                   </li>
                 ))}
               </ul>

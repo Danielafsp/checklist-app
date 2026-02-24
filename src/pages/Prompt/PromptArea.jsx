@@ -136,7 +136,6 @@ export default function PromptArea() {
 
         if (answersError || !answers) return;
 
-        // 🔥 Declare ALL state containers BEFORE using them
         const loadedRatings = {};
         const loadedNotes = {};
         const loadedSaved = {};
@@ -285,6 +284,13 @@ export default function PromptArea() {
       ...prev,
       [questionId]: false,
     }));
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   const goPrevious = () => {
