@@ -34,6 +34,8 @@ export default function SubdewReports() {
     fetchReports();
   }, []);
 
+  console.log("Reports fetched:", data);
+
   const submittedReports = reports.filter((r) => r.status === "submitted");
 
   const draftReports = reports.filter((r) => r.status === "draft");

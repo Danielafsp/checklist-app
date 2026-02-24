@@ -1,9 +1,6 @@
 import { Link } from "react-router-dom";
 import "../../styles/Checklist.css";
 import subdewLogo from "../../assets/subdew.png";
-import { useEffect } from "react";
-import { supabase } from "../../lib/supabase";
-import { useAuth } from "../../context/AuthContext";
 
 const areas = [
   { id: 1, name: "RAINWATER MANAGEMENT SYSTEM" },
@@ -20,38 +17,6 @@ const areas = [
 ];
 
 export default function SubdewChecklist() {
-  const { user } = useAuth();
-
-  useEffect(() => {
-    const createInspectionIfNeeded = async () => {
-      const existingId = localStorage.getItem("subdewInspectionId");
-      if (existingId) return;
-
-      if (!user) return;
-
-      const { data, error } = await supabase
-        .from("inspections")
-        .insert({
-          tool: "subdew",
-          created_by: user.id,
-          status: "draft",
-          created_at: new Date(),
-        })
-        .select()
-        .single();
-
-      if (error) {
-        console.error("Error creating inspection:", error);
-        return;
-      }
-
-      localStorage.setItem("subdewInspectionId", data.id);
-      console.log("Created inspection:", data.id);
-    };
-
-    createInspectionIfNeeded();
-  }, [user]);
-
   return (
     <div className="container">
       <figure className="area-logo">
