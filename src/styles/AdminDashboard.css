@@ -83,6 +83,11 @@
   transform: translateY(-3px);
 }
 
+.report-card.draft {
+  border: 2px solid #f0ad4e;
+  background-color: #fff8e6;
+}
+
 .admin-state {
   margin-top: var(--space-md);
   padding: var(--space-md);

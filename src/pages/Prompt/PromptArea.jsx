@@ -146,7 +146,7 @@ export default function PromptArea() {
           loadedRatings[answer.question_number] = answer.rating;
 
           loadedNotes[answer.question_number] =
-            answer.question_notes?.[0]?.note || "";
+            answer.question_notes?.note || "";
 
           if (answer.question_photos?.length > 0) {
             loadedPhotos[answer.question_number] = answer.question_photos.map(
@@ -259,7 +259,7 @@ export default function PromptArea() {
 
       const { error } = await supabase
         .from("inspections")
-        .update({ status: "submitted_at", submitted_at: new Date() })
+        .update({ status: "submitted", submitted_at: new Date() })
         .eq("id", inspectionId);
 
       if (error) throw error;

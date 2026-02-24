@@ -10,10 +10,6 @@ export default function PromptReports() {
   const formatDate = (timestamp) =>
     timestamp ? new Date(timestamp).toLocaleString() : "—";
 
-  useEffect(() => {
-    fetchReports();
-  }, []);
-
   const fetchReports = async () => {
     setLoading(true);
 
@@ -21,8 +17,7 @@ export default function PromptReports() {
       .from("inspections")
       .select("*")
       .eq("tool", "prompt")
-      .eq("status", "submitted")
-      .order("submitted_at", { ascending: false });
+      .order("created_at", { ascending: false });
 
     if (error) {
       console.error("Error fetching reports:", error);
@@ -30,13 +25,23 @@ export default function PromptReports() {
       setReports(data);
     }
 
+    console.log("All reports:", data);
+
     setLoading(false);
   };
+
+  useEffect(() => {
+    fetchReports();
+  }, []);
+
+  const submittedReports = reports.filter((r) => r.status === "submitted");
+
+  const draftReports = reports.filter((r) => r.status === "draft");
 
   return (
     <section className="admin-section">
       <h2>PROMPT Inspections</h2>
-      <p>Overview of submitted Prompt reports</p>
+      <p>Overview of all Prompt inspections</p>
 
       {loading ? (
         <p>Loading...</p>
@@ -44,23 +49,52 @@ export default function PromptReports() {
         <p>No Prompt inspections submitted yet.</p>
       ) : (
         <>
-          <div className="reports-grid">
-            {reports.map((report) => (
-              <div
-                key={report.id}
-                className="report-card"
-                onClick={() => setSelectedReport(report)}
-              >
-                <h4>Inspection #{report.id}</h4>
-                <p>
-                  <strong>Status:</strong> {report.status}
-                </p>
-                <p>
-                  <strong>Created:</strong> {formatDate(report.created_at)}
-                </p>
-              </div>
-            ))}
-          </div>
+          <h3>Submitted Reports</h3>
+          {submittedReports.length === 0 ? (
+            <p>No submitted reports yet.</p>
+          ) : (
+            <div className="reports-grid">
+              {submittedReports.map((report) => (
+                <div
+                  key={report.id}
+                  className="report-card"
+                  onClick={() => setSelectedReport(report)}
+                >
+                  <h4>Inspection #{report.id}</h4>
+                  <p>
+                    <strong>Status:</strong> Submitted
+                  </p>
+                  <p>
+                    <strong>Submitted:</strong>{" "}
+                    {formatDate(report.submitted_at)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <h3 style={{ marginTop: "40px" }}>In Progress</h3>
+          {draftReports.length === 0 ? (
+            <p>No inspections currently in progress.</p>
+          ) : (
+            <div className="reports-grid">
+              {draftReports.map((report) => (
+                <div
+                  key={report.id}
+                  className="report-card draft"
+                  onClick={() => setSelectedReport(report)}
+                >
+                  <h4>Inspection #{report.id}</h4>
+                  <p>
+                    <strong>Status:</strong> Draft
+                  </p>
+                  <p>
+                    <strong>Started:</strong> {formatDate(report.created_at)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
 
           {selectedReport && (
             <div style={{ marginTop: "20px" }}>
