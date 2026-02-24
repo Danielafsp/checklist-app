@@ -45,6 +45,8 @@ export default function PromptArea() {
         .eq("tool", "prompt")
         .eq("created_by", user.id)
         .eq("status", "draft")
+        .order("created_at", { ascending: false })
+        .limit(1)
         .maybeSingle();
 
       if (fetchError) {
@@ -103,6 +105,60 @@ export default function PromptArea() {
     };
 
     ensureAreaExists();
+  }, [inspectionId, id]);
+
+  useEffect(() => {
+    if (!inspectionId) return;
+
+    const loadExistingAnswers = async () => {
+      try {
+        const { data: areaData, error: areaError } = await supabase
+          .from("inspection_areas")
+          .select("id")
+          .eq("inspection_id", inspectionId)
+          .eq("area_id", id)
+          .single();
+
+        if (areaError || !areaData) return;
+
+        const { data: answers, error: answersError } = await supabase
+          .from("question_answers")
+          .select(
+            `id, question_number, rating, question_notes(note), question_photos (photo_url)`,
+          )
+          .eq("area_inspection_id", areaData.id);
+
+        if (answersError || !answers) return;
+
+        const loadedRatings = {};
+        const loadedNotes = {};
+        const loadedSaved = {};
+
+        answers.forEach((answer) => {
+          loadedRatings[answer.question_number] = answer.rating;
+
+          loadedNotes[answer.question_number] =
+            answer.question_notes?.note?.[0]?.note || "";
+
+          if (answer.question_photos?.length > 0) {
+            loadedPhotos[answer.question_number] = answer.question_photos.map(
+              (p) => ({ name: "Saved photo", url: p.photo_url, isSaved: true }),
+            );
+          }
+
+          loadedSaved[answer.question_number] = true;
+        });
+
+        setRatings(loadedRatings);
+        setNotes(loadedNotes);
+        setSaved(loadedSaved);
+        setPhotos(loadedPhotos);
+      } catch (err) {
+        console.error("Error loading existing answers:", err);
+      }
+    };
+
+    loadExistingAnswers();
   }, [inspectionId, id]);
 
   const handleSavingQuestion = async (questionNumber) => {
@@ -191,7 +247,7 @@ export default function PromptArea() {
 
       const { error } = await supabase
         .from("inspections")
-        .update({ status: "submitted" })
+        .update({ status: "submitted_at", submitted_at: new Date() })
         .eq("id", inspectionId);
 
       if (error) throw error;
@@ -310,9 +366,19 @@ export default function PromptArea() {
 
             {photos[q.id]?.length > 0 && (
               <ul className="file-list">
-                {photos[q.id].map((photo, index) => (
+                {photos[q.id]?.map((photo, index) => (
                   <li key={index} className="file-item">
-                    <span className="file-name">📷 {photo.name}</span>
+                    {photo.isSaved ? (
+                      <a
+                        href={photo.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        📷 View saved photo
+                      </a>
+                    ) : (
+                      <span className="file-name">📷 {photo.name}</span>
+                    )}
 
                     {!submitted && (
                       <button
