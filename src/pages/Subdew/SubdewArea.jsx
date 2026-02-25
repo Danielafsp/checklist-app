@@ -23,7 +23,7 @@ export default function SubdewArea() {
   const [saved, setSaved] = useState({});
   const [submitted, setSubmitted] = useState(false);
 
-  const [uploading, setUploading] = useState(false);
+  const [savingQuestions, setSavingQuestions] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
@@ -172,9 +172,12 @@ export default function SubdewArea() {
   const handleSavingQuestion = async (questionNumber) => {
     if (!inspectionId || !user) return;
 
-    try {
-      setUploading(true);
+    setSavingQuestions((prev) => ({
+      ...prev,
+      [questionNumber]: true,
+    }));
 
+    try {
       const { data: areaData, error: areaError } = await supabase
         .from("inspection_areas")
         .select("id")
@@ -211,14 +214,16 @@ export default function SubdewArea() {
 
       if (photos[questionNumber]?.length > 0) {
         for (const file of photos[questionNumber]) {
-          const filePath = `inspection_${inspectionId}/area-${id}/question-${questionNumber}/${Date.now()}-${file.name}`;
+          if (file.isSaved) continue;
+
+          const filePath = `${inspectionId}/area-${id}/question-${questionNumber}/${Date.now()}-${file.name}`;
 
           const { error: uploadError } = await supabase.storage
             .from("inspection-photos")
             .upload(filePath, file);
 
           if (uploadError) {
-            console.error("Upload failed", uploadError);
+            console.error("Upload failed:", uploadError);
             continue;
           }
 
@@ -232,16 +237,18 @@ export default function SubdewArea() {
           });
         }
       }
-      setPhotos((prev) => ({
-        ...prev,
-        [questionNumber]: [],
-      }));
 
-      setSaved((prev) => ({ ...prev, [questionNumber]: true }));
+      setSaved((prev) => ({
+        ...prev,
+        [questionNumber]: true,
+      }));
     } catch (err) {
       console.error("Error saving question:", err);
     } finally {
-      setUploading(false);
+      setSavingQuestions((prev) => ({
+        ...prev,
+        [questionNumber]: false,
+      }));
     }
   };
 
@@ -419,9 +426,9 @@ export default function SubdewArea() {
               <button
                 className="save-btn"
                 onClick={() => handleSavingQuestion(q.id)}
-                disabled={!ratings[q.id]}
+                disabled={!ratings[q.id] || savingQuestions[q.id]}
               >
-                Save
+                {savingQuestions[q.id] ? "Saving..." : "Save"}
               </button>
             )}
           </li>

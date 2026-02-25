@@ -23,7 +23,7 @@ export default function PromptArea() {
   const [saved, setSaved] = useState({});
   const [submitted, setSubmitted] = useState(false);
 
-  const [uploading, setUploading] = useState(false);
+  const [savingQuestions, setSavingQuestions] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
@@ -178,9 +178,12 @@ export default function PromptArea() {
   const handleSavingQuestion = async (questionNumber) => {
     if (!inspectionId || !user) return;
 
-    try {
-      setUploading(true);
+    setSavingQuestions((prev) => ({
+      ...prev,
+      [questionNumber]: true,
+    }));
 
+    try {
       const { data: areaData, error: areaError } = await supabase
         .from("inspection_areas")
         .select("id")
@@ -217,6 +220,8 @@ export default function PromptArea() {
 
       if (photos[questionNumber]?.length > 0) {
         for (const file of photos[questionNumber]) {
+          if (file.isSaved) continue;
+
           const filePath = `${inspectionId}/area-${id}/question-${questionNumber}/${Date.now()}-${file.name}`;
 
           const { error: uploadError } = await supabase.storage
@@ -239,16 +244,17 @@ export default function PromptArea() {
         }
       }
 
-      setPhotos((prev) => ({
+      setSaved((prev) => ({
         ...prev,
-        [questionNumber]: [],
+        [questionNumber]: true,
       }));
-
-      setSaved((prev) => ({ ...prev, [questionNumber]: true }));
     } catch (err) {
       console.error("Error saving question:", err);
     } finally {
-      setUploading(false);
+      setSavingQuestions((prev) => ({
+        ...prev,
+        [questionNumber]: false,
+      }));
     }
   };
 
@@ -426,9 +432,9 @@ export default function PromptArea() {
               <button
                 className="save-btn"
                 onClick={() => handleSavingQuestion(q.id)}
-                disabled={!ratings[q.id]}
+                disabled={!ratings[q.id] || savingQuestions[q.id]}
               >
-                Save
+                {savingQuestions[q.id] ? "Saving..." : "Save"}
               </button>
             )}
           </li>

@@ -150,6 +150,11 @@
   padding: var(--space-xs);
 }
 
+.save-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 .area-navigation {
   display: flex;
   justify-content: center;
