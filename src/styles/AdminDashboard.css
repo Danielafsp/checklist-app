@@ -131,6 +131,54 @@
 
 .admin-row:last-child {
   border-bottom: none;
+  background: #f9fafb;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 25px;
+}
+
+.inspection-area {
+  margin-top: 25px;
+}
+
+.area-title {
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.inspection-question {
+  margin-bottom: 15px;
+  padding-left: 15px;
+  border-left: 3px solid #ddd;
+}
+
+.inspection-note {
+  font-style: italic;
+  color: #555;
+  margin-top: 4px;
+}
+
+.inspection-photos {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.inspection-photo {
+  width: 100px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  transition: transform 0.2s ease;
+}
+
+.inspection-photo:hover {
+  transform: scale(1.05);
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {
