@@ -12,7 +12,7 @@
   height: 220px;
   margin-bottom: var(--space-xl);
   border-radius: var(--radius);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .hero-img {
@@ -30,7 +30,6 @@
   background-color: var(--bg-dark);
   padding: var(--space-md);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
 }
 
 .area-logo {
@@ -120,7 +119,7 @@
 
   .hero-logo {
     bottom: 0;
-    transform: translate(-50%, 30%);
+    transform: translate(-50%, 40%);
     max-width: 260px;
     width: 80%;
   }
