@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import "../styles/ClientDashboard.css";
 import logo from "../assets/fsweblogo.webp";
+import Download from "../assets/Download-qr.png";
 import Navbar from "../components/NavBar";
 
 import PromptImg from "../assets/prompt.png";
@@ -54,6 +55,8 @@ export default function ClientDashboard() {
             </div>
           ))}
         </div>
+
+        <img src={Download} alt="Download QR Code" className="download-qr" />
       </div>
 
       <div className="home-button">

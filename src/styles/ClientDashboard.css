@@ -58,6 +58,13 @@
   border-radius: var(--radius);
 }
 
+.download-qr {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  border-radius: var(--radius);
+}
+
 .client-dashboard-label {
   font-family: var(--font-body);
   font-size: var(--font-size-base);
@@ -78,7 +85,7 @@
   background-color: var(--accent);
   color: var(--text-light);
   border: none;
-  padding: var(--space-md);
+
   border-radius: var(--radius);
   font-size: var(--font-size-base);
   cursor: pointer;
