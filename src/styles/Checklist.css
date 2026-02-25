@@ -115,12 +115,13 @@
 @media (max-width: 480px) {
   .hero {
     height: 180px;
-    margin-bottom: 70px; /* give more breathing space */
+    margin-bottom: 70px;
   }
 
   .hero-logo {
     bottom: 0;
     transform: translate(-50%, 50%);
-    width: 85%;
+    max-width: 260px;
+    width: 80%;
   }
 }
