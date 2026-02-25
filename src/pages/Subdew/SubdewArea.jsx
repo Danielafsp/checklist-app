@@ -35,7 +35,11 @@ export default function SubdewArea() {
 
   useEffect(() => {
     const createOrLoadInspection = async () => {
-      if (!user) return;
+      if (!user) {
+        setLoadingInspection(false);
+        return;
+      }
+
       setLoadingInspection(true);
 
       const { data: existing, error: fetchError } = await supabase

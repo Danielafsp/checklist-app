@@ -35,7 +35,10 @@ export default function PromptArea() {
 
   useEffect(() => {
     const getOrCreateInspection = async () => {
-      if (!user) return;
+      if (!user) {
+        setLoadingInspection(false);
+        return;
+      }
 
       setLoadingInspection(true);
 
