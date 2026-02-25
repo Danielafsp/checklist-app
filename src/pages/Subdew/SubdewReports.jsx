@@ -54,6 +54,12 @@ export default function SubdewReports() {
     fetchReports();
   }, []);
 
+  useEffect(() => {
+    if (selectedReport) {
+      console.log("SELECTED REPORT FULL:", selectedReport);
+    }
+  }, [selectedReport]);
+
   const submittedReports = reports.filter((r) => r.status === "submitted");
 
   const draftReports = reports.filter((r) => r.status === "draft");
