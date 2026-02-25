@@ -18,23 +18,24 @@ export default function PromptReports() {
       .from("inspections")
       .select(
         `
-    *,
-    inspection_areas (
-      id,
-      area_id,
-      question_answers (
+      *,
+      profiles ( name, email, property_name, address ),
+      inspection_areas (
         id,
-        question_number,
-        rating,
-        question_notes (
-          note
-        ),
-        question_photos (
-          photo_url
+        area_id,
+        question_answers (
+          id,
+          question_number,
+          rating,
+          question_notes (
+            note
+          ),
+          question_photos (
+            photo_url
+          )
         )
       )
-    )
-  `,
+    `,
       )
       .eq("tool", "prompt")
       .order("created_at", { ascending: false });
@@ -78,53 +79,67 @@ export default function PromptReports() {
 
     doc.setFontSize(12);
 
+    addLine(
+      `Created By: ${selectedReport.profiles?.name || selectedReport.created_by}`,
+    );
     addLine(`Inspection ID: ${selectedReport.id}`);
     addLine(`Status: ${selectedReport.status}`);
     addLine(`Created: ${formatDate(selectedReport.created_at)}`);
     addLine(`Submitted: ${formatDate(selectedReport.submitted_at)}`);
-    addLine(`Created By: ${selectedReport.created_by}`);
+    addLine(`Client Name: ${selectedReport.profiles?.name || "—"}`);
+    addLine(`Email: ${selectedReport.profiles?.email || "—"}`);
+    addLine(`Property: ${selectedReport.profiles?.property_name || "—"}`);
+    addLine(`Address: ${selectedReport.profiles?.address || "—"}`);
 
     y += 10;
 
-    if (selectedReport.ratings) {
-      addLine("Ratings:");
-      Object.entries(selectedReport.ratings).forEach(([key, value]) => {
-        addLine(`• ${key}: ${value}/5`);
-      });
-      y += 10;
-    }
-
-    if (selectedReport.notes) {
-      addLine("Notes:");
-      const splitNotes = doc.splitTextToSize(selectedReport.notes, 170);
-      splitNotes.forEach((line) => addLine(line));
-      y += 10;
-    }
-
-    if (selectedReport.photos && selectedReport.photos.length > 0) {
-      addLine("Photos:");
+    for (const area of selectedReport.inspection_areas || []) {
+      addLine(`Area: ${area.area_id}`);
       y += 5;
 
-      for (const photoUrl of selectedReport.photos) {
-        if (y > 200) {
-          doc.addPage();
-          y = 20;
+      for (const answer of area.question_answers || []) {
+        addLine(
+          `Question ${answer.question_number} — Rating: ${answer.rating}/5`,
+        );
+
+        if (answer.question_notes?.length > 0) {
+          answer.question_notes.forEach((noteObj) => {
+            const splitText = doc.splitTextToSize(noteObj.note, 170);
+            splitText.forEach((line) => addLine(`Note: ${line}`));
+          });
         }
 
-        const img = await fetch(photoUrl)
-          .then((res) => res.blob())
-          .then(
-            (blob) =>
-              new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result);
-                reader.readAsDataURL(blob);
-              }),
-          );
+        if (answer.question_photos?.length > 0) {
+          for (const photo of answer.question_photos) {
+            if (y > 200) {
+              doc.addPage();
+              y = 20;
+            }
 
-        doc.addImage(img, "JPEG", 20, y, 80, 60);
-        y += 70;
+            try {
+              const img = await fetch(photo.photo_url)
+                .then((res) => res.blob())
+                .then(
+                  (blob) =>
+                    new Promise((resolve) => {
+                      const reader = new FileReader();
+                      reader.onloadend = () => resolve(reader.result);
+                      reader.readAsDataURL(blob);
+                    }),
+                );
+
+              doc.addImage(img, "JPEG", 20, y, 80, 60);
+              y += 70;
+            } catch (err) {
+              addLine("Photo could not be loaded.");
+            }
+          }
+        }
+
+        y += 5;
       }
+
+      y += 10;
     }
 
     doc.save(`prompt-inspection-${selectedReport.id}.pdf`);
