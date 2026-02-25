@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import "../../styles/Checklist.css";
 import subdewLogo from "../../assets/subdew.png";
+import subdewCover from "../../assets/subdew_cover.png";
 
 const areas = [
   { id: 1, name: "RAINWATER MANAGEMENT SYSTEM" },
@@ -19,10 +20,14 @@ const areas = [
 export default function SubdewChecklist() {
   return (
     <div className="container">
-      <figure className="area-logo">
-        <img className="logo" src={subdewLogo} alt="SUBDEW" />
-        <figcaption className="logo-label">Complimentary Service</figcaption>
-      </figure>
+      <div className="hero">
+        <img src={subdewCover} alt="Subdew weather" className="hero-img" />
+
+        <figure className="area-logo hero-logo">
+          <img className="logo" src={subdewLogo} alt="SUBDEW" />
+          <figcaption className="logo-label">Complimentary Service</figcaption>
+        </figure>
+      </div>
       <p className="subtitle">
         Welcome to Subdew, your guide to spotting 11 winter building
         deficiencies that can cause costly repairs.
