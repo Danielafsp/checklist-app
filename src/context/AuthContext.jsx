@@ -9,10 +9,13 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
+    const initializeAuth = async () => {
+      const { data } = await supabase.auth.getSession();
+      setSession(data.session);
       setLoading(false);
-    });
+    };
+
+    initializeAuth();
 
     const {
       data: { subscription },
@@ -30,13 +33,17 @@ export function AuthProvider({ children }) {
         return;
       }
 
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", session.user.id)
         .single();
 
-      setProfile(data);
+      if (!error) {
+        setProfile(data);
+      } else {
+        setProfile(null);
+      }
     };
 
     fetchProfile();
