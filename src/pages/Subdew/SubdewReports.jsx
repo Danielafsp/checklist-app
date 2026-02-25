@@ -22,7 +22,7 @@ export default function SubdewReports() {
     inspection_areas (
       id,
       area_id,
-      question_answer (
+      question_answers (
         id,
         question_number,
         rating,
@@ -212,7 +212,7 @@ export default function SubdewReports() {
                 <div key={area.id} className="inspection-area">
                   <h4 className="area-title">Area: {area.area_id}</h4>
 
-                  {area.question_answer?.map((answer) => (
+                  {area.question_answers?.map((answer) => (
                     <div key={answer.id} className="inspection-question">
                       <p>
                         <strong>Question {answer.question_number}:</strong>{" "}
