@@ -64,14 +64,19 @@ export default function ClientRegister() {
       return;
     }
 
-    const { error: profileError } = await supabase.from("profiles").insert({
-      id: user.id,
-      email: user.email,
-      role: "client",
-      name,
-      property_name: propertyName,
-      address,
-    });
+    const { error: profileError } = await supabase.from("profiles").upsert(
+      {
+        id: user.id,
+        email: user.email,
+        role: "client",
+        name,
+        property_name: propertyName,
+        address,
+      },
+      {
+        onConflict: "id",
+      },
+    );
 
     if (profileError) {
       alert("Error creating profile: " + profileError.message);
