@@ -68,6 +68,9 @@ export default function ClientRegister() {
       id: user.id,
       email: user.email,
       role: "client",
+      name,
+      property_name: propertyName,
+      address,
     });
 
     if (profileError) {
