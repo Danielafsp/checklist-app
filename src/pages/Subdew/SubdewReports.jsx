@@ -43,8 +43,8 @@ export default function SubdewReports() {
     if (error) {
       console.error("Error fetching reports:", error);
     } else {
+      console.log("RAW REPORT DATA:", data);
       setReports(data);
-      console.log("All reports:", data);
     }
 
     setLoading(false);
@@ -203,72 +203,74 @@ export default function SubdewReports() {
             </div>
           )}
 
-          {selectedReport && (
-            <div style={{ marginTop: "20px" }}>
-              <h3>Inspection Details</h3>
+          {selectedReport &&
+            (console.log("SELECTED REPORT FULL:", selectedReport),
+            (
+              <div style={{ marginTop: "20px" }}>
+                <h3>Inspection Details</h3>
 
-              <p>
-                <strong>ID:</strong> {selectedReport.id}
-              </p>
-              <p>
-                <strong>Tool:</strong> {selectedReport.tool}
-              </p>
-              <p>
-                <strong>Status:</strong> {selectedReport.status}
-              </p>
-              <p>
-                <strong>Created:</strong>{" "}
-                {formatDate(selectedReport.created_at)}
-              </p>
-              <p>
-                <strong>Created By:</strong> {selectedReport.created_by}
-              </p>
-              {selectedReport.inspection_areas?.map((area) => (
-                <div key={area.id} className="inspection-area">
-                  <h4 className="area-title">Area: {area.area_id}</h4>
+                <p>
+                  <strong>ID:</strong> {selectedReport.id}
+                </p>
+                <p>
+                  <strong>Tool:</strong> {selectedReport.tool}
+                </p>
+                <p>
+                  <strong>Status:</strong> {selectedReport.status}
+                </p>
+                <p>
+                  <strong>Created:</strong>{" "}
+                  {formatDate(selectedReport.created_at)}
+                </p>
+                <p>
+                  <strong>Created By:</strong> {selectedReport.created_by}
+                </p>
+                {selectedReport.inspection_areas?.map((area) => (
+                  <div key={area.id} className="inspection-area">
+                    <h4 className="area-title">Area: {area.area_id}</h4>
 
-                  {area.question_answers?.map((answer) => (
-                    <div key={answer.id} className="inspection-question">
-                      <p>
-                        <strong>Question {answer.question_number}:</strong>{" "}
-                        {answer.rating}/5
-                      </p>
-
-                      {answer.question_notes?.map((noteObj, idx) => (
-                        <p key={idx} className="inspection-note">
-                          Note: {noteObj.note}
+                    {area.question_answers?.map((answer) => (
+                      <div key={answer.id} className="inspection-question">
+                        <p>
+                          <strong>Question {answer.question_number}:</strong>{" "}
+                          {answer.rating}/5
                         </p>
-                      ))}
 
-                      {answer.question_photos?.length > 0 && (
-                        <div className="inspection-photos">
-                          {answer.question_photos.map((photo, index) => (
-                            <img
-                              key={index}
-                              src={photo.photo_url}
-                              alt="Inspection"
-                              className="inspection-photo"
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              ))}
+                        {answer.question_notes?.map((noteObj, idx) => (
+                          <p key={idx} className="inspection-note">
+                            Note: {noteObj.note}
+                          </p>
+                        ))}
 
-              {selectedReport && (
-                <div style={{ marginTop: "20px" }}>
-                  <button
-                    onClick={handleDownloadPDF}
-                    style={{ marginTop: "15px" }}
-                  >
-                    Download as PDF
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
+                        {answer.question_photos?.length > 0 && (
+                          <div className="inspection-photos">
+                            {answer.question_photos.map((photo, index) => (
+                              <img
+                                key={index}
+                                src={photo.photo_url}
+                                alt="Inspection"
+                                className="inspection-photo"
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+
+                {selectedReport && (
+                  <div style={{ marginTop: "20px" }}>
+                    <button
+                      onClick={handleDownloadPDF}
+                      style={{ marginTop: "15px" }}
+                    >
+                      Download as PDF
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
         </>
       )}
     </section>
