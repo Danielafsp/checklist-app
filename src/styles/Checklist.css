@@ -111,3 +111,16 @@
   color: var(--accent);
   font-weight: bold;
 }
+
+@media (max-width: 480px) {
+  .hero {
+    height: 180px;
+    margin-bottom: 70px; /* give more breathing space */
+  }
+
+  .hero-logo {
+    bottom: 0;
+    transform: translate(-50%, 50%);
+    width: 85%;
+  }
+}
