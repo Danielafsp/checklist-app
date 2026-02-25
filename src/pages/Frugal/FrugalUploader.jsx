@@ -15,52 +15,9 @@ export default function Frugal() {
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleFileChange = (e) => {
-    const selectedFiles = Array.from(e.target.files).map((file) => ({
-      file,
-      uploaded: false,
-      uploading: false,
-    }));
-
+    const selectedFiles = Array.from(e.target.files);
     setFiles((prev) => [...prev, ...selectedFiles]);
     e.target.value = "";
-  };
-
-  const handleFileUpload = async (index) => {
-    if (!user) return;
-
-    const fileObject = files[index];
-    const file = fileObject.file;
-
-    setFiles((prev) =>
-      prev.map((f, i) => (i === index ? { ...f, uploading: true } : f)),
-    );
-
-    const filePath = `frugal/${user.id}/${Date.now()}-${file.name}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("frugal-files")
-      .upload(filePath, file);
-
-    if (uploadError) {
-      console.error(uploadError);
-      setErrorMessage("Error uploading file.");
-      setFiles((prev) =>
-        prev.map((f, i) => (i === index ? { ...f, uploading: false } : f)),
-      );
-      return;
-    }
-
-    const { data } = supabase.storage
-      .from("frugal-files")
-      .getPublicUrl(filePath);
-
-    setFiles((prev) =>
-      prev.map((f, i) =>
-        i === index
-          ? { ...f, uploading: false, uploaded: true, fileUrl: data.publicUrl }
-          : f,
-      ),
-    );
   };
 
   const handleFileDelete = (index) => {
@@ -70,10 +27,6 @@ export default function Frugal() {
   const validateForm = () => {
     if (files.length === 0) {
       return "Please upload at least one file.";
-    }
-
-    if (files.some((f) => !f.uploaded)) {
-      return "Please upload all selected files before submitting.";
     }
 
     if (!visitDate) {
@@ -101,7 +54,6 @@ export default function Frugal() {
     setErrorMessage("");
 
     try {
-      // 1️⃣ Insert request
       const { data: requestData, error: requestError } = await supabase
         .from("frugal_requests")
         .insert([
@@ -119,11 +71,23 @@ export default function Frugal() {
 
       const requestId = requestData.id;
 
-      const fileInserts = files.map((f) => ({
-        frugal_request_id: requestId,
-        file_url: f.fileUrl,
-        file_name: f.file.name,
-      }));
+      const fileInserts = [];
+
+      for (const file of files) {
+        const filePath = `frugal/${user.id}/${requestId}/${Date.now()}-${file.name}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("frugal-files")
+          .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        fileInserts.push({
+          frugal_request_id: requestId,
+          file_url: filePath,
+          file_name: file.name,
+        });
+      }
 
       const { error: filesError } = await supabase
         .from("frugal_files")
@@ -141,8 +105,7 @@ export default function Frugal() {
     setLoading(false);
   };
 
-  const isSubmitDisabled =
-    !visitDate || files.some((f) => !f.uploaded) || loading;
+  const isSubmitDisabled = files.length === 0 || !visitDate || loading;
 
   useEffect(() => {
     if (submitted) return;
@@ -227,23 +190,11 @@ export default function Frugal() {
             />
             {files.length > 0 && (
               <ul className="file-list">
-                {files.map((f, index) => (
+                {files.map((file, index) => (
                   <li key={index} className="file-item">
-                    <span>{f.file.name}</span>
+                    <span>{file.name}</span>
 
                     <div className="file-actions">
-                      {f.uploaded ? (
-                        <span className="file-success">Uploaded</span>
-                      ) : (
-                        <button
-                          type="button"
-                          disabled={!user || f.uploading}
-                          onClick={() => handleFileUpload(index)}
-                        >
-                          {f.uploading ? "Uploading..." : "Upload"}
-                        </button>
-                      )}
-
                       <button
                         type="button"
                         className="file-delete"
