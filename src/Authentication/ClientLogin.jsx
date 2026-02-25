@@ -24,6 +24,7 @@ export default function ClientLogin() {
     const cleanEmail = email.trim().toLowerCase();
     const cleanPassword = password.trim();
 
+    console.log("LOGIN ATTEMPT:", cleanEmail, cleanPassword);
     const { data, error } = await supabase.auth.signInWithPassword({
       email: cleanEmail,
       password: cleanPassword,
