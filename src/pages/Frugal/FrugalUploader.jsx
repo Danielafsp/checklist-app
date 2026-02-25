@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { supabase } from "../../lib/supabase";
 import "../../styles/Frugal.css";
 import frugalLogo from "../../assets/frugal.png";
 
@@ -24,19 +25,42 @@ export default function Frugal() {
     e.target.value = "";
   };
 
-  const handleFileUpload = (index) => {
+  const handleFileUpload = async (index) => {
     if (!user) return;
+
+    const fileObject = files[index];
+    const file = fileObject.file;
+
     setFiles((prev) =>
       prev.map((f, i) => (i === index ? { ...f, uploading: true } : f)),
     );
 
-    setTimeout(() => {
+    const filePath = `frugal/${user.id}/${Date.now()}-${file.name}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("frugal-files")
+      .upload(filePath, file);
+
+    if (uploadError) {
+      console.error(uploadError);
+      setErrorMessage("Error uploading file.");
       setFiles((prev) =>
-        prev.map((f, i) =>
-          i === index ? { ...f, uploading: false, uploaded: true } : f,
-        ),
+        prev.map((f, i) => (i === index ? { ...f, uploading: false } : f)),
       );
-    }, 1000);
+      return;
+    }
+
+    const { data } = supabase.storage
+      .from("frugal-files")
+      .getPublicUrl(filePath);
+
+    setFiles((prev) =>
+      prev.map((f, i) =>
+        i === index
+          ? { ...f, uploading: false, uploaded: true, fileUrl: data.publicUrl }
+          : f,
+      ),
+    );
   };
 
   const handleFileDelete = (index) => {
@@ -59,7 +83,7 @@ export default function Frugal() {
     return null;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!user) {
@@ -73,20 +97,48 @@ export default function Frugal() {
       return;
     }
 
-    setErrorMessage("");
     setLoading(true);
+    setErrorMessage("");
 
-    console.log({
-      files,
-      notes,
-      visitDate,
-    });
+    try {
+      // 1️⃣ Insert request
+      const { data: requestData, error: requestError } = await supabase
+        .from("frugal_requests")
+        .insert([
+          {
+            property_address: "Not provided yet",
+            visit_date: visitDate,
+            notes,
+            created_by: user.id,
+          },
+        ])
+        .select()
+        .single();
 
-    setTimeout(() => {
-      setLoading(false);
+      if (requestError) throw requestError;
+
+      const requestId = requestData.id;
+
+      const fileInserts = files.map((f) => ({
+        frugal_request_id: requestId,
+        file_url: f.fileUrl,
+        file_name: f.file.name,
+      }));
+
+      const { error: filesError } = await supabase
+        .from("frugal_files")
+        .insert(fileInserts);
+
+      if (filesError) throw filesError;
+
       setSubmitted(true);
       localStorage.removeItem("frugalDraft");
-    }, 1000);
+    } catch (err) {
+      console.error(err);
+      setErrorMessage("Something went wrong. Please try again.");
+    }
+
+    setLoading(false);
   };
 
   const isSubmitDisabled =
