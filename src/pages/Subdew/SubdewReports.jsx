@@ -23,9 +23,8 @@ export default function SubdewReports() {
       console.error("Error fetching reports:", error);
     } else {
       setReports(data);
+      console.log("All reports:", data);
     }
-
-    console.log("All reports:", data);
 
     setLoading(false);
   };
@@ -33,8 +32,6 @@ export default function SubdewReports() {
   useEffect(() => {
     fetchReports();
   }, []);
-
-  console.log("Reports fetched:", data);
 
   const submittedReports = reports.filter((r) => r.status === "submitted");
 

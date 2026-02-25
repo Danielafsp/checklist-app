@@ -85,7 +85,7 @@
 
 .report-card.draft {
   border: 2px solid var(--accent);
-  background-color: #463f3f;
+  background-color: var(--bg-card);
 }
 
 .report-card.draft h4 {
