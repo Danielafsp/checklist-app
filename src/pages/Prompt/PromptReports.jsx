@@ -102,11 +102,12 @@ export default function PromptReports() {
           `Question ${answer.question_number} — Rating: ${answer.rating}/5`,
         );
 
-        if (answer.question_notes?.length > 0) {
-          answer.question_notes.forEach((noteObj) => {
-            const splitText = doc.splitTextToSize(noteObj.note, 170);
-            splitText.forEach((line) => addLine(`Note: ${line}`));
-          });
+        if (answer.question_notes?.note) {
+          const splitText = doc.splitTextToSize(
+            answer.question_notes.note,
+            170,
+          );
+          splitText.forEach((line) => addLine(`Note: ${line}`));
         }
 
         if (answer.question_photos?.length > 0) {
@@ -235,11 +236,11 @@ export default function PromptReports() {
                         {answer.rating}/5
                       </p>
 
-                      {answer.question_notes?.map((noteObj, idx) => (
-                        <p key={idx} className="inspection-note">
-                          Note: {noteObj.note}
+                      {answer.question_notes?.note && (
+                        <p className="inspection-note">
+                          Note: {answer.question_notes.note}
                         </p>
-                      ))}
+                      )}
 
                       {answer.question_photos?.length > 0 && (
                         <div className="inspection-photos">
