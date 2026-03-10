@@ -9,6 +9,19 @@ import "../styles/AdminDashboard.css";
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("prompt");
 
+  const renderActiveSection = () => {
+    switch (activeTab) {
+      case "prompt":
+        return <PromptReports />;
+      case "subdew":
+        return <SubdewReports />;
+      case "frugal":
+        return <FrugalReports />;
+      case "roof":
+        return <NanoRequests />;
+    }
+  };
+
   return (
     <div className="admin-dashboard">
       <div className="admin-tabs">
@@ -18,6 +31,7 @@ export default function AdminDashboard() {
         >
           PROMPT
         </button>
+
         <button
           className={activeTab === "subdew" ? "active" : ""}
           onClick={() => setActiveTab("subdew")}
@@ -30,6 +44,7 @@ export default function AdminDashboard() {
         >
           FRUGAL
         </button>
+
         <button
           className={activeTab === "roof" ? "active" : ""}
           onClick={() => setActiveTab("roof")}
@@ -38,12 +53,7 @@ export default function AdminDashboard() {
         </button>
       </div>
 
-      <div className="admin-content">
-        {activeTab === "prompt" && <PromptReports />}
-        {activeTab === "subdew" && <SubdewReports />}
-        {activeTab === "frugal" && <FrugalReports />}
-        {activeTab === "roof" && <NanoRequests />}
-      </div>
+      <div className="admin-content">{renderActiveSection()}</div>
     </div>
   );
 }

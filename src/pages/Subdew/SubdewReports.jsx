@@ -45,6 +45,10 @@ export default function SubdewReports() {
     } else {
       console.log("RAW REPORT DATA:", data);
       setReports(data);
+
+      if (data.length > 0) {
+        setSelectedReport(data[0]);
+      }
     }
 
     setLoading(false);
@@ -53,16 +57,6 @@ export default function SubdewReports() {
   useEffect(() => {
     fetchReports();
   }, []);
-
-  useEffect(() => {
-    if (selectedReport) {
-      console.log("SELECTED REPORT FULL:", selectedReport);
-    }
-  }, [selectedReport]);
-
-  const submittedReports = reports.filter((r) => r.status === "submitted");
-
-  const draftReports = reports.filter((r) => r.status === "draft");
 
   const handleDownloadPDF = async () => {
     if (!selectedReport) return;
@@ -152,134 +146,111 @@ export default function SubdewReports() {
     doc.save(`subdew-inspection-${selectedReport.id}.pdf`);
   };
 
+  if (loading) {
+    return <p className="admin-loading">Loading...</p>;
+  }
+
+  if (reports.length === 0) {
+    return <p className="admin-empty">No Subdew reports yet.</p>;
+  }
+
   return (
-    <section className="admin-section">
-      <h2>SUBDEW Inspections</h2>
-      <p>Overview of submitted Subdew reports</p>
+    <>
+      <div className="reports-sidebar">
+        <div className="reports-list">
+          {reports.map((report) => (
+            <div
+              key={report.id}
+              className={`report-item ${selectedReport?.id === report.id ? "active" : ""}`}
+              onClick={() => setSelectedReport(report)}
+            >
+              <strong>Inspection #{report.id}</strong>
 
-      {loading ? (
-        <p>Loading...</p>
-      ) : reports.length === 0 ? (
-        <p>No Subdew inspections submitted yet.</p>
-      ) : (
-        <>
-          <h3>Submitted Reports</h3>
-          {submittedReports.length === 0 ? (
-            <p>No submitted reports yet.</p>
-          ) : (
-            <div className="reports-grid">
-              {submittedReports.map((report) => (
-                <div
-                  key={report.id}
-                  className="report-card"
-                  onClick={() => setSelectedReport(report)}
-                >
-                  <h4>Inspection #{report.id}</h4>
-                  <p>
-                    <strong>Status:</strong> Submitted
-                  </p>
-                  <p>
-                    <strong>Submitted:</strong>{" "}
-                    {formatDate(report.submitted_at)}
-                  </p>
-                </div>
-              ))}
+              <div>{report.status}</div>
+
+              <div>
+                {report.submitted_at
+                  ? formatDate(report.submitted_at)
+                  : formatDate(report.created_at)}
+              </div>
             </div>
-          )}
+          ))}
+        </div>
+      </div>
 
-          <h3 style={{ marginTop: "40px" }}>In Progress</h3>
-          {draftReports.length === 0 ? (
-            <p>No inspections currently in progress.</p>
-          ) : (
-            <div className="reports-grid">
-              {draftReports.map((report) => (
-                <div
-                  key={report.id}
-                  className="report-card draft"
-                  onClick={() => setSelectedReport(report)}
-                >
-                  <h4>Inspection #{report.id}</h4>
-                  <p>
-                    <strong>Status:</strong> Draft
-                  </p>
-                  <p>
-                    <strong>Started:</strong> {formatDate(report.created_at)}
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
+      <div className="report-viewer">
+        {!selectedReport && <p>Select a report to view details.</p>}
 
-          {selectedReport &&
-            (console.log("SELECTED REPORT FULL:", selectedReport),
-            (
-              <div style={{ marginTop: "20px" }}>
-                <h3>Inspection Details</h3>
+        {selectedReport && (
+          <div className="admin-section Subdew">
+            <h2>Inspection Details</h2>
 
-                <p>
-                  <strong>ID:</strong> {selectedReport.id}
-                </p>
-                <p>
-                  <strong>Tool:</strong> {selectedReport.tool}
-                </p>
-                <p>
-                  <strong>Status:</strong> {selectedReport.status}
-                </p>
-                <p>
-                  <strong>Created:</strong>{" "}
-                  {formatDate(selectedReport.created_at)}
-                </p>
-                <p>
-                  <strong>Created By:</strong> {selectedReport.created_by}
-                </p>
-                {selectedReport.inspection_areas?.map((area) => (
-                  <div key={area.id} className="inspection-area">
-                    <h4 className="area-title">Area: {area.area_id}</h4>
+            <p>
+              <strong>ID:</strong> {selectedReport.id}
+            </p>
 
-                    {area.question_answers?.map((answer) => (
-                      <div key={answer.id} className="inspection-question">
-                        <p>
-                          <strong>Question {answer.question_number}:</strong>{" "}
-                          {answer.rating}/5
-                        </p>
+            <p>
+              <strong>Status:</strong> {selectedReport.status}
+            </p>
 
-                        {answer.question_notes?.note && (
-                          <p className="inspection-note">
-                            Note: {answer.question_notes.note}
-                          </p>
-                        )}
+            <p>
+              <strong>Created:</strong> {formatDate(selectedReport.created_at)}
+            </p>
 
-                        {answer.question_photos?.length > 0 && (
-                          <div className="inspection-photos">
-                            {answer.question_photos.map((photo, index) => (
-                              <img
-                                key={index}
-                                src={photo.photo_url}
-                                alt="Inspection"
-                                className="inspection-photo"
-                              />
-                            ))}
-                          </div>
-                        )}
+            <p>
+              <strong>Client:</strong> {selectedReport.profiles?.name || "—"}
+            </p>
+
+            <p>
+              <strong>Property:</strong>{" "}
+              {selectedReport.profiles?.property_name || "—"}
+            </p>
+
+            <p>
+              <strong>Address:</strong>{" "}
+              {selectedReport.profiles?.address || "—"}
+            </p>
+
+            {selectedReport.inspection_areas?.map((area) => (
+              <div key={area.id} className="inspection-area">
+                <h4 className="area-title">Area: {area.area_id}</h4>
+
+                {area.question_answers?.map((answer) => (
+                  <div key={answer.id} className="inspection-question">
+                    <p>
+                      <strong>Question {answer.question_number}:</strong>{" "}
+                      {answer.rating}/5
+                    </p>
+
+                    {answer.question_notes?.note && (
+                      <p className="inspection-note">
+                        Note: {answer.question_notes.note}
+                      </p>
+                    )}
+
+                    {answer.question_photos?.length > 0 && (
+                      <div className="inspection-photos">
+                        {answer.question_photos.map((photo, index) => (
+                          <img
+                            key={index}
+                            src={photo.photo_url}
+                            alt="Inspection"
+                            className="inspection-photo"
+                          />
+                        ))}
                       </div>
-                    ))}
+                    )}
                   </div>
                 ))}
-
-                {selectedReport && (
-                  <div style={{ marginTop: "20px" }}>
-                    <button
-                      onClick={handleDownloadPDF}
-                      style={{ marginTop: "15px" }}
-                    >
-                      Download as PDF
-                    </button>
-                  </div>
-                )}
               </div>
             ))}
-        </>
-      )}
-    </section>
+
+            <button onClick={handleDownloadPDF} style={{ marginTop: "15px" }}>
+              Download as PDF
+            </button>
+          </div>
+        )}
+      </div>
+    </>
   );
 }

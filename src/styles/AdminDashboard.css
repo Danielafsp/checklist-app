@@ -20,11 +20,62 @@
   cursor: pointer;
   border-radius: 6px;
   font-weight: 600;
+  transition: var(--transition);
+}
+
+.admin-tabs button:hover {
+  background: #ddd;
 }
 
 .admin-tabs button.active {
   background: #222;
   color: white;
+}
+
+.admin-content {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: var(--space-lg);
+  min-height: 600px;
+}
+
+.reports-sidebar {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  box-shadow: var(--shadow);
+  overflow-y: auto;
+}
+
+.reports-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.report-item {
+  padding: 10px;
+  border-radius: 6px;
+  background: #f3f4f6;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.report-item:hover {
+  background: #e5e7eb;
+}
+
+.report-item.active {
+  background: #222;
+  color: white;
+}
+
+.report-viewer {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow);
+  overflow-y: auto;
 }
 
 .admin-section {
@@ -61,39 +112,6 @@
 
 .admin-section.roof {
   border-left: 4px solid #c45a5a;
-}
-
-.reports-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
-  margin-top: 20px;
-}
-
-.report-card {
-  background-color: var(--bg-card);
-  padding: var(--space-md);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  transition: var(--transition);
-  cursor: pointer;
-}
-
-.report-card:hover {
-  transform: translateY(-3px);
-}
-
-.report-card.draft {
-  border: 2px solid var(--accent);
-  background-color: var(--bg-card);
-}
-
-.report-card.draft h4 {
-  color: var(--accent);
-}
-
-.report-card.draft p {
-  color: var(--text-light);
 }
 
 .admin-state {
@@ -185,11 +203,19 @@
   .admin-dashboard {
     padding: var(--space-md);
   }
-}
-.admin-tabs {
-  flex-direction: column;
-}
+  .admin-tabs {
+    flex-direction: column;
+  }
 
-.admin-tabs button {
-  width: 100%;
+  .admin-tabs button {
+    width: 100%;
+  }
+
+  .admin-content {
+    grid-template-columns: 1fr;
+  }
+
+  .reports-sidebar {
+    max-height: 200px;
+  }
 }

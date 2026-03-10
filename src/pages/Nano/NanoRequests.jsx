@@ -29,6 +29,11 @@ export default function NanoRequests() {
       console.error("Fetch error:", error);
     } else {
       setRequests(data);
+
+      if (data.length > 0) {
+        setSelectedRequest(data[0]);
+        setNotesDraft(data[0].notes || "");
+      }
     }
     setLoading(false);
   };
@@ -94,77 +99,88 @@ export default function NanoRequests() {
     doc.save(`${selectedRequest.name}-request.pdf`);
   };
 
+  if (loading) {
+    return <p className="admin-loading">Loading...</p>;
+  }
+
+  if (requests.length === 0) {
+    return <p className="admin-empty">No Roof Armour requests yet.</p>;
+  }
+
   return (
-    <section className="admin-section roof">
-      <h2>Roof Armour Requests</h2>
-      <p>Overview of Roof Armour contact requests</p>
+    <>
+      <div className="reports-sidebar">
+        <div className="reports-list">
+          {requests.map((request) => (
+            <div
+              key={request.id}
+              className={`report-item ${selectedRequest?.id === request.id ? "active" : ""}`}
+              onClick={() => {
+                setSelectedRequest(request);
+                setNotesDraft(request.notes || "");
+              }}
+            >
+              <strong>{request.name}</strong>
 
-      {loading ? (
-        <p>Loading...</p>
-      ) : requests.length === 0 ? (
-        <p>No requests found.</p>
-      ) : (
-        <>
-          <div className="reports-grid">
-            {requests.map((req) => (
-              <div
-                key={req.id}
-                className="report-card"
-                onClick={() => {
-                  setSelectedRequest(req);
-                  setNotesDraft(req.notes || "");
-                }}
+              <div>{request.email}</div>
+
+              <div>{new Date(request.created_at).toLocaleDateString()}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="report-viewer">
+        {!selectedRequest && <p>Select a request.</p>}
+
+        {selectedRequest && (
+          <div className="admin-section roof">
+            <h2>Roof Armour Request</h2>
+
+            <div className="admin-row">
+              <strong>Name</strong>
+              <span>{selectedRequest.name}</span>
+            </div>
+
+            <div className="admin-row">
+              <strong>Email</strong>
+              <span>{selectedRequest.email}</span>
+            </div>
+
+            <div className="admin-row">
+              <strong>Phone</strong>
+              <span>{selectedRequest.phone}</span>
+            </div>
+
+            <div className="admin-row">
+              <strong>Roof Age</strong>
+              <span>{selectedRequest.roof_age}</span>
+            </div>
+
+            <div className="admin-row">
+              <strong>Roof Type</strong>
+              <span>{selectedRequest.roof_type}</span>
+            </div>
+
+            <div className="admin-row">
+              <strong>Property Type</strong>
+              <span>{selectedRequest.property_type}</span>
+            </div>
+
+            <div className="admin-row">
+              <strong>Status</strong>
+              <select
+                value={selectedRequest.status}
+                onChange={(e) => handleStatusChange(e.target.value)}
               >
-                <h4>{req.name}</h4>
-                <p>{req.email}</p>
-                <p>
-                  <strong>Status:</strong> {req.status}
-                </p>
-                <p>
-                  <strong>Submitted:</strong> {formatDate(req.created_at)}
-                </p>
-              </div>
-            ))}
-          </div>
+                <option value="new">New</option>
+                <option value="contacted">Contacted</option>
+                <option value="closed">Closed</option>
+              </select>
+            </div>
 
-          {selectedRequest && (
-            <div style={{ marginTop: "20px" }}>
-              <h3>Request details</h3>
-
-              <p>
-                <strong>Name:</strong> {selectedRequest.name}
-              </p>
-              <p>
-                <strong>Email:</strong> {selectedRequest.email}
-              </p>
-              <p>
-                <strong>Phone:</strong> {selectedRequest.phone}
-              </p>
-              <p>
-                <strong>Roof age:</strong> {selectedRequest.roof_age}
-              </p>
-              <p>
-                <strong>Roof type:</strong> {selectedRequest.roof_type}
-              </p>
-              <p>
-                <strong>Property type:</strong> {selectedRequest.property_type}
-              </p>
-
-              <p>
-                <strong>Status:</strong>{" "}
-                <select
-                  value={selectedRequest.status}
-                  onChange={(e) => handleStatusChange(e.target.value)}
-                >
-                  <option value="new">New</option>
-                  <option value="contacted">Contacted</option>
-                  <option value="closed">Closed</option>
-                </select>
-              </p>
-
-              <p>
-                <strong>Notes:</strong>
-              </p>
+            <div className="inspection-area">
+              <div className="area-title">Internal Notes</div>
               <textarea
                 value={notesDraft}
                 onChange={(e) => setNotesDraft(e.target.value)}
@@ -176,22 +192,22 @@ export default function NanoRequests() {
                 Save Notes
               </button>
 
-              <button onClick={handleDownloadPDF} style={{ marginTop: "10px" }}>
-                Download as PDF
-              </button>
-
               {saved && (
                 <p style={{ color: "green", marginTop: "5px" }}>✓ Saved</p>
               )}
-
-              <p>
-                <strong>Last updated:</strong> {""}
-                {formatDate(selectedRequest.updated_at)}
-              </p>
             </div>
-          )}
-        </>
-      )}
-    </section>
+
+            <button onClick={handleDownloadPDF} style={{ marginTop: "10px" }}>
+              Download as PDF
+            </button>
+
+            <p style={{ marginTop: "15px" }}>
+              <strong>Last updated:</strong> {""}
+              {formatDate(selectedRequest.updated_at)}
+            </p>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
