@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import jsPDF from "jspdf";
+import { promptAreas } from "../../data/promptAreas";
+import { promptQuestions } from "../../data/promptQuestions";
+import logo from "../../assets/fsweblogo.webp";
 import "../../styles/AdminDashboard.css";
 
 export default function PromptReports() {
@@ -62,7 +65,14 @@ export default function PromptReports() {
     if (!selectedReport) return;
 
     const doc = new jsPDF();
-    let y = 20;
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const logoWidth = 75;
+    const logoX = (pageWidth - logoWidth) / 2;
+
+    doc.addImage(logo, "WEBP", logoX, 10, logoWidth, 20);
+
+    let y = 40;
 
     const addLine = (text) => {
       if (y > 270) {
@@ -74,7 +84,7 @@ export default function PromptReports() {
     };
 
     doc.setFontSize(16);
-    doc.text("PROMPT Inspection Report", 20, y);
+    doc.text("PROMPT Inspection Report", pageWidth / 2, y, { align: "center" });
     y += 15;
 
     doc.setFontSize(12);
@@ -94,13 +104,18 @@ export default function PromptReports() {
     y += 10;
 
     for (const area of selectedReport.inspection_areas || []) {
-      addLine(`Area: ${area.area_id}`);
+      const areaTitle = promptAreas[area.area_id] || `Area ${area.area_id}`;
+      addLine(`Area: ${areaTitle}`);
       y += 5;
 
       for (const answer of area.question_answers || []) {
-        addLine(
-          `Question ${answer.question_number} — Rating: ${answer.rating}/5`,
-        );
+        const questionText =
+          promptQuestions[area.area_id]?.find(
+            (q) => q.id === answer.question_number,
+          )?.text || `Question ${answer.question_number}`;
+
+        addLine(questionText);
+        addLine(`Rating: ${answer.rating}/5`);
 
         if (answer.question_notes?.note) {
           const splitText = doc.splitTextToSize(
@@ -213,14 +228,19 @@ export default function PromptReports() {
 
             {selectedReport.inspection_areas?.map((area) => (
               <div key={area.id} className="inspection-area">
-                <h4 className="area-title">Area: {area.area_id}</h4>
+                <h4 className="area-title">
+                  Area: {promptAreas[area.area_id]}
+                </h4>
 
                 {area.question_answers?.map((answer) => (
                   <div key={answer.id} className="inspection-question">
                     <p>
-                      <strong>Question {answer.question_number}:</strong>{" "}
-                      {answer.rating}/5
+                      {promptQuestions[area.area_id]?.find(
+                        (question) => question.id === answer.question_number,
+                      )?.text || "Unknown question"}
                     </p>
+
+                    <p>Score: {answer.rating}/5</p>
 
                     {answer.question_notes?.note && (
                       <p className="inspection-note">
