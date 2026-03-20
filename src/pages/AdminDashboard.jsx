@@ -53,7 +53,9 @@ export default function AdminDashboard() {
         </button>
       </div>
 
-      <div className="admin-content">{renderActiveSection()}</div>
+      <div className="admin-body">
+        <div className="admin-content">{renderActiveSection()}</div>
+      </div>
     </div>
   );
 }

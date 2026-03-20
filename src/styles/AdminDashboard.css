@@ -1,16 +1,14 @@
 .admin-dashboard {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: var(--space-xl);
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: var(--space-xl);
+  padding: 10px;
 }
 
 .admin-tabs {
-  display: flex;
+  flex-shrink: 0;
+  padding: 10px;
   gap: 10px;
-  margin-bottom: 20px;
 }
 
 .admin-tabs button {
@@ -21,6 +19,7 @@
   border-radius: 6px;
   font-weight: 600;
   transition: var(--transition);
+  gap: 16px;
 }
 
 .admin-tabs button:hover {
@@ -32,11 +31,18 @@
   color: white;
 }
 
+.admin-body {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+}
+
 .admin-content {
   display: grid;
   grid-template-columns: 320px 1fr;
   gap: var(--space-lg);
-  min-height: 600px;
+  flex: 1;
+  height: 100%;
 }
 
 .reports-sidebar {
@@ -45,6 +51,7 @@
   padding: var(--space-md);
   box-shadow: var(--shadow);
   overflow-y: auto;
+  height: 100%;
   scrollbar-width: thin;
 }
 
@@ -98,6 +105,7 @@
   padding: var(--space-lg);
   box-shadow: var(--shadow);
   overflow-y: auto;
+  height: 100%;
 }
 
 .admin-section {
