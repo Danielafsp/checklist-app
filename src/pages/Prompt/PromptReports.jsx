@@ -61,6 +61,29 @@ export default function PromptReports() {
     fetchReports();
   }, []);
 
+  const handleStatusChange = async (newStatus) => {
+    if (!selectedReport) return;
+
+    const { error } = await supabase
+      .from("inspections")
+      .update({
+        status: newStatus,
+      })
+      .eq("id", selectedReport.id);
+
+    if (!error) {
+      const updated = { ...selectedReport, status: newStatus };
+
+      setSelectedReport(updated);
+
+      setReports((prev) =>
+        prev.map((r) => (r.id === updated.id ? updated : r)),
+      );
+    } else {
+      console.error("Error updating status:", error);
+    }
+  };
+
   const handleDownloadPDF = async () => {
     if (!selectedReport) return;
 
@@ -179,9 +202,13 @@ export default function PromptReports() {
               className={`report-item ${selectedReport?.id === report.id ? "active" : ""}`}
               onClick={() => setSelectedReport(report)}
             >
-              <strong>Inspection #{report.id}</strong>
+              <strong>
+                Inspection by {report.profiles?.name || "Unnamed Client"}
+              </strong>
 
-              <div>{report.status}</div>
+              <div className={`status status-${report.status}`}>
+                {report.status}
+              </div>
 
               <div>
                 {report.submitted_at
@@ -204,9 +231,17 @@ export default function PromptReports() {
               <strong>ID:</strong> {selectedReport.id}
             </p>
 
-            <p>
-              <strong>Status:</strong> {selectedReport.status}
-            </p>
+            <div className="admin-row">
+              <strong>Status</strong>
+              <select
+                value={selectedReport.status}
+                onChange={(e) => handleStatusChange(e.target.value)}
+              >
+                <option value="Submitted">Submitted</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
 
             <p>
               <strong>Created:</strong> {formatDate(selectedReport.created_at)}

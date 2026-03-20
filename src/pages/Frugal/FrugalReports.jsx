@@ -17,6 +17,7 @@ export default function FrugalReports() {
       .select(
         `
         *,
+        profiles ( name ),
         frugal_files (*)
       `,
       )
@@ -33,6 +34,29 @@ export default function FrugalReports() {
     }
 
     setLoading(false);
+  };
+
+  const handleStatusChange = async (newStatus) => {
+    if (!selectedRequest) return;
+
+    const { error } = await supabase
+      .from("frugal_requests")
+      .update({
+        status: newStatus,
+      })
+      .eq("id", selectedRequest.id);
+
+    if (!error) {
+      const updated = { ...selectedRequest, status: newStatus };
+
+      setSelectedRequest(updated);
+
+      setRequests((prev) =>
+        prev.map((r) => (r.id === updated.id ? updated : r)),
+      );
+    } else {
+      console.error("Error updating status:", error);
+    }
   };
 
   const handleDownload = async (filePath) => {
@@ -66,9 +90,21 @@ export default function FrugalReports() {
               className={`report-item ${selectedRequest?.id === request.id ? "active" : ""}`}
               onClick={() => setSelectedRequest(request)}
             >
-              <strong>Request #{request.id}</strong>
+              <strong>
+                {request.profiles?.name || `Request ${request.id.slice(0, 6)}`}
+              </strong>
 
-              <div>{new Date(request.created_at).toLocaleDateString()}</div>
+              <div
+                className={`status status-${request.status
+                  ?.toLowerCase()
+                  .replace(/\s+/g, "_")}`}
+              >
+                {request.status}
+              </div>
+
+              <div style={{ fontSize: "12px", color: "#6b7280" }}>
+                {new Date(request.created_at).toLocaleDateString()}
+              </div>
             </div>
           ))}
         </div>
@@ -82,8 +118,15 @@ export default function FrugalReports() {
             <h2>Frugal Requests</h2>
 
             <div className="admin-row">
-              <strong>Status:</strong>
-              <span>{selectedRequest.status}</span>
+              <strong>Status</strong>
+              <select
+                value={selectedRequest.status}
+                onChange={(e) => handleStatusChange(e.target.value)}
+              >
+                <option value="Submitted">Submitted</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+              </select>
             </div>
 
             <div className="admin-row">
@@ -100,7 +143,7 @@ export default function FrugalReports() {
               <div className="area-title">Uploaded Files</div>
 
               {selectedRequest.frugal_files.length === 0 && (
-                <p>No files uploaded.</p>
+                <p className="admin-empty">No files uploaded.</p>
               )}
 
               <ul>
