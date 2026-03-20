@@ -225,7 +225,7 @@ export default function SubdewReports() {
         {!selectedReport && <p>Select a report to view details.</p>}
 
         {selectedReport && (
-          <div className="admin-section Subdew">
+          <div className="admin-section subdew">
             <h2>Inspection Details</h2>
 
             <p>

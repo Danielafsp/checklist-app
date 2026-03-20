@@ -224,7 +224,7 @@ export default function PromptReports() {
         {!selectedReport && <p>Select a report to view details.</p>}
 
         {selectedReport && (
-          <div className="admin-section Prompt">
+          <div className="admin-section prompt">
             <h2>Inspection Details</h2>
 
             <p>
