@@ -1,0 +1,27 @@
+.profile-page {
+  max-width: 800px;
+  margin: auto;
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.profile-card input {
+  padding: 8px;
+}
+
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.report-card {
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 8px;
+}

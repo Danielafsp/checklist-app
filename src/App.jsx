@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Home from "./pages/Home.jsx";
+import Profile from "./pages/ProfilePage.jsx";
 import ClientDashboard from "./pages/ClientDashboard.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import Team from "./pages/Team.jsx";
@@ -39,6 +39,16 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+
           <Route path="/team" element={<Team />} />
 
           <Route path="/prompt" element={<PromptChecklist />} />
