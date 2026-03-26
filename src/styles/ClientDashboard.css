@@ -96,6 +96,11 @@
   background-color: var(--accent-light);
 }
 
+.home-logo {
+  width: 300px;
+  margin-bottom: var(--space-xl);
+}
+
 @media (max-width: 480px) {
   .client-dashboard-container {
     flex-direction: column;
