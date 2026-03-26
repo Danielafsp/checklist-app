@@ -1,10 +1,17 @@
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
+import { useEffect, useState } from "react";
 import jsPDF from "jspdf";
+import { promptAreas } from "../data/promptAreas";
+import { promptQuestions } from "../data/promptQuestions";
+import { subdewAreas } from "../data/subdewAreas";
+import { subdewQuestions } from "../data/subdewQuestions";
+import logo from "../assets/fsweblogo.webp";
 import "../styles/ProfilePage.css";
 
 export default function ProfilePage() {
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
+
   const [profile, setProfile] = useState(null);
   const [reports, setReports] = useState([]);
   const [editing, setEditing] = useState(false);
@@ -25,32 +32,18 @@ export default function ProfilePage() {
     const { data: inspections } = await supabase
       .from("inspections")
       .select(
-        `*, inspection_areas (id, area_id; question_answers (id, question_number, rating, question_notes (note), question_photos (photo_url)))`,
+        `*, inspection_areas (id, area_id, question_answers (id, question_number, rating, question_notes (note), question_photos (photo_url)))`,
       )
       .eq("created_by", user.id)
       .order("created_at", { ascending: false })
       .limit(4);
 
-    setReports(reportsData);
-
     const { data: frugal } = await supabase
       .from("frugal_requests")
-      .select("*")
+      .select(`*, frugal_files (*)`)
       .eq("created_by", user.id)
       .order("created_at", { ascending: false })
       .limit(4);
-
-    const frugalIds = frugal.map((f) => f.id);
-
-    const { data: files } = await supabase
-      .from("frugal_files")
-      .select("*")
-      .in("frugal_request_id", frugalIds);
-
-    const frugalWithFiles = frugal.map((f) => ({
-      ...f,
-      file_url: files.find((file) => file.frugal_request_id === f.id)?.file_url,
-    }));
 
     const { data: roof } = await supabase
       .from("roof_requests")
@@ -64,12 +57,12 @@ export default function ProfilePage() {
         id: i.id,
         type: i.tool,
         date: i.created_at,
-        source: " inspection",
+        source: "inspection",
         data: i,
       })),
-      ...(frugalWithFiles || []).map((f) => ({
+      ...(frugal || []).map((f) => ({
         id: f.id,
-        type: f.tool,
+        type: f.tool || "frugal",
         date: f.created_at,
         source: "frugal",
         data: f,
@@ -86,6 +79,7 @@ export default function ProfilePage() {
     const sorted = allReports
       .sort((a, b) => new Date(b.date) - new Date(a.date))
       .slice(0, 4);
+
     setReports(sorted);
   }
 
@@ -95,7 +89,7 @@ export default function ProfilePage() {
     setEditing(false);
   }
 
-  function handleDownload(report) {
+  async function handleDownload(report) {
     if (report.source === "inspection") {
       downloadInspectionPDF(report.data);
     }
@@ -104,56 +98,130 @@ export default function ProfilePage() {
       downloadRoofPDF(report.data);
     }
 
-    if (report.source === "frugal" && report.data.file_url) {
-      const publicUrl = supabase.storage
+    if (report.source === "frugal") {
+      const file = report.data.frugal_files?.[0];
+
+      if (!file) return;
+
+      const { data } = await supabase.storage
         .from("frugal-files")
-        .getPublicUrl(report.data.file_url).data.publicURL;
-      window.open(publicUrl, "_blank");
+        .createSignedUrl(file.file_url, 60);
+
+      if (data?.signedUrl) {
+        window.open(data.signedUrl, "_blank");
+      }
     }
   }
 
   function downloadRoofPDF(data) {
     const doc = new jsPDF();
+
     doc.text("Roof Armour Request", 20, 20);
     doc.text(`Name: ${data.name}`, 20, 30);
     doc.text(`Email: ${data.email}`, 20, 40);
     doc.text(`Phone: ${data.phone}`, 20, 50);
     doc.text(`Roof Age: ${data.roof_age}`, 20, 60);
     doc.text(`Roof Type: ${data.roof_type}`, 20, 70);
+    doc.text(`Property Type: ${data.property_type}`, 20, 80);
+    doc.text(`Status: ${data.status}`, 20, 90);
+    doc.text(`Notes: ${data.notes || "-"}`, 20, 100);
 
-    doc.save(`${data.name}-roof.pdf`);
+    doc.save(`${data.name}-request.pdf`);
   }
 
-  function downloadInspectionPDF(data) {
+  async function downloadInspectionPDF(data) {
     const doc = new jsPDF();
 
-    let y = 20;
+    const isPrompt = data.tool === "prompt";
+
+    const areas = isPrompt ? promptAreas : subdewAreas;
+    const questions = isPrompt ? promptQuestions : subdewQuestions;
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const logoWidth = 75;
+    const logoX = (pageWidth - logoWidth) / 2;
+
+    doc.addImage(logo, "WEBP", logoX, 10, logoWidth, 20);
+
+    let y = 40;
 
     const addLine = (text) => {
+      if (y > 270) {
+        doc.addPage();
+        y = 20;
+      }
       doc.text(text, 20, y);
       y += 8;
     };
+
+    doc.setFontSize(16);
+    doc.text("Inspection Report", pageWidth / 2, y, { align: "center" });
+    y += 15;
+
+    doc.setFontSize(12);
 
     addLine(`Inspection ID: ${data.id}`);
     addLine(`Type: ${data.tool}`);
     addLine(`Status: ${data.status}`);
     addLine(`Created: ${new Date(data.created_at).toLocaleString()}`);
+    addLine(`Submitted: ${data.submitted_at || "—"}`);
 
-    y += 5;
+    y += 10;
 
-    data.inspection_areas?.forEach((area) => {
-      addLine(`Area: ${area.area_id}`);
+    for (const area of data.inspection_areas || []) {
+      const areaTitle = areas[area.area_id] || `Area ${area.area_id}`;
 
-      area.question_answers?.forEach((answer) => {
-        addLine(`Q${answer.question_number} → ${answer.rating}/5`);
+      addLine(`Area: ${areaTitle}`);
+      y += 5;
+
+      for (const answer of area.question_answers || []) {
+        const questionText =
+          questions[area.area_id]?.find((q) => q.id === answer.question_number)
+            ?.text || `Question ${answer.question_number}`;
+
+        addLine(questionText);
+        addLine(`Rating: ${answer.rating}/5`);
 
         if (answer.question_notes?.note) {
-          addLine(`Note: ${answer.question_notes.note}`);
+          const splitText = doc.splitTextToSize(
+            answer.question_notes.note,
+            170,
+          );
+          splitText.forEach((line) => addLine(`Note: ${line}`));
         }
-      });
 
-      y += 5;
-    });
+        if (answer.question_photos?.length > 0) {
+          for (const photo of answer.question_photos) {
+            if (y > 200) {
+              doc.addPage();
+              y = 20;
+            }
+
+            try {
+              const img = await fetch(photo.photo_url)
+                .then((res) => res.blob())
+                .then(
+                  (blob) =>
+                    new Promise((resolve) => {
+                      const reader = new FileReader();
+                      reader.onloadend = () => resolve(reader.result);
+                      reader.readAsDataURL(blob);
+                    }),
+                );
+
+              doc.addImage(img, "JPEG", 20, y, 80, 60);
+              y += 70;
+            } catch {
+              addLine("Photo could not be loaded.");
+            }
+          }
+        }
+
+        y += 5;
+      }
+
+      y += 10;
+    }
 
     doc.save(`inspection-${data.id}.pdf`);
   }
