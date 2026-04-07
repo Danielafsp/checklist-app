@@ -309,6 +309,7 @@ export default function PromptReports() {
             ))}
 
             <button
+              className="admin-button"
               onClick={handleDownloadPDF}
               disabled={isDraft}
               style={{ marginTop: "15px" }}

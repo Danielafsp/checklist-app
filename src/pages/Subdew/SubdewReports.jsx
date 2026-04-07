@@ -311,6 +311,7 @@ export default function SubdewReports() {
             ))}
 
             <button
+              className="admin-button"
               onClick={handleDownloadPDF}
               disabled={isDraft}
               style={{ marginTop: "15px" }}

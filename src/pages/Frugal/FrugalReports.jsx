@@ -165,6 +165,7 @@ export default function FrugalReports() {
                     {file.file_name}
 
                     <button
+                      className="admin-button"
                       onClick={() => handleDownload(file.file_url)}
                       disabled={isDraft}
                       style={{ marginLeft: "10px" }}

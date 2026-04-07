@@ -6,9 +6,10 @@
 }
 
 .admin-tabs {
-  flex-shrink: 0;
-  padding: 10px;
+  display: flex;
   gap: 10px;
+  flex-wrap: wrap;
+  padding-bottom: 20px;
 }
 
 .admin-tabs button {
@@ -19,7 +20,6 @@
   border-radius: 6px;
   font-weight: 600;
   transition: var(--transition);
-  gap: 16px;
 }
 
 .admin-tabs button:hover {
@@ -29,20 +29,64 @@
 .admin-tabs button.active {
   background: #222;
   color: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .admin-body {
   flex: 1;
-  overflow: hidden;
   display: flex;
 }
 
 .admin-content {
   display: grid;
-  grid-template-columns: 320px 1fr;
+  grid-template-columns: minmax(260px, 320px) 1fr;
   gap: var(--space-lg);
   flex: 1;
   height: 100%;
+}
+
+.admin-button {
+  background-color: var(--accent); /* your orange */
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: inline-block;
+}
+
+.admin-button:hover {
+  filter: brightness(0.95);
+}
+
+.admin-button:active {
+  transform: scale(0.97);
+}
+
+.admin-button:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+  filter: none;
+}
+
+select {
+  border-radius: var(--radius);
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  background-color: white;
+  font-size: 13px;
+}
+
+.admin-notes {
+  width: 100%;
+  margin-top: 5px;
+  border-radius: var(--radius);
 }
 
 .reports-sidebar {
@@ -55,6 +99,15 @@
   scrollbar-width: thin;
 }
 
+.reports-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.reports-sidebar::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 6px;
+}
+
 .reports-list {
   display: flex;
   flex-direction: column;
@@ -65,6 +118,7 @@
   padding: 12px;
   border-radius: 8px;
   background: #f3f4f6;
+  color: #333;
   cursor: pointer;
   transition: var(--transition);
   display: flex;
@@ -80,6 +134,7 @@
   background: #eef2ff;
   color: #222;
   border-left: 4px solid #4f46e5;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.15);
 }
 
 .report-item strong {
@@ -92,7 +147,7 @@
 
 .report-item .status {
   font-size: 12px;
-  color: #222;
+  color: #666;
 }
 
 .report-item.active .status {
@@ -246,6 +301,6 @@
   }
 
   .reports-sidebar {
-    max-height: 200px;
+    max-height: 30vh;
   }
 }

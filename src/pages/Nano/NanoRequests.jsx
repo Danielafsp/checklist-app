@@ -195,14 +195,15 @@ export default function NanoRequests() {
             <div className="inspection-area">
               <div className="area-title">Internal Notes</div>
               <textarea
+                className="admin-notes"
                 value={notesDraft}
                 onChange={(e) => setNotesDraft(e.target.value)}
                 rows={4}
-                style={{ width: "100%", marginTop: "5px" }}
                 disabled={isDraft}
               />
 
               <button
+                className="admin-button"
                 onClick={handleSaveNotes}
                 disabled={isDraft}
                 style={{ marginTop: "8px" }}
@@ -216,6 +217,7 @@ export default function NanoRequests() {
             </div>
 
             <button
+              className="admin-button"
               onClick={handleDownloadPDF}
               disabled={isDraft}
               style={{ marginTop: "10px" }}
