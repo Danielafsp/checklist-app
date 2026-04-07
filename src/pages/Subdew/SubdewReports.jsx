@@ -62,7 +62,7 @@ export default function SubdewReports() {
   }, []);
 
   const handleStatusChange = async (newStatus) => {
-    if (!selectedReport) return;
+    if (!selectedReport || selectedReport.status === "draft") return;
 
     const { error } = await supabase
       .from("inspections")
@@ -193,6 +193,8 @@ export default function SubdewReports() {
     return <p className="admin-empty">No Subdew reports yet.</p>;
   }
 
+  const isDraft = selectedReport?.status === "draft";
+
   return (
     <>
       <div className="reports-sidebar">
@@ -232,11 +234,18 @@ export default function SubdewReports() {
               <strong>ID:</strong> {selectedReport.id}
             </p>
 
+            {isDraft && (
+              <p className="draft-warning">
+                This inspection is a draft and cannot be modified or exported.
+              </p>
+            )}
+
             <div className="admin-row">
               <strong>Status</strong>
               <select
                 value={selectedReport.status}
                 onChange={(e) => handleStatusChange(e.target.value)}
+                disabled={isDraft}
               >
                 <option value="Submitted">Submitted</option>
                 <option value="In Progress">In Progress</option>
@@ -301,7 +310,11 @@ export default function SubdewReports() {
               </div>
             ))}
 
-            <button onClick={handleDownloadPDF} style={{ marginTop: "15px" }}>
+            <button
+              onClick={handleDownloadPDF}
+              disabled={isDraft}
+              style={{ marginTop: "15px" }}
+            >
               Download as PDF
             </button>
           </div>

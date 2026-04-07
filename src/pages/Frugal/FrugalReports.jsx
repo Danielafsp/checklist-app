@@ -37,7 +37,11 @@ export default function FrugalReports() {
   };
 
   const handleStatusChange = async (newStatus) => {
-    if (!selectedRequest) return;
+    if (
+      !selectedRequest ||
+      selectedRequest.status?.toLowerCase().trim() === "draft"
+    )
+      return;
 
     const { error } = await supabase
       .from("frugal_requests")
@@ -80,6 +84,8 @@ export default function FrugalReports() {
     return <p className="admin-empty">No Frugal requests yet.</p>;
   }
 
+  const isDraft = selectedRequest?.status?.toLowerCase().trim() === "draft";
+
   return (
     <>
       <div className="reports-sidebar">
@@ -117,11 +123,18 @@ export default function FrugalReports() {
           <div className="admin-section frugal">
             <h2>Frugal Requests</h2>
 
+            {isDraft && (
+              <p className="draft-warning">
+                This request is a draft and cannot be modified or downloaded.
+              </p>
+            )}
+
             <div className="admin-row">
               <strong>Status</strong>
               <select
                 value={selectedRequest.status}
                 onChange={(e) => handleStatusChange(e.target.value)}
+                disabled={isDraft}
               >
                 <option value="Submitted">Submitted</option>
                 <option value="In Progress">In Progress</option>
@@ -153,6 +166,7 @@ export default function FrugalReports() {
 
                     <button
                       onClick={() => handleDownload(file.file_url)}
+                      disabled={isDraft}
                       style={{ marginLeft: "10px" }}
                     >
                       Download

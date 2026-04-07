@@ -39,7 +39,11 @@ export default function NanoRequests() {
   };
 
   const handleStatusChange = async (newStatus) => {
-    if (!selectedRequest) return;
+    if (
+      !selectedRequest ||
+      selectedRequest.status?.toLowerCase().trim() === "draft"
+    )
+      return;
 
     const { error } = await supabase
       .from("roof_requests")
@@ -107,6 +111,8 @@ export default function NanoRequests() {
     return <p className="admin-empty">No Roof Armour requests yet.</p>;
   }
 
+  const isDraft = selectedRequest?.status?.toLowerCase().trim() === "draft";
+
   return (
     <>
       <div className="reports-sidebar">
@@ -136,6 +142,12 @@ export default function NanoRequests() {
         {selectedRequest && (
           <div className="admin-section roof">
             <h2>Roof Armour Request</h2>
+
+            {isDraft && (
+              <p className="draft-warning">
+                This request is a draft and cannot be modified or exported.
+              </p>
+            )}
 
             <div className="admin-row">
               <strong>Name</strong>
@@ -172,6 +184,7 @@ export default function NanoRequests() {
               <select
                 value={selectedRequest.status}
                 onChange={(e) => handleStatusChange(e.target.value)}
+                disabled={isDraft}
               >
                 <option value="new">New</option>
                 <option value="contacted">Contacted</option>
@@ -186,9 +199,14 @@ export default function NanoRequests() {
                 onChange={(e) => setNotesDraft(e.target.value)}
                 rows={4}
                 style={{ width: "100%", marginTop: "5px" }}
+                disabled={isDraft}
               />
 
-              <button onClick={handleSaveNotes} style={{ marginTop: "8px" }}>
+              <button
+                onClick={handleSaveNotes}
+                disabled={isDraft}
+                style={{ marginTop: "8px" }}
+              >
                 Save Notes
               </button>
 
@@ -197,7 +215,11 @@ export default function NanoRequests() {
               )}
             </div>
 
-            <button onClick={handleDownloadPDF} style={{ marginTop: "10px" }}>
+            <button
+              onClick={handleDownloadPDF}
+              disabled={isDraft}
+              style={{ marginTop: "10px" }}
+            >
               Download as PDF
             </button>
 

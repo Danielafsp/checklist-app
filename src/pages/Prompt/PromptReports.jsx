@@ -47,7 +47,6 @@ export default function PromptReports() {
       console.error("Error fetching reports:", error);
     } else {
       setReports(data);
-      console.log("All reports:", data);
 
       if (data.length > 0) {
         setSelectedReport(data[0]);
@@ -62,7 +61,7 @@ export default function PromptReports() {
   }, []);
 
   const handleStatusChange = async (newStatus) => {
-    if (!selectedReport) return;
+    if (!selectedReport || selectedReport.status === "draft") return;
 
     const { error } = await supabase
       .from("inspections")
@@ -192,6 +191,8 @@ export default function PromptReports() {
     return <p className="admin-empty">No Prompt inspections submitted yet.</p>;
   }
 
+  const isDraft = selectedReport?.status === "draft";
+
   return (
     <>
       <div className="reports-sidebar">
@@ -231,11 +232,18 @@ export default function PromptReports() {
               <strong>ID:</strong> {selectedReport.id}
             </p>
 
+            {isDraft && (
+              <p className="draft-warning">
+                This inspection is a draft and cannot be modified or exported.
+              </p>
+            )}
+
             <div className="admin-row">
               <strong>Status</strong>
               <select
                 value={selectedReport.status}
                 onChange={(e) => handleStatusChange(e.target.value)}
+                disabled={isDraft}
               >
                 <option value="Submitted">Submitted</option>
                 <option value="In Progress">In Progress</option>
@@ -300,7 +308,11 @@ export default function PromptReports() {
               </div>
             ))}
 
-            <button onClick={handleDownloadPDF} style={{ marginTop: "15px" }}>
+            <button
+              onClick={handleDownloadPDF}
+              disabled={isDraft}
+              style={{ marginTop: "15px" }}
+            >
               Download as PDF
             </button>
           </div>
