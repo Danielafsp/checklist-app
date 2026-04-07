@@ -40,7 +40,14 @@ export default function App() {
             }
           />
 
-          <Route path="/profile" element={<Profile />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute allowedRole="client">
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
 
           <Route path="/team" element={<Team />} />
 

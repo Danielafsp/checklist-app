@@ -24,7 +24,7 @@ export default function Navbar() {
   async function fetchProfile() {
     const { data } = await supabase
       .from("profiles")
-      .select("name")
+      .select("name, role")
       .eq("id", user.id)
       .single();
 
@@ -78,12 +78,14 @@ export default function Navbar() {
                   setMenuOpen(!menuOpen);
                 }}
               >
-                Hello, {firstName} ▾
+                Hello, {firstName} {profile?.role === "client" && "▾"}
               </button>
 
               {menuOpen && (
                 <div className="dropdown">
-                  <button onClick={goToProfile}>Profile</button>
+                  {profile?.role === "client" && (
+                    <button onClick={goToProfile}>Profile</button>
+                  )}
                   <button onClick={handleLogout}>Logout</button>
                 </div>
               )}
