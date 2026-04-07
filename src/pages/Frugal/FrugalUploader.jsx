@@ -110,10 +110,7 @@ export default function Frugal() {
   useEffect(() => {
     if (submitted) return;
 
-    localStorage.setItem(
-      "frugalDraft",
-      JSON.stringify({ files, notes, visitDate }),
-    );
+    localStorage.setItem("frugalDraft", JSON.stringify({ notes, visitDate }));
   }, [files, notes, visitDate, submitted]);
 
   useEffect(() => {
@@ -124,8 +121,7 @@ export default function Frugal() {
     try {
       const parsedDraft = JSON.parse(savedDraft);
 
-      if (parsedDraft.files || parsedDraft.notes || parsedDraft.visitDate) {
-        setFiles(parsedDraft.files || []);
+      if (parsedDraft.notes || parsedDraft.visitDate) {
         setNotes(parsedDraft.notes || "");
         setVisitDate(parsedDraft.visitDate || "");
       }
@@ -188,6 +184,11 @@ export default function Frugal() {
               disabled={!user}
               onChange={handleFileChange}
             />
+            {files.length === 0 && notes && (
+              <p className="draft-hint">
+                Draft restored. Please re-upload your files.
+              </p>
+            )}
             {files.length > 0 && (
               <ul className="file-list">
                 {files.map((file, index) => (
