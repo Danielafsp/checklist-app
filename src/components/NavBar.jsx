@@ -53,6 +53,8 @@ export default function Navbar() {
     return () => window.removeEventListener("click", handleClickOutside);
   }, []);
 
+  const firstName = profile?.name?.split(" ")[0] || "";
+
   return (
     <header className="navbar">
       <div className="navbar-inner">
@@ -76,7 +78,7 @@ export default function Navbar() {
                   setMenuOpen(!menuOpen);
                 }}
               >
-                Hello, {profile?.name} ▾
+                Hello, {firstName} ▾
               </button>
 
               {menuOpen && (

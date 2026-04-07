@@ -82,3 +82,34 @@
 .status.info {
   color: green;
 }
+
+@media (max-width: 480px) {
+  .profile-page {
+    overflow-x: hidden;
+  }
+
+  .reports-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .report-row {
+    display: grid;
+    grid-template-columns: minmax(80px, 1fr) minmax(90px, 1fr) auto;
+    align-items: center;
+  }
+
+  .report-row span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .report-row button {
+    margin-left: 0;
+  }
+
+  .button.small {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+}

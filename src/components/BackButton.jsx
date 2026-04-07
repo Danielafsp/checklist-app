@@ -19,6 +19,8 @@ export default function BackButton() {
       navigate("/");
     } else if (location.pathname === "/team") {
       navigate("/");
+    } else if (location.pathname === "/profile") {
+      navigate("/");
     } else {
       navigate("/");
     }
@@ -44,6 +46,9 @@ export default function BackButton() {
       return "← Back";
     }
     if (location.pathname === "/team") {
+      return "← Back";
+    }
+    if (location.pathname === "/profile") {
       return "← Back";
     }
     return null;
