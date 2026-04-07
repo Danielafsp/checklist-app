@@ -25,3 +25,60 @@
   padding: 10px;
   border-radius: 8px;
 }
+
+.button {
+  background-color: var(--accent);
+  color: var(--text-light);
+  border: none;
+  border-radius: var(--radius);
+  padding: 4px 10px;
+  margin-left: 0.5rem;
+  font-size: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.button:hover {
+  background-color: var(--accent-light);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.report-row {
+  display: grid;
+  grid-template-columns: 120px 140px auto;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.report-row:last-child {
+  border-bottom: none;
+}
+
+.date {
+  color: #555;
+}
+
+.status {
+  text-transform: capitalize;
+  font-size: 13px;
+  text-align: left;
+}
+
+.status.submitted {
+  color: green;
+  font-weight: 500;
+}
+
+.status.draft {
+  color: orange;
+}
+
+.status.info {
+  color: green;
+}

@@ -13,12 +13,30 @@ export default function ProfilePage() {
   const { user } = useAuth();
 
   const [profile, setProfile] = useState(null);
-  const [reports, setReports] = useState([]);
+  const [reportsByType, setReportsByType] = useState({
+    prompt: [],
+    subdew: [],
+    frugal: [],
+    roof: [],
+  });
   const [editing, setEditing] = useState(false);
 
   useEffect(() => {
     if (user) fetchData();
   }, [user]);
+
+  function getReportTitle(report) {
+    if (report.source === "inspection") {
+      return report.type === "prompt"
+        ? "Prompt Inspection"
+        : "Subdew Inspection";
+    }
+
+    if (report.source === "frugal") return "Frugal Request";
+    if (report.source === "roof") return "Roof Assessment";
+
+    return "Report";
+  }
 
   async function fetchData() {
     const { data: profileData } = await supabase
@@ -52,35 +70,27 @@ export default function ProfilePage() {
       .order("created_at", { ascending: false })
       .limit(4);
 
-    const allReports = [
-      ...(inspections || []).map((i) => ({
-        id: i.id,
-        type: i.tool,
-        date: i.created_at,
-        source: "inspection",
-        data: i,
-      })),
-      ...(frugal || []).map((f) => ({
-        id: f.id,
-        type: f.tool || "frugal",
-        date: f.created_at,
-        source: "frugal",
-        data: f,
-      })),
-      ...(roof || []).map((r) => ({
-        id: r.id,
-        type: "roof",
-        date: r.created_at,
-        source: "roof",
-        data: r,
-      })),
-    ];
+    const grouped = {
+      prompt: [],
+      subdew: [],
+      frugal: [],
+      roof: [],
+    };
 
-    const sorted = allReports
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .slice(0, 4);
+    (inspections || []).forEach((i) => {
+      if (i.tool === "prompt") grouped.prompt.push(i);
+      if (i.tool === "subdew") grouped.subdew.push(i);
+    });
 
-    setReports(sorted);
+    (frugal || []).forEach((f) => {
+      grouped.frugal.push(f);
+    });
+
+    (roof || []).forEach((r) => {
+      grouped.roof.push(r);
+    });
+
+    setReportsByType(grouped);
   }
 
   async function handleSave() {
@@ -260,27 +270,148 @@ export default function ProfilePage() {
         />
 
         {!editing ? (
-          <button onClick={() => setEditing(true)}>Edit</button>
+          <button className="button small" onClick={() => setEditing(true)}>
+            Edit
+          </button>
         ) : (
-          <button onClick={handleSave}>Save</button>
+          <button className="button small" onClick={handleSave}>
+            Save
+          </button>
         )}
       </div>
 
       <div className="reports-grid">
-        {reports.length === 0 && <p>No recent reports</p>}
+        <div className="report-card">
+          <h3>Prompt Inspection</h3>
 
-        {reports.map((report) => (
-          <div key={report.id} className="report-card">
-            <p>
-              <strong>{report.type}</strong>
-            </p>
-            <p>{new Date(report.date).toLocaleDateString()}</p>
+          {reportsByType.prompt.length === 0 && <p>No reports</p>}
 
-            <button onClick={() => handleDownload(report)}>
-              {report.source === "frugal" ? "View File" : "Download PDF"}
-            </button>
-          </div>
-        ))}
+          {reportsByType.prompt.map((report) => {
+            const isSubmitted = report.status === "submitted";
+
+            return (
+              <div key={report.id} className="report-row">
+                <span className="date">
+                  {new Date(report.created_at).toLocaleDateString()}
+                </span>
+
+                <span className={`status ${report.status}`}>
+                  {report.status}
+                </span>
+
+                <button
+                  className="button small"
+                  disabled={!isSubmitted}
+                  onClick={() =>
+                    isSubmitted &&
+                    handleDownload({
+                      source: "inspection",
+                      data: report,
+                    })
+                  }
+                >
+                  {isSubmitted ? "Download" : "Draft"}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="report-card">
+          <h3>Subdew Inspection</h3>
+
+          {reportsByType.subdew.length === 0 && <p>No reports</p>}
+
+          {reportsByType.subdew.map((report) => {
+            const isSubmitted = report.status === "submitted";
+
+            return (
+              <div key={report.id} className="report-row">
+                <span className="date">
+                  {new Date(report.created_at).toLocaleDateString()}
+                </span>
+
+                <span className={`status ${report.status}`}>
+                  {report.status}
+                </span>
+
+                <button
+                  className="button small"
+                  disabled={!isSubmitted}
+                  onClick={() =>
+                    isSubmitted &&
+                    handleDownload({
+                      source: "inspection",
+                      data: report,
+                    })
+                  }
+                >
+                  {isSubmitted ? "Download" : "Draft"}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="report-card">
+          <h3>Frugal Request</h3>
+
+          {reportsByType.frugal.length === 0 && <p>No reports</p>}
+
+          {reportsByType.frugal.map((report) => {
+            return (
+              <div key={report.id} className="report-row">
+                <span className="date">
+                  {new Date(report.created_at).toLocaleDateString()}
+                </span>
+
+                <span className="status info">Uploaded</span>
+
+                <button
+                  className="button small"
+                  onClick={() =>
+                    handleDownload({
+                      source: "frugal",
+                      data: report,
+                    })
+                  }
+                >
+                  View File
+                </button>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="report-card">
+          <h3>Roof Armour</h3>
+
+          {reportsByType.roof.length === 0 && <p>No reports</p>}
+
+          {reportsByType.roof.map((report) => {
+            return (
+              <div key={report.id} className="report-row">
+                <span className="date">
+                  {new Date(report.created_at).toLocaleDateString()}
+                </span>
+
+                <span className="status info">Sent</span>
+
+                <button
+                  className="button small"
+                  onClick={() =>
+                    handleDownload({
+                      source: "roof",
+                      data: report,
+                    })
+                  }
+                >
+                  Download
+                </button>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
