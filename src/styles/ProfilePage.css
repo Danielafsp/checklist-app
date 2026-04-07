@@ -10,6 +10,10 @@
   margin-bottom: 30px;
 }
 
+.profile-card .button {
+  align-self: flex-start;
+}
+
 .profile-card input {
   padding: 8px;
 }

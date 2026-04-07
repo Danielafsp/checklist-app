@@ -121,12 +121,12 @@
   .navbar-right {
     justify-self: end;
     gap: 0.4rem;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .navbar-right span {
     white-space: nowrap;
-    overflow: hidden;
+    overflow: visible;
     text-overflow: ellipsis;
     font-size: 0.75rem;
   }
@@ -135,5 +135,21 @@
   .nav-menu {
     padding: 0.35rem 0.5rem;
     font-size: 0.7rem;
+  }
+
+  .user-menu {
+    position: relative;
+  }
+
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px 0;
+    min-width: 140px;
+    z-index: 1000;
   }
 }
