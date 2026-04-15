@@ -1,47 +1,43 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import "../styles/Auth.css";
 
-export default function ClientResetPassword() {
+export default function ForgotPassword() {
   const navigate = useNavigate();
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (!data.session) {
-        navigate("/login");
-      }
-    });
-  }, [navigate]);
-
-  const handleUpdatePassword = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const { error } = await supabase.auth.updateUser({
-      password,
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: "https://app.fortsands.com/client-reset-password",
     });
-
     if (error) {
       alert(error.message);
-      return;
+    } else {
+      alert("Password reset email sent! Check your inbox.");
+      navigate("/login");
     }
-
-    alert("Password updated successfully!");
-    navigate("/login");
   };
 
   return (
-    <div>
-      <h1>Set New Password</h1>
-      <form onSubmit={handleUpdatePassword}>
+    <div className="auth-container">
+      <h1>Forgot Password</h1>
+      <form className="auth-form" onSubmit={handleSubmit}>
         <input
-          type="password"
-          placeholder="New password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          type="email"
+          placeholder="Your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
         />
-        <button type="submit">Update Password</button>
+        <button type="submit" className="button-primary">
+          Send Reset Email
+        </button>
       </form>
+      <p className="auth-back">
+        <span onClick={() => navigate("/login")}>Back to Login</span>
+      </p>
     </div>
   );
 }

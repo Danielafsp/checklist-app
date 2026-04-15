@@ -82,7 +82,7 @@ export default function ClientLogin() {
       </form>
 
       <p className="auth-switch">
-        <span onClick={() => navigate("/client-reset-password")}>
+        <span onClick={() => navigate("/forgot-password")}>
           Forgot Password?
         </span>
       </p>

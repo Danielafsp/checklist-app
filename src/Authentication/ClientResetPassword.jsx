@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
@@ -9,39 +9,39 @@ export default function ClientResetPassword() {
 
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [isValidSession, setIsValidSession] = useState(false);
+
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY") {
+        setIsValidSession(true);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleReset = async (e) => {
     e.preventDefault();
-
-    if (!email) {
-      alert("Please enter your email");
-      return;
-    }
-
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + "/update-password",
-    });
-
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
     if (error) {
       alert(error.message);
-      return;
+    } else {
+      alert("Password updated successfully!");
+      navigate("/login");
     }
-
-    alert("Password reset email sent!");
   };
+
+  if (!isValidSession) {
+    return <p>Invalid or expired link. Please request a new password reset.</p>;
+  }
 
   return (
     <div className="auth-container">
-      <h1>Reset Password</h1>
+      <h1>Set New Password</h1>
 
       <form className="auth-form" onSubmit={handleReset}>
-        <input
-          type="email"
-          placeholder="Your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-
         <input
           type="password"
           placeholder="New password"
@@ -50,7 +50,7 @@ export default function ClientResetPassword() {
         />
 
         <button type="submit" className="button-primary">
-          Reset Password
+          Confirm New Password
         </button>
       </form>
 
