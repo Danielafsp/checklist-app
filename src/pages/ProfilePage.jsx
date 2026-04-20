@@ -247,12 +247,14 @@ export default function ProfilePage() {
           disabled={!editing}
           value={profile.name || ""}
           onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+          placeholder="Name"
         />
 
         <input
           disabled={!editing}
           value={profile.email || ""}
           onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+          placeholder="Email"
         />
 
         <input
@@ -261,12 +263,14 @@ export default function ProfilePage() {
           onChange={(e) =>
             setProfile({ ...profile, property_name: e.target.value })
           }
+          placeholder="Property Name"
         />
 
         <input
           disabled={!editing}
           value={profile.address || ""}
           onChange={(e) => setProfile({ ...profile, address: e.target.value })}
+          placeholder="Address"
         />
 
         {!editing ? (
