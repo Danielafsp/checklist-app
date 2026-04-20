@@ -8,7 +8,6 @@ import kelly from "../assets/team/Kelly.png";
 import lukasz from "../assets/team/Lukasz.png";
 import max from "../assets/team/Max.png";
 import randy from "../assets/team/Randy.png";
-import rick from "../assets/team/Rick.png";
 import simon from "../assets/team/simon.png";
 import trent from "../assets/team/Trent.png";
 import zach from "../assets/team/zach.png";
@@ -106,15 +105,6 @@ export const teamData = [
   },
   {
     id: 12,
-    name: "Rick Ochitwa",
-    title: "Senior Project Advisor",
-    email: "rochitwa@fortsands.com",
-    phone: "306-580-6191",
-    city: "Saskatoon",
-    image: rick,
-  },
-  {
-    id: 13,
     name: "Lukasz Zielinski",
     title: "Project Manager",
     email: "lzielinski@fortsands.com",
@@ -123,7 +113,7 @@ export const teamData = [
     image: lukasz,
   },
   {
-    id: 14,
+    id: 13,
     name: "Amrita Sekhon",
     title: "Project Coordinator",
     email: "asekhon@fortsands.com",
@@ -132,7 +122,7 @@ export const teamData = [
     image: amrita,
   },
   {
-    id: 15,
+    id: 14,
     name: "Max Kovalenko",
     title: "Project Manager ",
     email: "mkovalenko@fortsands.com",
