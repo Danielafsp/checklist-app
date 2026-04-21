@@ -23,6 +23,7 @@ import ClientRegister from "./Authentication/ClientRegister.jsx";
 import AdminLogin from "./Authentication/AdminLogin.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import ClientResetPassword from "./Authentication/ClientResetPassword.jsx";
+import AdminForgotPassword from "./Authentication/AdminForgotPassword.jsx";
 import ForgotPassword from "./Authentication/ResetPassword.jsx";
 
 export default function App() {
@@ -67,10 +68,22 @@ export default function App() {
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route
             path="/client-reset-password"
-            element={<ClientResetPassword />}
+            element={
+              <ClientResetPassword forgotPasswordPath="/forgot-password" />
+            }
           />
+          <Route
+            path="/admin-forgot-password"
+            element={<AdminForgotPassword />}
+          />
+          <Route
+            path="/admin-reset-password"
+            element={
+              <ClientResetPassword forgotPasswordPath="/admin-forgot-password" />
+            }
+          />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
         </Route>
-        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>
       <Footer />
     </BrowserRouter>

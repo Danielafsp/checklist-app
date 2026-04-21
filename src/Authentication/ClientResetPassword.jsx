@@ -4,7 +4,9 @@ import { supabase } from "../lib/supabase";
 
 import "../styles/Auth.css";
 
-export default function ClientResetPassword() {
+export default function ClientResetPassword({
+  forgotPasswordPath = "/forgot-password",
+}) {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");

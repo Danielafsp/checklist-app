@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import "../styles/Auth.css";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -49,9 +50,13 @@ export default function AdminLogin() {
         </button>
       </form>
 
-      {errorMessage && (
-        <p style={{ color: "red", marginTop: "1rem" }}>{errorMessage}</p>
-      )}
+      {errorMessage && <p>{errorMessage}</p>}
+
+      <p className="auth-back">
+        <span onClick={() => navigate("/admin-forgot-password")}>
+          Forgot Password?
+        </span>
+      </p>
 
       <p className="auth-back">
         <span style={{ cursor: "pointer" }} onClick={() => navigate("/")}>
