@@ -42,12 +42,11 @@ export default function SubdewArea() {
 
       setLoadingInspection(true);
 
-      const { data: existing, error: fetchError } = await supabase
+      const { data: latest, error: fetchError } = await supabase
         .from("inspections")
         .select("*")
         .eq("tool", "subdew")
         .eq("created_by", user.id)
-        .eq("status", "draft")
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
@@ -58,11 +57,13 @@ export default function SubdewArea() {
         return;
       }
 
-      if (existing) {
-        setInspectionId(existing.id);
-        if (existing.status === "submitted") {
+      if (latest) {
+        setInspectionId(latest.id);
+
+        if (latest.status === "submitted") {
           setSubmitted(true);
         }
+
         setLoadingInspection(false);
         return;
       }
@@ -275,6 +276,33 @@ export default function SubdewArea() {
     }
   };
 
+  const handleStartNewInspection = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from("inspections")
+      .insert({
+        tool: "subdew",
+        created_by: user.id,
+        status: "draft",
+        created_at: new Date(),
+      })
+      .select()
+      .single();
+
+    if (!error && data) {
+      setInspectionId(data.id);
+      setSubmitted(false);
+
+      setNotes({});
+      setRatings({});
+      setPhotos({});
+      setSaved({});
+
+      navigate("/subdew/area/1");
+    }
+  };
+
   const handleRemovePhoto = (questionId, indexToRemove) => {
     setPhotos((prev) => ({
       ...prev,
@@ -457,6 +485,14 @@ export default function SubdewArea() {
                 contact you within
                 <strong> 3–5 business days.</strong>
               </p>
+
+              <button
+                className="submit-report-btn"
+                onClick={handleStartNewInspection}
+                style={{ marginTop: "15px" }}
+              >
+                Start New Inspection
+              </button>
             </div>
           )}
         </div>
