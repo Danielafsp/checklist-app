@@ -64,15 +64,32 @@ export default function SubdewReports() {
   const handleStatusChange = async (newStatus) => {
     if (!selectedReport || selectedReport.status === "draft") return;
 
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      console.error("User not found:", userError);
+      return;
+    }
+
     const { error } = await supabase
       .from("inspections")
       .update({
         status: newStatus,
+        updated_by: user.id,
+        updated_at: new Date(),
       })
       .eq("id", selectedReport.id);
 
     if (!error) {
-      const updated = { ...selectedReport, status: newStatus };
+      const updated = {
+        ...selectedReport,
+        status: newStatus,
+        updated_by: user.id,
+        updated_at: new Date(),
+      };
 
       setSelectedReport(updated);
 
