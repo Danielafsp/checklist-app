@@ -10,6 +10,7 @@ export default function SubdewReports() {
   const [reports, setReports] = useState([]);
   const [selectedReport, setSelectedReport] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [sidebarTab, setSidebarTab] = useState("submitted");
 
   const formatDate = (timestamp) =>
     timestamp ? new Date(timestamp).toLocaleString() : "—";
@@ -49,11 +50,15 @@ export default function SubdewReports() {
     if (error) {
       console.error("Error fetching reports:", error);
     } else {
-      console.log("RAW REPORT DATA:", data);
       setReports(data);
 
-      if (data.length > 0) {
-        setSelectedReport(data[0]);
+      const submitted = data.filter(
+        (r) => r.status?.toLowerCase().trim() !== "draft",
+      );
+      if (submitted.length > 0) {
+        setSelectedReport(submitted[0]);
+      } else {
+        setSelectedReport(null);
       }
     }
 
@@ -218,13 +223,50 @@ export default function SubdewReports() {
     return <p className="admin-empty">No Subdew reports yet.</p>;
   }
 
-  const isDraft = selectedReport?.status === "draft";
+  const isDraft = selectedReport?.status?.toLowerCase().trim() === "draft";
+
+  const submittedReports = reports.filter(
+    (r) => r.status?.toLowerCase().trim() !== "draft",
+  );
+  const draftReports = reports.filter(
+    (r) => r.status?.toLowerCase().trim() === "draft",
+  );
+  const visibleReports =
+    sidebarTab === "submitted" ? submittedReports : draftReports;
 
   return (
     <>
       <div className="reports-sidebar">
+        <div className="sidebar-tabs">
+          <button
+            className={`sidebar-tab ${sidebarTab === "submitted" ? "active" : ""}`}
+            onClick={() => setSidebarTab("submitted")}
+          >
+            Submitted
+            {submittedReports.length > 0 && (
+              <span className="sidebar-tab-count">
+                {submittedReports.length}
+              </span>
+            )}
+          </button>
+          <button
+            className={`sidebar-tab ${sidebarTab === "draft" ? "active" : ""}`}
+            onClick={() => setSidebarTab("draft")}
+          >
+            Drafts
+            {draftReports.length > 0 && (
+              <span className="sidebar-tab-count">{draftReports.length}</span>
+            )}
+          </button>
+        </div>
+
         <div className="reports-list">
-          {reports.map((report) => (
+          {visibleReports.length === 0 && (
+            <p className="admin-empty" style={{ padding: "16px" }}>
+              No {sidebarTab === "draft" ? "draft" : "submitted reports"} yet.
+            </p>
+          )}
+          {visibleReports.map((report) => (
             <div
               key={report.id}
               className={`report-item ${selectedReport?.id === report.id ? "active" : ""}`}

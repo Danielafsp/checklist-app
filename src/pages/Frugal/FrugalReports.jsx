@@ -6,6 +6,7 @@ export default function FrugalReports() {
   const [requests, setRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [sidebarTab, setSidebarTab] = useState("submitted");
 
   useEffect(() => {
     fetchRequests();
@@ -29,8 +30,14 @@ export default function FrugalReports() {
     } else {
       setRequests(data);
 
-      if (data.length > 0) {
-        setSelectedRequest(data[0]);
+      const submitted = data.filter(
+        (r) => r.status?.toLowerCase().trim() !== "draft",
+      );
+
+      if (submitted.length > 0) {
+        setSelectedRequest(submitted[0]);
+      } else {
+        setSelectedRequest(null);
       }
     }
 
@@ -109,11 +116,52 @@ export default function FrugalReports() {
 
   const isDraft = selectedRequest?.status?.toLowerCase().trim() === "draft";
 
+  const submittedRequests = requests.filter(
+    (r) => r.status?.toLowerCase().trim() !== "draft",
+  );
+
+  const draftRequests = requests.filter(
+    (r) => r.status?.toLowerCase().trim() === "draft",
+  );
+
+  const visibleRequests =
+    sidebarTab === "submitted" ? submittedRequests : draftRequests;
+
   return (
     <>
       <div className="reports-sidebar">
+        <div className="sidebar-tabs">
+          <button
+            className={`sidebar-tab ${sidebarTab === "submitted" ? "active" : ""}`}
+            onClick={() => setSidebarTab("submitted")}
+          >
+            Submitted
+            {submittedRequests.length > 0 && (
+              <span className="sidebar-tab-count">
+                {submittedRequests.length}
+              </span>
+            )}
+          </button>
+          <button
+            className={`sidebar-tab ${sidebarTab === "draft" ? "active" : ""}`}
+            onClick={() => setSidebarTab("draft")}
+          >
+            Drafts
+            {draftRequests.length > 0 && (
+              <span className="sidebar-tab-count">{draftRequests.length}</span>
+            )}
+          </button>
+        </div>
+
         <div className="reports-list">
-          {requests.map((request) => (
+          {visibleRequests.length === 0 && (
+            <p className="admin-empty" style={{ padding: "16px" }}>
+              No{" "}
+              {sidebarTab === "draft" ? "draft requests" : "submitted requests"}{" "}
+              yet.
+            </p>
+          )}
+          {visibleRequests.map((request) => (
             <div
               key={request.id}
               className={`report-item ${selectedRequest?.id === request.id ? "active" : ""}`}
