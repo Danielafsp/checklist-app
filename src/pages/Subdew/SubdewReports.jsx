@@ -22,7 +22,10 @@ export default function SubdewReports() {
       .select(
         `
     *,
-    profiles ( name, email, property_name, address ),
+    creator:created_by ( name, email, property_name, address ),
+
+    reviewer:updated_by ( name ),
+
     inspection_areas (
       id,
       area_id,
@@ -74,12 +77,14 @@ export default function SubdewReports() {
       return;
     }
 
+    const now = new Date();
+
     const { error } = await supabase
       .from("inspections")
       .update({
         status: newStatus,
         updated_by: user.id,
-        updated_at: new Date(),
+        updated_at: now,
       })
       .eq("id", selectedReport.id);
 
@@ -88,7 +93,10 @@ export default function SubdewReports() {
         ...selectedReport,
         status: newStatus,
         updated_by: user.id,
-        updated_at: new Date(),
+        updated_at: now,
+        reviewer: {
+          name: user.user_metadata?.full_name || "You",
+        },
       };
 
       setSelectedReport(updated);
@@ -130,16 +138,16 @@ export default function SubdewReports() {
     doc.setFontSize(12);
 
     addLine(
-      `Created By: ${selectedReport.profiles?.name || selectedReport.created_by}`,
+      `Created By: ${selectedReport.creator?.name || selectedReport.created_by}`,
     );
     addLine(`Inspection ID: ${selectedReport.id}`);
     addLine(`Status: ${selectedReport.status}`);
     addLine(`Created: ${formatDate(selectedReport.created_at)}`);
     addLine(`Submitted: ${formatDate(selectedReport.submitted_at)}`);
-    addLine(`Client Name: ${selectedReport.profiles?.name || "—"}`);
-    addLine(`Email: ${selectedReport.profiles?.email || "—"}`);
-    addLine(`Property: ${selectedReport.profiles?.property_name || "—"}`);
-    addLine(`Address: ${selectedReport.profiles?.address || "—"}`);
+    addLine(`Client Name: ${selectedReport.creator?.name || "—"}`);
+    addLine(`Email: ${selectedReport.creator?.email || "—"}`);
+    addLine(`Property: ${selectedReport.creator?.property_name || "—"}`);
+    addLine(`Address: ${selectedReport.creator?.address || "—"}`);
 
     y += 10;
 
@@ -223,7 +231,7 @@ export default function SubdewReports() {
               onClick={() => setSelectedReport(report)}
             >
               <strong>
-                Inspection by {report.profiles?.name || "Unnamed Client"}
+                Inspection by {report.creator?.name || "Unnamed Client"}
               </strong>
 
               <div className={`status status-${report.status}`}>
@@ -264,28 +272,33 @@ export default function SubdewReports() {
                 onChange={(e) => handleStatusChange(e.target.value)}
                 disabled={isDraft}
               >
-                <option value="Submitted">Submitted</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Completed">Completed</option>
+                <option value="submitted">Submitted</option>
+                <option value="in_progress">In Progress</option>
+                <option value="completed">Completed</option>
               </select>
             </div>
+
+            <p className="text-sm text-gray-500">
+              {selectedReport.reviewer?.name
+                ? `Reviewed by ${selectedReport.reviewer.name}`
+                : "Not reviewed yet"}
+            </p>
 
             <p>
               <strong>Created:</strong> {formatDate(selectedReport.created_at)}
             </p>
 
             <p>
-              <strong>Client:</strong> {selectedReport.profiles?.name || "—"}
+              <strong>Client:</strong> {selectedReport.creator?.name || "—"}
             </p>
 
             <p>
               <strong>Property:</strong>{" "}
-              {selectedReport.profiles?.property_name || "—"}
+              {selectedReport.creator?.property_name || "—"}
             </p>
 
             <p>
-              <strong>Address:</strong>{" "}
-              {selectedReport.profiles?.address || "—"}
+              <strong>Address:</strong> {selectedReport.creator?.address || "—"}
             </p>
 
             {selectedReport.inspection_areas?.map((area) => (

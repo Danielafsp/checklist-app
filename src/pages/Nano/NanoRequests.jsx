@@ -22,7 +22,12 @@ export default function NanoRequests() {
 
     const { data, error } = await supabase
       .from("roof_requests")
-      .select("*")
+      .select(
+        `
+        *,
+        reviewer:updated_by ( name )
+      `,
+      )
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -45,36 +50,80 @@ export default function NanoRequests() {
     )
       return;
 
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      console.error("User not found:", userError);
+      return;
+    }
+
+    const now = new Date();
+
     const { error } = await supabase
       .from("roof_requests")
       .update({
         status: newStatus,
-        updated_at: new Date(),
+        updated_by: user.id,
+        updated_at: now,
       })
       .eq("id", selectedRequest.id);
 
     if (!error) {
-      const updated = { ...selectedRequest, status: newStatus };
+      const updated = {
+        ...selectedRequest,
+        status: newStatus,
+        updated_by: user.id,
+        updated_at: now,
+        reviewer: {
+          name: user.user_metadata?.full_name || "You",
+        },
+      };
       setSelectedRequest(updated);
       setRequests((prev) =>
         prev.map((r) => (r.id === updated.id ? updated : r)),
       );
+    } else {
+      console.error("Error updating status:", error);
     }
   };
 
   const handleSaveNotes = async () => {
     if (!selectedRequest) return;
 
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      console.error("User not found:", userError);
+      return;
+    }
+
+    const now = new Date();
+
     const { error } = await supabase
       .from("roof_requests")
       .update({
         notes: notesDraft,
-        updated_at: new Date(),
+        updated_by: user.id,
+        updated_at: now,
       })
       .eq("id", selectedRequest.id);
 
     if (!error) {
-      const updated = { ...selectedRequest, notes: notesDraft };
+      const updated = {
+        ...selectedRequest,
+        notes: notesDraft,
+        updated_by: user.id,
+        updated_at: now,
+        reviewer: {
+          name: user.user_metadata?.full_name || "You",
+        },
+      };
       setSelectedRequest(updated);
       setRequests((prev) =>
         prev.map((r) => (r.id === updated.id ? updated : r)),
@@ -82,6 +131,8 @@ export default function NanoRequests() {
 
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
+    } else {
+      console.error("Error saving notes:", error);
     }
   };
 
@@ -129,6 +180,8 @@ export default function NanoRequests() {
               <strong>{request.name}</strong>
 
               <div>{request.email}</div>
+
+              <div>{request.status}</div>
 
               <div>{new Date(request.created_at).toLocaleDateString()}</div>
             </div>
@@ -191,6 +244,12 @@ export default function NanoRequests() {
                 <option value="closed">Closed</option>
               </select>
             </div>
+
+            <p className="text-sm text-gray-500">
+              {selectedRequest.reviewer?.name
+                ? `Reviewed by ${selectedRequest.reviewer.name}`
+                : "Not reviewed yet"}
+            </p>
 
             <div className="inspection-area">
               <div className="area-title">Internal Notes</div>

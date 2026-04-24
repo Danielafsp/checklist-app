@@ -17,7 +17,8 @@ export default function FrugalReports() {
       .select(
         `
         *,
-        profiles ( name ),
+        creator:created_by ( name ),
+        reviewer:updated_by ( name ),
         frugal_files (*)
       `,
       )
@@ -43,15 +44,37 @@ export default function FrugalReports() {
     )
       return;
 
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      console.error("User not found:", userError);
+      return;
+    }
+
+    const now = new Date();
+
     const { error } = await supabase
       .from("frugal_requests")
       .update({
         status: newStatus,
+        updated_by: user.id,
+        updated_at: now,
       })
       .eq("id", selectedRequest.id);
 
     if (!error) {
-      const updated = { ...selectedRequest, status: newStatus };
+      const updated = {
+        ...selectedRequest,
+        status: newStatus,
+        updated_by: user.id,
+        updated_at: now,
+        reviewer: {
+          name: user.user_metadata?.full_name || "You",
+        },
+      };
 
       setSelectedRequest(updated);
 
@@ -97,7 +120,7 @@ export default function FrugalReports() {
               onClick={() => setSelectedRequest(request)}
             >
               <strong>
-                {request.profiles?.name || `Request ${request.id.slice(0, 6)}`}
+                {request.creator?.name || `Request ${request.id.slice(0, 6)}`}
               </strong>
 
               <div
@@ -140,6 +163,17 @@ export default function FrugalReports() {
                 <option value="In Progress">In Progress</option>
                 <option value="Completed">Completed</option>
               </select>
+            </div>
+
+            <p className="text-sm text-gray-500">
+              {selectedRequest.reviewer?.name
+                ? `Reviewed by ${selectedRequest.reviewer.name}`
+                : "Not reviewed yet"}
+            </p>
+
+            <div className="admin-row">
+              <strong>Client:</strong>
+              <span>{selectedRequest.creator?.name || "—"}</span>
             </div>
 
             <div className="admin-row">
