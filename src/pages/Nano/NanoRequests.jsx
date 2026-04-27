@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabase";
 import jsPDF from "jspdf";
+import ReportsSidebar from "../../components/ReportsSidebar";
+import { formatDate } from "../../utils/reportUtils";
 import "../../styles/AdminDashboard.css";
 
 export default function NanoRequests() {
@@ -10,9 +12,6 @@ export default function NanoRequests() {
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
   const [sidebarTab, setSidebarTab] = useState("submitted");
-
-  const formatDate = (timestamp) =>
-    timestamp ? new Date(timestamp).toLocaleString() : "—";
 
   useEffect(() => {
     fetchRequests();
@@ -40,11 +39,9 @@ export default function NanoRequests() {
         (r) => r.status?.toLowerCase().trim() !== "draft",
       );
 
-      if (submitted.length > 0) {
-        setSelectedRequest(submitted[0]);
-      } else {
-        setSelectedRequest(null);
-      }
+      const first = submitted.length > 0 ? submitted[0] : null;
+      setSelectedRequest(first);
+      setNotesDraft(first?.notes || "");
     }
 
     setLoading(false);
@@ -171,71 +168,21 @@ export default function NanoRequests() {
 
   const isDraft = selectedRequest?.status?.toLowerCase().trim() === "draft";
 
-  const submittedRequests = requests.filter(
-    (r) => r.status?.toLowerCase().trim() !== "draft",
-  );
-
-  const draftRequests = requests.filter(
-    (r) => r.status?.toLowerCase().trim() === "draft",
-  );
-
-  const visibleRequests =
-    sidebarTab === "submitted" ? submittedRequests : draftRequests;
-
   return (
     <>
-      <div className="reports-sidebar">
-        <div className="sidebar-tabs">
-          <button
-            className={`sidebar-tab ${sidebarTab === "submitted" ? "active" : ""}`}
-            onClick={() => setSidebarTab("submitted")}
-          >
-            Submitted
-            {submittedRequests.length > 0 && (
-              <span className="sidebar-tab-count">
-                {submittedRequests.length}
-              </span>
-            )}
-          </button>
-          <button
-            className={`sidebar-tab ${sidebarTab === "draft" ? "active" : ""}`}
-            onClick={() => setSidebarTab("draft")}
-          >
-            Drafts
-            {draftRequests.length > 0 && (
-              <span className="sidebar-tab-count">{draftRequests.length}</span>
-            )}
-          </button>
-        </div>
-
-        <div className="reports-list">
-          {visibleRequests.length === 0 && (
-            <p className="admin-empty" style={{ padding: "16px" }}>
-              No{" "}
-              {sidebarTab === "draft" ? "draft requests" : "submitted requests"}{" "}
-              yet.
-            </p>
-          )}
-          {visibleRequests.map((request) => (
-            <div
-              key={request.id}
-              className={`report-item ${selectedRequest?.id === request.id ? "active" : ""}`}
-              onClick={() => {
-                setSelectedRequest(request);
-                setNotesDraft(request.notes || "");
-              }}
-            >
-              <strong>{request.name}</strong>
-
-              <div>{request.email}</div>
-
-              <div>{request.status}</div>
-
-              <div>{new Date(request.created_at).toLocaleDateString()}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <ReportsSidebar
+        items={requests}
+        selectedItem={selectedRequest}
+        onSelectItem={(item) => {
+          setSelectedRequest(item);
+          setNotesDraft(item.notes || "");
+        }}
+        sidebarTab={sidebarTab}
+        onTabChange={setSidebarTab}
+        getLabel={(r) => r.name}
+        getStatus={(r) => r.status}
+        getDate={(r) => new Date(r.created_at).toLocaleDateString()}
+      />
 
       <div className="report-viewer">
         {!selectedRequest && <p>Select a request.</p>}

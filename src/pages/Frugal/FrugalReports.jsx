@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
+import ReportsSidebar from "../../components/ReportsSidebar";
+import { formatDate } from "../../utils/reportUtils";
 import "../../styles/AdminDashboard.css";
 
 export default function FrugalReports() {
@@ -34,11 +36,7 @@ export default function FrugalReports() {
         (r) => r.status?.toLowerCase().trim() !== "draft",
       );
 
-      if (submitted.length > 0) {
-        setSelectedRequest(submitted[0]);
-      } else {
-        setSelectedRequest(null);
-      }
+      setSelectedRequest(submitted.length > 0 ? submitted[0] : null);
     }
 
     setLoading(false);
@@ -116,76 +114,18 @@ export default function FrugalReports() {
 
   const isDraft = selectedRequest?.status?.toLowerCase().trim() === "draft";
 
-  const submittedRequests = requests.filter(
-    (r) => r.status?.toLowerCase().trim() !== "draft",
-  );
-
-  const draftRequests = requests.filter(
-    (r) => r.status?.toLowerCase().trim() === "draft",
-  );
-
-  const visibleRequests =
-    sidebarTab === "submitted" ? submittedRequests : draftRequests;
-
   return (
     <>
-      <div className="reports-sidebar">
-        <div className="sidebar-tabs">
-          <button
-            className={`sidebar-tab ${sidebarTab === "submitted" ? "active" : ""}`}
-            onClick={() => setSidebarTab("submitted")}
-          >
-            Submitted
-            {submittedRequests.length > 0 && (
-              <span className="sidebar-tab-count">
-                {submittedRequests.length}
-              </span>
-            )}
-          </button>
-          <button
-            className={`sidebar-tab ${sidebarTab === "draft" ? "active" : ""}`}
-            onClick={() => setSidebarTab("draft")}
-          >
-            Drafts
-            {draftRequests.length > 0 && (
-              <span className="sidebar-tab-count">{draftRequests.length}</span>
-            )}
-          </button>
-        </div>
-
-        <div className="reports-list">
-          {visibleRequests.length === 0 && (
-            <p className="admin-empty" style={{ padding: "16px" }}>
-              No{" "}
-              {sidebarTab === "draft" ? "draft requests" : "submitted requests"}{" "}
-              yet.
-            </p>
-          )}
-          {visibleRequests.map((request) => (
-            <div
-              key={request.id}
-              className={`report-item ${selectedRequest?.id === request.id ? "active" : ""}`}
-              onClick={() => setSelectedRequest(request)}
-            >
-              <strong>
-                {request.creator?.name || `Request ${request.id.slice(0, 6)}`}
-              </strong>
-
-              <div
-                className={`status status-${request.status
-                  ?.toLowerCase()
-                  .replace(/\s+/g, "_")}`}
-              >
-                {request.status}
-              </div>
-
-              <div style={{ fontSize: "12px", color: "#6b7280" }}>
-                {new Date(request.created_at).toLocaleDateString()}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <ReportsSidebar
+        items={requests}
+        selectedItem={selectedRequest}
+        onSelectItem={setSelectedRequest}
+        sidebarTab={sidebarTab}
+        onTabChange={setSidebarTab}
+        getLabel={(r) => r.creator?.name || `Request ${r.id.slice(0, 6)}`}
+        getStatus={(r) => r.status}
+        getDate={(r) => new Date(r.created_at).toLocaleDateString()}
+      />
 
       <div className="report-viewer">
         {!selectedRequest && <p>Select a request to view details.</p>}
