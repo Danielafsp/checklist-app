@@ -3,27 +3,39 @@
 🚧 Status: In progress
 
 ## Overview
-This is a checklist application currently under development.
-The goal of this project is to build a practical, real-world tool while improving my skills in React and front-end development.
+A multi-tool inspection and request management app built with React and Supabase.
+Users can fill out structured checklists across different tools (PROMPT, SUBDEW, FRUGAL, Roof Armour),
+save drafts, submit reports, and export them as PDFs.
+An admin dashboard allows reviewing, updating status, and managing all submissions.
 
-## Purpose
-The app is designed to manage dynamic checklists and prepare structured data that can later be used for reporting and team workflows.
+## Tech Stack
 
-## Built With
-React
-JavaScript
-CSS
+- [React 19](https://react.dev/) — UI and component architecture
+- [Vite](https://vitejs.dev/) — build tool and dev server
+- [Supabase](https://supabase.com/) — database, auth, and file storage
+- [React Router v7](https://reactrouter.com/) — client-side routing
+- [jsPDF](https://github.com/parallax/jsPDF) — PDF export
 
-## What I’m Practicing
-Component-based architecture
-State management
-Handling and organizing data
-Improving UI consistency and usability
+## Getting Started
+Install dependencies:
+npm install
 
-## Planned Improvements
-Better data organization for reporting
-UI/UX refinements
-Code optimization and refactoring
+Start dev server:
+npm run dev
 
-## Notes
-This project is part of my ongoing learning journey as a rookie in tech, focusing on learning by building real applications.
+Requires a .env file with your Supabase credentials:
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_anon_key
+
+## Features
+
+- Multi-tool inspection forms with area-based questions, ratings, notes, and photo uploads
+- Draft and submit flow per inspection
+- Admin dashboard with submitted/draft tabs, status management, and reviewer tracking
+- PDF export for each report
+- Shared reusable components across tools
+
+## Project Goals
+
+This project is part of a real-world learning journey focused on:
+component reusability, Supabase integration, state management, and building maintainable production-ready code.
